@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  php:
+    container_name: example_container
+    image: shell_exec_python_from_php:1.0
+    ports:
+      - 8089:80
