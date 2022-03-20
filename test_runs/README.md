@@ -16,7 +16,12 @@ In case of Windows OS simply run
 
 ## Usage
 
-Visit http://localhost:8089/python_exec.php on your browser and a "Python executed successfully" message shoulf be executed
+Visit http://localhost:8089/python_exec.php on your browser and a "Python executed successfully" message should be executed
+
+
+### Added java execution
+Visit http://localhost:8089/java_exec.php on your browser and a "Hello, World!" message should be executed
+
 
 ## How it works
 
@@ -36,3 +41,10 @@ Dockerfile
 We create a docker image FROM php:7.4-apache. 
 We copy the python and PHP files.
 We install python using the RUN command.
+
+### AWS lightsail
+To push the image to Amazon lightsail
+```bash
+aws lightsail  push-container-image --service-name ase-service-1 --label example_container --image shell_exec_python_from_php:1.0   
+```
+Our public domain https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/python_exec.php & https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/java_exec.php

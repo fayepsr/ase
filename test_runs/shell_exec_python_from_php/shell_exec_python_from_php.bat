@@ -12,5 +12,3 @@ docker build -f .\Dockerfile.dockerfile -t shell_exec_python_from_php:1.0 .
 
 
 docker-compose -f .\shell_exec_python_from_php.yaml up
-
-::docker exec -it ##container_id## bash
