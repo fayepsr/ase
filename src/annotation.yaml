@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+  php:
+    container_name: annotation_container
+    image: annotation_image:1.0
+    ports:
+      - 8089:80
+    environment:
+      JAVA-HOME: "/usr/lib/jvm/java-11-openjdk-amd64"
