@@ -65,6 +65,7 @@ def main(data_directory: str):
 
 
     # Calculates the accuracy based on each line of code from an input test file
+    # Check for each word? Check for each file?
     accuracy = total_correct_lines/total_lines
     print("Model accuracy is: ", accuracy)
 
