@@ -12,6 +12,9 @@ class api{
             throw new ApiException(406, "Invalid Input Programming Language");
         }
 
+        $command = escapeshellcmd('python3.9 /home/src_python/highlight.py');
+        $output = shell_exec($command);
+        echo $output;
         
         return array('resp' => "Formatted Input");
 

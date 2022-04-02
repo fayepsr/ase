@@ -14,9 +14,9 @@ ENV PATH $JAVA_HOME/bin:$PATH
 RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/ && \
 cp /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/  && \
 chmod 755 /home/src_python/shmodel.py && \
-chmod 777 /home/src_java/ 
-# apt update  && \
-# apt-get install -y python3.9 && \
-# apt update && \ 
-# apt install -y pip && \ 
-# pip install -r /home/src_python/requirements.txt
+chmod 777 /home/src_java/  && \
+ apt update  && \
+ apt-get install -y python3.9 && \ 
+ apt update && \ 
+ apt install -y pip && \ 
+ pip install -r /home/src_python/requirements.txt
