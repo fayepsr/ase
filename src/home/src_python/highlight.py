@@ -1,24 +1,50 @@
-
+import SHModelUtils as bl
+import argparse
+import sys
 import jpype
 import jpype.imports
 from jpype.types import *
-import SHModelUtils as bl
+from pathlib import Path
+import os
+import json
+import base64 
 
-jpype.startJVM(classpath=['../src_java/SHOracle.jar'])
+#I am changing the working folder so that python works well
+os.chdir('/home/src_python/')
+
+if len(sys.argv) <= 1:
+    print(json.dumps({'ok': 0, 'message': "argument not given"}))
+    exit()
+
+# JPype is used to access the Java FormalModel library
+jpype.startJVM(classpath=['SHOracle.jar'])
 Python3Resolver = jpype.JClass("resolver.Python3Resolver")
+
 
 model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
 resolver = Python3Resolver()
+model.setup_for_prediction()
 
-'''
-from SHModelUtils import *
-pythonModel = SHModel(PYTHON3_LANG_NAME, "pythonModel_prediction")
-pythonModel.setup_for_prediction()
-tt = pythonModel.predict([1, 25, 30, 44, 55])
-print(tt)
+content = sys.argv[1]
+content = base64.b64decode(content).decode('UTF-8')
 
+lToks = resolver.lex(content)
 
-pythonModel = SHModel(PYTHON3_LANG_NAME, "pythonModel_finetuning")
-pythonModel.setup_for_finetuning()
-tt = pythonModel.finetune_on([1, 25, 30, 44, 55], [0, 0, 4, 0, 3])
-print(tt)'''
+if (isinstance(lToks, JArray)):
+    tokenIds = []
+    result = []
+
+    for i in range(lToks.length):
+        tokenIds.append(lToks[i].tokenId)
+        result.append( 
+            {
+                "startInedx" : lToks[i].startIndex, 
+                "endIndex" : lToks[i].endIndex, 
+                "lItemtokenId" : lToks[i].tokenId
+            }
+        )
+
+    
+    prediction = model.predict(tokenIds)
+
+print(json.dumps({'ok': 1, 'prediction': prediction, 'result' : result}))

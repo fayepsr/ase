@@ -12,7 +12,8 @@ class api{
             throw new ApiException(406, "Invalid Input Programming Language");
         }
 
-        $command = escapeshellcmd('python3.9 /home/src_python/highlight.py');
+        //escapeshellcmd wil add slashed to what needs to be escaped. For that we encoded it with base64_encode  
+        $command = escapeshellcmd('python3.9 /home/src_python/highlight.py \''. base64_encode($code) .'\'');
         $output = shell_exec($command);
         echo $output;
         
