@@ -1,0 +1,3 @@
+RewriteEngine On
+ 
+RewriteRule ^(.*)$ /var/www/html/public/index.php?args=$1 [NC,L,QSA]
