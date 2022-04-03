@@ -15,8 +15,8 @@ def test():
 @app.route('/predict', methods=['GET'])
 def api_predict():
     code_to_format = request.args.get('code_to_format')
-    language = request.args.get('language')
-    return json.dumps(highlight.predict(code_to_format, language), indent=4)
+    #language = request.args.get('language')
+    return json.dumps(highlight.predict(code_to_format), indent=4)
 
 
 app.run()

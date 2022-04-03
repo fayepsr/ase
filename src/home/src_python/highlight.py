@@ -11,7 +11,6 @@ import base64
 
 
 def predict(code_to_format, language='python'):
-    os.chdir('/home/src_python/')
 
     if len(sys.argv) <= 1:
         return {'ok': 0, 'message': "argument not given"}
@@ -38,7 +37,7 @@ def predict(code_to_format, language='python'):
             tokenIds.append(lToks[i].tokenId)
             result.append(
                 {
-                    "startInedx" : lToks[i].startIndex,
+                    "startIndex" : lToks[i].startIndex,
                     "endIndex" : lToks[i].endIndex,
                     "lItemtokenId" : lToks[i].tokenId
                 }
