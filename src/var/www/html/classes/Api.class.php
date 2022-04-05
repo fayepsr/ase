@@ -27,9 +27,75 @@ class api{
     private static function getHTML($code, $output){
         //output was a string - need an array
         $output = json_decode($output, 1);
+
+        $setHtmlString = "<!DOCTYPE html>
+        <html>
+        <style>
+        .ANY {
+            color: black;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .KEYWORD {
+            color: blue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .LITERAL {
+            color: lightskyblue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .CHAR_STRING_LITERAL {
+            color: darkgoldenrod;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .COMMENT {
+            color: grey;
+            font-weight: normal;
+            font-style: italic;
+        }
+        .CLASS_DECLARATOR {
+            color: crimson;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_DECLARATOR {
+            color: fuchsia;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .VARIABLE_DECLARATOR {
+            color: purple;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .TYPE_IDENTIFIER {
+            color: darkgreen;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_IDENTIFIER {
+            color: dodgerblue;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .FIELD_IDENTIFIER {
+            color: coral;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .ANNOTATION_DECLARATOR {
+            color: lightslategray;
+            font-weight: lighter;
+            font-style: italic;
+        }
+        </style>";
+
         $hcodearray = api::getHCodeVals($output);
         $strarray = api::getStrings($code, $output);
-        $full_string = "<pre>";
+        $full_string = $setHtmlString."<pre>";
 
         for ($i=0; $i < count($hcodearray); $i++) {
             $class_string = "";
@@ -76,7 +142,7 @@ class api{
             $full_string = $full_string.$class_string;
         }
 
-        $full_string = $full_string."</pre";
+        $full_string = $full_string."</pre>"."</html>";
         print($full_string);
         return $full_string;
 

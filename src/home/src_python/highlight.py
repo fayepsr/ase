@@ -38,7 +38,7 @@ if (isinstance(lToks, JArray)):
         tokenIds.append(lToks[i].tokenId)
         result.append( 
             {
-                "startInedx" : lToks[i].startIndex, 
+                "startIndex" : lToks[i].startIndex, 
                 "endIndex" : lToks[i].endIndex, 
                 "lItemtokenId" : lToks[i].tokenId
             }
