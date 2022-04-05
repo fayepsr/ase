@@ -17,12 +17,12 @@ from pathlib import Path
 
 # JPype is used to access the Java FormalModel library
 jpype.startJVM(classpath=['../FormalModel/Library/SHOracle.jar'])
-Python3Resolver = jpype.JClass("resolver.Python3Resolver")
+JavaResolver = jpype.JClass("resolver.JavaResolver")
 
 
 def main(data_directory: str):
     model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
-    resolver = Python3Resolver()
+    resolver = JavaResolver()
     ext = '*.java'
 
     data_directory = data_directory[2:]
