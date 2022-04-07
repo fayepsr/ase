@@ -7,44 +7,49 @@ from jpype.types import *
 from pathlib import Path
 import os
 import json
-import base64 
-
-#I am changing the working folder so that python works well
-os.chdir('/home/src_python/')
-
-if len(sys.argv) <= 1:
-    print(json.dumps({'ok': 0, 'message': "argument not given"}))
-    exit()
-
-# JPype is used to access the Java FormalModel library
-jpype.startJVM(classpath=['SHOracle.jar'])
-Python3Resolver = jpype.JClass("resolver.Python3Resolver")
+import base64
 
 
-model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
-resolver = Python3Resolver()
-model.setup_for_prediction()
+def predict(code_to_format, language='python'):
 
-content = sys.argv[1]
-content = base64.b64decode(content).decode('UTF-8')
+    if len(sys.argv) <= 1:
+        return {'ok': 0, 'message': "argument not given"}
 
-lToks = resolver.lex(content)
+    # JPype is used to access the Java FormalModel library
+    jpype.startJVM(classpath=['SHOracle.jar'])
+    Python3Resolver = jpype.JClass("resolver.Python3Resolver")
 
-if (isinstance(lToks, JArray)):
-    tokenIds = []
-    result = []
+
+    model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
+    resolver = Python3Resolver()
+    model.setup_for_prediction()
+
+    content = sys.argv[1]
+    content = base64.b64decode(content).decode('UTF-8')
+
+    lToks = resolver.lex(content)
 
     for i in range(lToks.length):
         tokenIds.append(lToks[i].tokenId)
-        result.append( 
+        result.append(
             {
-                "startIndex" : lToks[i].startIndex, 
-                "endIndex" : lToks[i].endIndex, 
+                "startIndex" : lToks[i].startIndex,
+                "endIndex" : lToks[i].endIndex,
                 "lItemtokenId" : lToks[i].tokenId
             }
         )
 
-    
-    prediction = model.predict(tokenIds)
+        for i in range(lToks.length):
+            tokenIds.append(lToks[i].tokenId)
+            result.append(
+                {
+                    "startIndex" : lToks[i].startIndex,
+                    "endIndex" : lToks[i].endIndex,
+                    "lItemtokenId" : lToks[i].tokenId
+                }
+            )
 
-print(json.dumps({'ok': 1, 'prediction': prediction, 'result' : result}))
+
+        prediction = model.predict(tokenIds)
+        return {'ok': 1, 'prediction': prediction, 'result' : result}
+    return {'error' : -1}
