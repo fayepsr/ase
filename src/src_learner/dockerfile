@@ -1,29 +1,19 @@
-# BaseLearner
+FROM java:8
+WORKDIR /
+COPY SHOracle.jar ./SHOracle.jar
+ADD SHOracle.jar SHOracle.jar
+CMD java - jar SHOracle.jar
 
-FROM python:3.8
-# set the working directory in the container
-WORKDIR /code
+FROM python:3.9
+WORKDIR /
 
-COPY /UZH-ASE-AnnotationWS-BaseLearner/requirements.txt .
-# install dependencies
+COPY requirements.txt ./requirements.txt
+COPY flask_endpoints.py ./flask_endpoints.py
+COPY highlight.py ./highlight.py
+COPY SHModelUtils.py ./SHModelUtils.py
+COPY python3_base_model.pt ./python3_base_model.pt
+
+
 RUN pip install -r requirements.txt
-# copy the content of the local src directory to the working directory
-COPY UZH-ASE-AnnotationWS-BaseLearner/ .
-# command to run on container start
-# CMD [ "python"]
 
-# FormalModel
-FROM gradle:7.4.1-jdk-alpine AS build
-COPY --chown=gradle:gradle /UZH-ASE-AnnotationWS-FormalModel /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --no-daemon 
-
-FROM openjdk:8-jre-slim
-
-EXPOSE 8080
-
-RUN mkdir /app
-
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/spring-boot-application.jar"]
+CMD [ "python", "./flask_endpoints.py"]
