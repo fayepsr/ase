@@ -80,6 +80,10 @@ Move to the folder where you want to create dockerfile
 Explanation: builds container from images (if this has not been done yet) and starts container. 
 Also defines ports and volumes.
 
+> docker-compose up -d --no-deps --build react1
+
+Explanation: forces rebuild of specific service.
+
 ## 2.2 Stop docker-compose
 
 > docker-compose down

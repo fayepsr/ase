@@ -1,8 +1,4 @@
-FROM java:8
-WORKDIR /
-COPY SHOracle.jar ./SHOracle.jar
-ADD SHOracle.jar SHOracle.jar
-CMD java - jar SHOracle.jar
+FROM openjdk:17 as builder1
 
 FROM python:3.9
 WORKDIR /
@@ -12,7 +8,12 @@ COPY flask_endpoints.py ./flask_endpoints.py
 COPY highlight.py ./highlight.py
 COPY SHModelUtils.py ./SHModelUtils.py
 COPY python3_base_model.pt ./python3_base_model.pt
+COPY SHOracle.jar ./SHOracle.jar
 
+ADD SHOracle.jar SHOracle.jar
+
+ENV JAVA_HOME /usr/java/openjdk-17
+ENV PATH $JAVA_HOME/bin:$PATH
 
 RUN pip install -r requirements.txt
 
