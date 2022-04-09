@@ -8,3 +8,12 @@
         }        
 
     }
+
+    class ApiExceptionHTML extends Exception{
+        //TODO: Set default code and message
+        public function __construct($code , $html){
+            http_response_code($code);
+            print ($html);
+        }        
+
+    }
