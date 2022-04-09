@@ -3,16 +3,16 @@ services:
   react:
     build: 
         context: ./src_react
-    image: charl/src_react:latest
+    image: src_react:latest
     ports:
       - '6000:6000'
-    working_dir: /code/src_react
+    working_dir: /src_react
     volumes:
-      - ./src_react:/code/src_react:cached
+      - ./src_react:/src_react:cached
   php:
     build: 
         context: ./src_php
-    image: charl/src_php:latest
+    image: src_php:latest
     ports:
       - '8089:80'
     working_dir: /var/www/html
@@ -21,7 +21,7 @@ services:
   learner:
     build: 
         context: ./src_learner
-    image: charl/src_learner:latest
+    image: src_learner:latest
     ports:
       - '5000:9007'
     working_dir: /src_learner

@@ -5,14 +5,6 @@ COPY --from=builder1 /usr/java/openjdk-17 /usr/java/openjdk-17
 WORKDIR /
 
 COPY requirements.txt ./requirements.txt
-# COPY flask_endpoints.py ./flask_endpoints.py
-# COPY highlight.py ./highlight.py
-# COPY SHModelUtils.py ./SHModelUtils.py
-# COPY python3_base_model.pt ./python3_base_model.pt
-# COPY SHOracle.jar ./SHOracle.jar
-
-ADD SHOracle.jar SHOracle.jar
-
 ENV JAVA_HOME /usr/java/openjdk-17
 ENV PATH $JAVA_HOME/bin:$PATH
 
