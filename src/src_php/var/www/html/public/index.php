@@ -15,7 +15,8 @@
 				$response = api::finetune($_POST['lang'], $_POST['code']);
 				break;
 			case 'app_health':
-				$response ='ok';					
+				$response ='ok';
+				break;					
 			default:
 				throw new ApiException(404, 'The request was not found');
 		}	
