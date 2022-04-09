@@ -1,0 +1,29 @@
+version: '3'
+services:
+  react:
+    build: 
+        context: ./src_react
+    image: src_react:latest
+    ports:
+      - '6000:6000'
+    working_dir: /src_react
+    volumes:
+      - ./src_react:/src_react:cached
+  php:
+    build: 
+        context: ./src_php
+    image: src_php:latest
+    ports:
+      - '8089:80'
+    working_dir: /var/www/html
+    volumes:
+      - ./src_php/var/www/html:/var/www/html:cached
+  learner:
+    build: 
+        context: ./src_learner
+    image: src_learner:latest
+    ports:
+      - '5000:9007'
+    working_dir: /src_learner
+    volumes:
+      - ./src_learner:/src_learner:cached

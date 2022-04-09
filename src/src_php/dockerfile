@@ -1,0 +1,4 @@
+FROM php:7.4-apache-bullseye AS php-apache
+
+RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/ && \
+cp /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/ 
