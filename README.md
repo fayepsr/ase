@@ -25,4 +25,4 @@ See docker.md for more details.
 
 ### AWS lightsail
 To push the images to Amazon lightsail we run .\lightsailpush.bat
-Our public domain http://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
+Our public domain https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
