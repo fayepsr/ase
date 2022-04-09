@@ -12,6 +12,9 @@
 			case 'highlight':
 				$response = api::highlight($_POST['lang'], $_POST['code']);
 				break;
+			case 'finetune':
+				$response = api::finetune($_POST['lang'], $_POST['code']);
+				break;				
 			default:
 				throw new ApiException(404, 'The request was not found');
 		}	
@@ -20,6 +23,9 @@
 		
 	} catch (ApiException $ex) {
 			//TODO : Porbably write error log
+	}
+	catch (ApiExceptionHTML $ex ){
+		
 	}
 	
 

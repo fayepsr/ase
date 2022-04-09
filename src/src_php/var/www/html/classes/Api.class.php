@@ -16,16 +16,16 @@ class api{
         }
 
         try {
-            $output = api::curl_post_exec("predict", array('code_to_format' => $code));
+            $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' => $lang));
         } catch (\Throwable $th) {
-            throw new ApiException(500, "Baselearner api error. Log: ". $th->getMessage() . " curl Error code: ". $th->getCode() );
+            throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
        
 
         try {
             $full_HTML = api::getHTML(base64_decode($code), $output);
         } catch (\Throwable $th) {
-            throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage() . " curl Error code: ". $th->getCode() );
+            throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage());
         }
         
         
@@ -33,6 +33,27 @@ class api{
         return array('resp' => base64_encode($full_HTML));
 
     }
+
+    public static function finetune($lang = '', $code = ''){
+
+        if(empty($lang) || empty($code)){
+            throw new ApiException(406, "Invalid Input Arguments");
+        }
+
+        if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
+            throw new ApiException(406, "Invalid Input Programming Language");
+        }
+
+        try {
+            $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => $lang));
+        } catch (\Throwable $th) {
+            throw new ApiExceptionHTML(500, $th->getMessage()  );
+        }
+  
+        return array('ok' => 1);
+
+    }
+
 
     private static function getHTML($code, $output){
         //output was a string - need an array
@@ -187,6 +208,7 @@ class api{
     }
 
     private static function curl_post_exec($method, $params){
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
