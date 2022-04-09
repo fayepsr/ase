@@ -13,7 +13,8 @@ def predict(code_to_format, language='python'):
 
     #os.chdir('/src_learner/')
     # JPype is used to access the Java FormalModel library
-    jpype.startJVM(classpath=['SHOracle.jar'])
+    if not jpype.isJVMStarted():
+        jpype.startJVM(classpath=['SHOracle.jar'])
     Python3Resolver = jpype.JClass("resolver.Python3Resolver")
 
     model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
