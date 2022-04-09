@@ -6,7 +6,6 @@
     $args = $_GET['args'];
 	$uri = explode('/',$args); //api/v1/highlight
 
-
 	try {	
 		switch ($uri[2]) {
 			case 'highlight':
@@ -14,7 +13,9 @@
 				break;
 			case 'finetune':
 				$response = api::finetune($_POST['lang'], $_POST['code']);
-				break;				
+				break;
+			case 'app_health':
+				$response ='ok';					
 			default:
 				throw new ApiException(404, 'The request was not found');
 		}	
