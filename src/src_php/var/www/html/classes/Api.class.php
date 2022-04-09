@@ -1,12 +1,20 @@
 <?php
 
+//TODO: Transfer it to a config file
+function get_learner_url(){
+    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" ){
+        return "http://learner:9007/";
+    }
+    else{
+        return "http://ase-service-1.service.local:9007/";
+    }
+} 
+
+
 class api{
 
-    //TODO: Maybe I should write them in a config file
-    private static $learner_url = "http://learner:9007/" ; 
-
     public static function highlight($lang = '', $code = ''){
-
+        
         if(empty($lang) || empty($code)){
             throw new ApiException(406, "Invalid Input Arguments");
         }
@@ -212,7 +220,7 @@ class api{
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => api::$learner_url . $method,
+          CURLOPT_URL => get_learner_url() . $method,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => '',
           CURLOPT_MAXREDIRS => 10,
@@ -220,21 +228,22 @@ class api{
           CURLOPT_FOLLOWLOCATION => true,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => 'POST',
-          CURLOPT_POSTFIELDS => $params
+          CURLOPT_POSTFIELDS => $params,
+          CURLOPT_SSL_VERIFYPEER => false
         ));
-        
+
         $output = curl_exec($curl);
 
 
         if (curl_errno($curl)) {
-            $error_msg = 'CURL Error url: ' . api::$learner_url . $method . ' error:' . curl_error($curl);
+            $error_msg = 'CURL Error url: ' . get_learner_url() . $method . ' error:' . curl_error($curl);
             $curl_errno = curl_errno($curl);
             throw new Exception($error_msg, $curl_errno);
         }
         else{
             $curl_info = curl_getinfo($curl);
             if($curl_info['http_code'] != 200){
-                $error_msg = 'CURL Error url: ' . api::$learner_url . $method . ' http_code:' . $curl_info['http_code'].  ' msg: '.  $output;
+                $error_msg = 'CURL Error url: ' . get_learner_url() . $method . ' http_code:' . $curl_info['http_code'].  ' msg: '.  $output;
                 throw new Exception($error_msg, $curl_info['http_status']);
             }
         }
