@@ -1,14 +1,15 @@
 FROM openjdk:17 as builder1
 
 FROM python:3.9
+COPY --from=builder1 /usr/java/openjdk-17 /usr/java/openjdk-17
 WORKDIR /
 
 COPY requirements.txt ./requirements.txt
-COPY flask_endpoints.py ./flask_endpoints.py
-COPY highlight.py ./highlight.py
-COPY SHModelUtils.py ./SHModelUtils.py
-COPY python3_base_model.pt ./python3_base_model.pt
-COPY SHOracle.jar ./SHOracle.jar
+# COPY flask_endpoints.py ./flask_endpoints.py
+# COPY highlight.py ./highlight.py
+# COPY SHModelUtils.py ./SHModelUtils.py
+# COPY python3_base_model.pt ./python3_base_model.pt
+# COPY SHOracle.jar ./SHOracle.jar
 
 ADD SHOracle.jar SHOracle.jar
 

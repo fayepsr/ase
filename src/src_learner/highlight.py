@@ -10,7 +10,8 @@ import json
 import base64
 
 def predict(code_to_format, language='python'):
-    # os.chdir('/home/src_learner/')
+
+    #os.chdir('/src_learner/')
     # JPype is used to access the Java FormalModel library
     jpype.startJVM(classpath=['SHOracle.jar'])
     Python3Resolver = jpype.JClass("resolver.Python3Resolver")

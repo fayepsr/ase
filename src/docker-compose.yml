@@ -14,16 +14,16 @@ services:
         context: ./src_php
     image: charl/src_php:latest
     ports:
-      - '8000:8000'
-    working_dir: /code/src_php
+      - '8089:80'
+    working_dir: /var/www/html
     volumes:
-      - ./src_php:/code/src_php:cached
+      - ./src_php/var/www/html:/var/www/html:cached
   learner:
     build: 
         context: ./src_learner
     image: charl/src_learner:latest
     ports:
       - '5000:9007'
-    working_dir: /code/src_learner
+    working_dir: /src_learner
     volumes:
-      - ./src_learner:/code/src_learner:cached
+      - ./src_learner:/src_learner:cached
