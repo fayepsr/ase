@@ -30,43 +30,37 @@ def main(data_directory: str):
 
     model.setup_for_prediction()
 
-    total_correct_lines = 0
-    total_lines = 0
+    total_correct_files = 0
+    total_files = 0
 
     # Iterate through the Python source files in the provided directory and subdirectories
     for file in Path(data_directory).rglob(ext):
         try:
-            content = file.read_text()
+            content = file.read_text()            
         except Exception:
-            continue
+            continue        
         else:
-
-            file_read = open(file, 'r')
-            lines = file_read.readlines()
-
-            # Reading single lines of code from the input file
-            for line in lines:
             # Use the FormalModel's highlight method on the source code content
-                total_lines += 1
-                hToks = resolver.highlight(line)
+            hToks = resolver.highlight(content)
+            
+            # Extract tokenIds and hCodeValues from the resulting hToks and use them as input for
+            # fine-tuning the model
+            if (isinstance(hToks, JArray)):
+                total_files += 1
+                tokenIds = []
+                hCodeValues = []
 
-                # Extract tokenIds and hCodeValues from the resulting hToks and use them as input for prediction
-                if (isinstance(hToks, JArray)):
-                    tokenIds = []
-                    hCodeValues = []
+                for hTok in hToks:
+                    tokenIds.append(hTok.tokenId)
+                    hCodeValues.append(hTok.hCodeValue)
+                
+                prediction = model.predict(tokenIds)
+                
+                if prediction == hCodeValues:
+                    total_correct_files += 1
 
-                    for hTok in hToks:
-                        tokenIds.append(hTok.tokenId)
-                        hCodeValues.append(hTok.hCodeValue)
-
-                    prediction = model.predict(tokenIds)
-                    if prediction == hCodeValues:
-                            total_correct_lines += 1
-
-
-    # Calculates the accuracy based on each line of code from an input test file
-    # Check for each word? Check for each file?
-    accuracy = total_correct_lines/total_lines
+   # Calculates the accuracy based on each correctly highlighted file
+    accuracy = total_correct_files/total_files
     print("Model accuracy is: ", accuracy)
 
 if __name__ == '__main__':
