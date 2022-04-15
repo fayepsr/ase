@@ -16,19 +16,23 @@ def predict(content, language='python'):
         jpype.startJVM(classpath=['SHOracle.jar'])
     Python3Resolver = jpype.JClass("resolver.Python3Resolver")
 
-    if (language == 'python'):
-        model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'finetuning_model')
+    # Choose language
+    if language == 'python':
+        model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
+    elif language == 'java':
+        model = bl.SHModel(bl.JAVA_LANG_NAME, 'base_model')
+    elif language == 'kotlin':
+        model = bl.SHModel(bl.KOTLIN_LANG_NAME, 'base_model')
     else:
         return {'ok': -1, 'msg': 'Not yet accepting this language'}
 
+    # Do prediction
     resolver = Python3Resolver()
     model.setup_for_prediction()
-
     content = base64.b64decode(content).decode('UTF-8')
-
     lToks = resolver.lex(content)
 
-    if (isinstance(lToks, JArray)):
+    if isinstance(lToks, JArray):
         tokenIds = []
         result = []
 
@@ -56,8 +60,12 @@ def finetune(content, language='python'):
     Python3Resolver = jpype.JClass("resolver.Python3Resolver")
     resolver = Python3Resolver()
 
-    if (language == 'python'):
+    if language == 'python':
         model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'finetuning_model')
+    elif language == 'java':
+        model = bl.SHModel(bl.JAVA_LANG_NAME, 'finetuning_model')
+    elif language == 'kotlin':
+        model = bl.SHModel(bl.KOTLIN_LANG_NAME, 'finetuning_model')
     else:
         return {'ok': '-1', 'msg': 'Not yet accepting this language'}
 
@@ -65,7 +73,7 @@ def finetune(content, language='python'):
     content = base64.b64decode(content).decode('UTF-8')
     hToks = resolver.highlight(content)
 
-    if (isinstance(hToks, JArray)):
+    if isinstance(hToks, JArray):
         tokenIds = []
         hCodeValues = []
 

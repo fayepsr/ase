@@ -1,19 +1,49 @@
-import highlight
 import flask
 import json
 import sys
 from flask import request, abort
 
+import highlight
+import accuracy_check
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+
+"""
+test-endpoint to check if flask is working
+
+Args:
+user: string that will be printed
+
+Returns:
+ob: json with name of user inside
+
+Example Request:
+http://localhost:5000/?user=charl
+"""
 @app.route('/', methods=['GET'])
 def test():
     user = request.args.get('user')
     ob = {'user' : user}
     return json.dumps(ob, indent=4)
 
-@app.route('/predict', methods=['POST'])
+
+"""
+Highlights code in a given language
+
+Args:
+code_to_format: code that should be formatted
+language: language the code is in. possible values: python, java, kotlin
+
+Returns:
+result: json with prediction and tokens (tokens = result)
+{'ok': 1, 'prediction': prediction, 'result': result}
+
+Exceptions:
+500: BaseLearnerException
+"""
+@app.route('/predict', methods=['GET'])
 def api_predict():
     try:
         code_to_format = request.form.get('code_to_format')
@@ -28,7 +58,22 @@ def api_predict():
         abort(500, message)
     return result
 
-@app.route('/finetune', methods=['POST'])
+
+"""
+fine-tunes the model with the code given
+
+Args:
+code_to_format: code that should be formatted
+language: language the code is in. possible values: python, java, kotlin
+
+Returns:
+result: json with prediction and tokens (tokens = result)
+{'ok': 1, 'prediction': prediction, 'result': result}
+
+Exceptions:
+500: BaseLearnerException
+"""
+@app.route('/finetune', methods=['GET'])
 def api_finetune():
     try:
         code_to_format = request.form.get('code_to_format')
@@ -37,12 +82,41 @@ def api_finetune():
         if res['ok'] != 1:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
-    except ValueError  as e:
+    except ValueError as e:
         #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
         abort(500, message)
     return result
 
+
+"""
+test-endpoint to check if flask is working
+
+Args:
+code_to_format: code that should be formatted
+language: language the code is in. possible values: python, java, kotlin
+
+Returns:
+result: json with prediction and tokens (tokens = result)
+{'ok': 1, 'prediction': prediction, 'result': result}
+
+Exceptions:
+500: BaseLearnerException
+"""
+@app.route('/accuracy', methods=['GET'])
+def api_accuracy():
+    try:
+        model_type = request.form.get('code_to_format')
+        language = request.form.get('language')
+        res = accuracy_check.finetune(code_to_format, language)
+        if res['ok'] != 1:
+            raise ValueError(res['msg'])
+        result = json.dumps(res, indent=4)
+    except ValueError  as e:
+        #TODO: Add to error_log
+        message = "BaseLearnerException " + str(e)
+        abort(500, message)
+    return result
 
 
 app.run(debug=True,host='0.0.0.0', port=9007)
