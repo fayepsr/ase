@@ -46,8 +46,8 @@ Exceptions:
 @app.route('/predict', methods=['GET'])
 def api_predict():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.predict(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -77,8 +77,8 @@ Exceptions:
 @app.route('/finetune', methods=['GET'])
 def api_finetune():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.finetune(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -108,8 +108,8 @@ Exceptions:
 @app.route('/accuracy', methods=['GET'])
 def api_accuracy():
     try:
-        model_type = request.form.get('model_type')
-        language = request.form.get('language')
+        model_type = request.args.get('model_type')
+        language = request.args.get('language')
         res = accuracy_check.check_accuracy(model_type, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -118,6 +118,6 @@ def api_accuracy():
     except ValueError as e:
         message = "BaseLearnerException " + str(e)
         abort(500, message)
-        
+
 
 app.run(debug=True,host='0.0.0.0', port=9007)
