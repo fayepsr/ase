@@ -52,11 +52,12 @@ def api_predict():
         if res['ok'] != 1:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
+        return result
     except ValueError as e:
         #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
         abort(500, message)
-    return result
+
 
 
 """
@@ -82,18 +83,19 @@ def api_finetune():
         if res['ok'] != 1:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
+        return result
     except ValueError as e:
         #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
         abort(500, message)
-    return result
+
 
 
 """
-test-endpoint to check if flask is working
+get the accuracy of the models
 
 Args:
-code_to_format: code that should be formatted
+model_type: base, finetuning
 language: language the code is in. possible values: python, java, kotlin
 
 Returns:
@@ -106,17 +108,16 @@ Exceptions:
 @app.route('/accuracy', methods=['GET'])
 def api_accuracy():
     try:
-        model_type = request.form.get('code_to_format')
+        model_type = request.form.get('model_type')
         language = request.form.get('language')
-        res = accuracy_check.finetune(code_to_format, language)
+        res = accuracy_check.check_accuracy(model_type, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
-    except ValueError  as e:
-        #TODO: Add to error_log
+        return result
+    except ValueError as e:
         message = "BaseLearnerException " + str(e)
         abort(500, message)
-    return result
-
+        
 
 app.run(debug=True,host='0.0.0.0', port=9007)
