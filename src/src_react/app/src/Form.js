@@ -39,8 +39,16 @@ export default class Form extends React.Component {
         redirect: 'follow'
       };
 
+      let url = '';
+      if( url.indexOf('localhost') !== -1 || url.indexOf('127.0.0.1') !== -1){
+        url = "http://localhost:8089/api/v1/highlight";
+      }
+      else{
+        url = "https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/api/v1/highlight";
+      }
+
       fetch(
-        "http://localhost:8089/api/v1/highlight",
+        url,
         requestOptions)
         .then(response => response.json())
         .then(response => Buffer.from(response.resp, "base64").toString())
