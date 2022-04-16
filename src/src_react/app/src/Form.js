@@ -28,7 +28,10 @@ export default class Form extends React.Component {
 
       var formdata = new FormData();
       formdata.append("lang", this.state.lang);
-      formdata.append("code", Buffer.from(this.state.code, "base64"));
+
+      let buff = new Buffer(this.state.code);
+      let base64datacode = buff.toString('base64');
+      formdata.append("code", base64datacode);
 
       var requestOptions = {
         method: 'POST',
