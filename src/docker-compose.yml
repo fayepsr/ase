@@ -5,8 +5,8 @@ services:
         context: ./src_react
     image: src_react:latest
     ports:
-      - '6000:6000'
-    working_dir: /src_react
+      - '3007:3000'
+    working_dir: /src_react/app
     volumes:
       - ./src_react:/src_react:cached
   php:
