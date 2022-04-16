@@ -8,7 +8,7 @@ services:
       - '3007:3000'
     working_dir: /app
     volumes:
-      - ./src_react/app:/app:cached
+      - ./src_react/app/src:/src:cached
   php:
     build: 
         context: ./src_php
