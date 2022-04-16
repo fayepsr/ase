@@ -42,7 +42,8 @@ export default class Form extends React.Component {
       fetch(
         "http://localhost:8089/api/v1/highlight",
         requestOptions)
-        .then(response => response.text())
+        .then(response => response.json())
+        .then(response => Buffer.from(response.resp, "base64").toString())
         .then(result => this.setState({result: result}))
         .catch(error => this.setState({error: error.message}));
     }
