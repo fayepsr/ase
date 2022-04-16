@@ -1,6 +1,15 @@
 FROM php:7.4-apache-bullseye AS php-apache
 
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_HOME /composer
+ENV PATH $PATH:/composer/vendor/bin
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY ./var/www/html/ /var/www/html
 
 RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/ && \
-cp /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/ 
+cp /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/  && \ 
+
+apt-get update && \ 
+apt-get install -y libzip-dev && \ 
+docker-php-ext-install zip
