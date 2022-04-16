@@ -134,55 +134,19 @@ class api{
             font-style: italic;
         }
         </style>";
+        $full_string = $setHtmlString."<pre>";
 
         $hcodearray = api::getHCodeVals($output);
         $strarray = api::getStrings($code, $output);
-        $full_string = $setHtmlString."<pre>";
+        
 
-        for ($i=0; $i < count($hcodearray); $i++) {
-            $class_string = "";
-            $css_class = "";
-		    switch ($hcodearray[$i]) {
-            case 0:
-                $css_class = "ANY";
-                break;
-			case 1:
-				$css_class = "KEYWORD";
-				break;
-			case 2:
-				$css_class = "LITERAL";
-				break;
-			case 3:
-				$css_class = "CHAR_STRING_LITERAL";
-				break;
-			case 4:
-				$css_class = "COMMENT";
-				break;
-			case 5:
-				$css_class = "CLASS_DECLARATOR";
-				break;
-			case 6:
-				$css_class = "FUNCTION_DECLARATOR";
-				break;
-			case 7:
-				$css_class = "VARIABLE_DECLARATOR";
-				break;
-			case 8:
-				$css_class = "TYPE_IDENTIFIER";
-				break;
-			case 9:
-				$css_class = "FUNCTION_IDENTIFIER";
-				break;
-			case 10:
-				$css_class = "FIELD_IDENTIFIER";
-				break;
-			case 11:
-				$css_class = "ANNOTATION_DECLARATOR";
-				break;
-		    }
-            $class_string = "<code class=\"".$css_class."\">".$strarray[$i]."</code>";
-            $full_string = $full_string.$class_string;
-        }
+        $class_string_arr = api::format_html_code_strings($hcodearray,  $strarray);
+        
+        // for ($i=0; $i < sizeof($hcodearray); $i++) { 
+        //     echo $hcodearray[$i] . ": " . $strarray[$i] . "code: " . $class_string_arr[$i]."\n";
+        // }
+
+        $full_string .=  api::format_html_code($class_string_arr, $output, $code);
 
         $full_string = $full_string."</pre>"."</html>";
         //print($full_string);
@@ -202,6 +166,108 @@ class api{
         return $hcodearray;
     }
 
+    private static function format_html_code($class_string_arr, $output, $code){
+
+        if(!isset($output["result"])){
+            throw new Exception("getStrings Output is not set.");
+        }
+        $end_of_last_token = -1;
+        $all_code_in_strings = array();
+        $i = 0;
+
+
+        foreach ($output["result"] as $key => $value) {
+            
+
+            if($value["startIndex"] - ($end_of_last_token + 1)  > 0 ){
+
+                $characters_in_between = mb_substr($code, $end_of_last_token + 1,   $value["startIndex"] - ($end_of_last_token + 1) , "UTF-8");
+                $characters_in_between = api::format_special_chars_to_html($characters_in_between);
+                array_push($all_code_in_strings, $characters_in_between);
+
+                // echo "startIndex: ". $value["startIndex"] ."\n";
+                // echo "endIndex: ". $value["endIndex"] ."\n";
+                // echo "end_of_last_token: ". $end_of_last_token ."\n";
+                // echo $characters_in_between ."\n";
+                // echo "=========\n";
+
+            }
+            
+            $code_string = $class_string_arr[$i++];
+
+            array_push($all_code_in_strings, $code_string);
+            
+            $end_of_last_token = $value["endIndex"];
+        }
+
+        $code = implode("", $all_code_in_strings);
+        // echo print_r($all_code_in_strings, 1);
+        // echo  $code;
+        return $code;
+    }
+
+
+    private static function format_html_code_strings($hcodearray, $strarray){
+
+        $class_string_arr = array();
+        for ($i=0; $i < count($hcodearray); $i++) {
+            $class_string = "";
+            $css_class = "";
+		    switch ($hcodearray[$i]) {
+                case 0:
+                    $css_class = "ANY";
+                    break;
+                case 1:
+                    $css_class = "KEYWORD";
+                    break;
+                case 2:
+                    $css_class = "LITERAL";
+                    break;
+                case 3:
+                    $css_class = "CHAR_STRING_LITERAL";
+                    break;
+                case 4:
+                    $css_class = "COMMENT";
+                    break;
+                case 5:
+                    $css_class = "CLASS_DECLARATOR";
+                    break;
+                case 6:
+                    $css_class = "FUNCTION_DECLARATOR";
+                    break;
+                case 7:
+                    $css_class = "VARIABLE_DECLARATOR";
+                    break;
+                case 8:
+                    $css_class = "TYPE_IDENTIFIER";
+                    break;
+                case 9:
+                    $css_class = "FUNCTION_IDENTIFIER";
+                    break;
+                case 10:
+                    $css_class = "FIELD_IDENTIFIER";
+                    break;
+                case 11:
+                    $css_class = "ANNOTATION_DECLARATOR";
+                    break;
+                default:
+                    $css_class = "UNKONOWN";
+                    break;
+
+            }
+                
+            // $tt = str_split($strarray[$i]);
+            // echo $strarray[$i];
+            // foreach ($tt as  $ss) {
+            //     echo 'char: ' .mb_ord($ss) . "\n";
+            // }
+            // echo $hcodearray[$i] . $strarray[$i] ."\n";
+            $class_string = "<code class=\"".$css_class."\">".api::format_special_chars_to_html($strarray[$i])."</code>";
+            $class_string_arr[] = $class_string;
+        }
+        return $class_string_arr;
+    }
+
     //This function returns an array of all the strings in the $output variable
     private static function getStrings($code, $output){
         $strarray = array();
@@ -209,10 +275,17 @@ class api{
             throw new Exception("getStrings Output is not set");
         }
         foreach ($output["result"] as $key => $value) {
+           
             $word = substr($code, $value["startIndex"], $value["endIndex"] - $value["startIndex"]  + 1);
+            //echo "startIndex: " .$value["startIndex"].  "endIndex: ". $value["endIndex"] . " word: ".  $word ."\n";
 			array_push($strarray, $word);
 		}
         return $strarray;
+    }
+
+    private static function format_special_chars_to_html($string){
+        $string = nl2br($string);
+        return $string;
     }
 
     private static function curl_post_exec($method, $params){
