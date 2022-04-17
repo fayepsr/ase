@@ -10,9 +10,16 @@ function get_learner_url(){
     }
 } 
 
-
 class api{
 
+    /**
+     * 
+     * @param string $lang 
+     * @param string $code 
+     * @return string[] 
+     * @throws ApiException if the arguments are empty or non valid 
+     * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
+     */
     public static function highlight($lang = '', $code = ''){
         
         if(empty($lang) || empty($code)){
@@ -36,12 +43,20 @@ class api{
             throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage());
         }
         
-        
-        
+           
         return array('resp' => base64_encode($full_HTML));
 
     }
 
+
+    /**
+     * 
+     * @param string $lang 
+     * @param string $code 
+     * @return int[] 
+     * @throws ApiException if the arguments are empty or non valid
+     * @throws ApiExceptionHTML if the finetune endpoint curl_post fails
+     */
     public static function finetune($lang = '', $code = ''){
 
         if(empty($lang) || empty($code)){
@@ -62,7 +77,13 @@ class api{
 
     }
 
-
+    /**
+     * Rturns the whole <html> formated code
+     * @param mixed $code 
+     * @param mixed $output 
+     * @return string 
+     * @throws Exception if the output is not well formatted
+     */
     private static function getHTML($code, $output){
         //output was a string - need an array
         $output = json_decode($output, 1);
@@ -154,7 +175,12 @@ class api{
 
     }
 
-    //This function returns the predicted hcode as an array from the $output variable
+    /**
+     * This function returns the predicted hcode as an array from the $output variable
+     * @param mixed $output 
+     * @return array 
+     * @throws Exception if the output is not well formatted
+     */
     private static function getHCodeVals($output){
         $hcodearray = array();
         if(!isset($output["prediction"])){
@@ -166,6 +192,14 @@ class api{
         return $hcodearray;
     }
 
+    /**
+     * Formats the HTML code replacing with <code></code> elements the highlighted code.
+     * @param mixed $class_string_arr 
+     * @param mixed $output 
+     * @param mixed $code 
+     * @return string 
+     * @throws Exception if the output is not well formatted
+     */
     private static function format_html_code($class_string_arr, $output, $code){
 
         if(!isset($output["result"])){
@@ -174,11 +208,7 @@ class api{
         $end_of_last_token = -1;
         $all_code_in_strings = array();
         $i = 0;
-
-
         foreach ($output["result"] as $key => $value) {
-            
-
             if($value["startIndex"] - ($end_of_last_token + 1)  > 0 ){
 
                 $characters_in_between = mb_substr($code, $end_of_last_token + 1,   $value["startIndex"] - ($end_of_last_token + 1) , "UTF-8");
@@ -194,9 +224,7 @@ class api{
             }
             
             $code_string = $class_string_arr[$i++];
-
             array_push($all_code_in_strings, $code_string);
-            
             $end_of_last_token = $value["endIndex"];
         }
 
@@ -207,6 +235,12 @@ class api{
     }
 
 
+    /**
+     * Returns the array of <code class="{class}"></code> elememts where class is decided by the hcodearray value
+     * @param mixed $hcodearray 
+     * @param mixed $strarray 
+     * @return array 
+     */
     private static function format_html_code_strings($hcodearray, $strarray){
 
         $class_string_arr = array();
@@ -268,7 +302,13 @@ class api{
         return $class_string_arr;
     }
 
-    //This function returns an array of all the strings in the $output variable
+    /**
+     * Returns an array of all the substrings in the code from startIndex to endIndex as extracted by the response of the highlight (outout)
+     * @param mixed $code 
+     * @param mixed $output 
+     * @return array 
+     * @throws Exception if the output is not well formatted
+     */
     private static function getStrings($code, $output){
         $strarray = array();
         if(!isset($output["result"])){
@@ -283,11 +323,24 @@ class api{
         return $strarray;
     }
 
+    /**
+     * Replaces new line with a <br>
+     * It is a function in case we need to made other replaces as well.
+     * @param mixed $string 
+     * @return string 
+     */
     private static function format_special_chars_to_html($string){
         $string = nl2br($string);
         return $string;
     }
 
+    /**
+     * This method executes a curl post 
+     * @param mixed $method 
+     * @param mixed $params 
+     * @return string|bool the response of curl_exec
+     * @throws Exception if curl is executed with an error or whether the http_status returned was not 200
+     */
     private static function curl_post_exec($method, $params){
 
         $curl = curl_init();
@@ -322,10 +375,7 @@ class api{
         }
 
         curl_close($curl);
-    
-    
         return $output;
 
-        
     }
 }
