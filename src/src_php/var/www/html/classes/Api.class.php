@@ -21,7 +21,7 @@ class api{
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
     public static function highlight($lang = '', $code = ''){
-        
+        //Logger::log("test highliight");
         if(empty($lang) || empty($code)){
             throw new ApiException(406, "Invalid Input Arguments");
         }
