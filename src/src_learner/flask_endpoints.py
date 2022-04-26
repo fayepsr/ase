@@ -16,6 +16,7 @@ def test():
 @app.route('/predict', methods=['POST'])
 def api_predict():
     try:
+        print("hello") 
         code_to_format = request.form.get('code_to_format')
         language = request.form.get('language')
         res = highlight.predict(code_to_format, language)
