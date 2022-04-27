@@ -136,6 +136,15 @@ def api_accuracy():
         return result
     except ValueError as e:
         message = "BaseLearnerException " + str(e)
+        # creating/opening a file
+        f = open("errorlog.txt", "a")
+ 
+        # writing in the file
+        timezone = pytz.timezone('Europe/Madrid')
+        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
+      
+        # closing the file
+        f.close()
         abort(500, message)
 
 
