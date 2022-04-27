@@ -10,6 +10,7 @@ COPY highlight.py ./highlight.py
 COPY SHModelUtils.py ./SHModelUtils.py
 COPY python3_base_model.pt ./python3_base_model.pt
 COPY SHOracle.jar ./SHOracle.jar
+COPY accuracyTestData ./accuracyTestData
 
 ENV JAVA_HOME /usr/java/openjdk-17
 ENV PATH $JAVA_HOME/bin:$PATH
