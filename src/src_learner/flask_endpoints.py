@@ -2,6 +2,8 @@ import flask
 import json
 import sys
 from flask import request, abort
+from datetime import datetime
+import pytz
 
 import highlight
 import accuracy_check
@@ -54,9 +56,18 @@ def api_predict():
         result = json.dumps(res, indent=4)
         return result
     except ValueError as e:
-        #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
-        abort(500, message)
+        # creating/opening a file
+        f = open("errorlog.txt", "a")
+ 
+        # writing in the file
+        timezone = pytz.timezone('Europe/Madrid')
+        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
+      
+        # closing the file 
+        f.close()
+        abort(500, message) 
+    return result
 
 
 
@@ -84,9 +95,17 @@ def api_finetune():
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
         return result
-    except ValueError as e:
-        #TODO: Add to error_log
+    except ValueError  as e:
         message = "BaseLearnerException " + str(e)
+        # creating/opening a file
+        f = open("errorlog.txt", "a")
+ 
+        # writing in the file
+        timezone = pytz.timezone('Europe/Madrid')
+        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
+      
+        # closing the file
+        f.close()
         abort(500, message)
 
 

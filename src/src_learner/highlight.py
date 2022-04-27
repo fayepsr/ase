@@ -9,8 +9,9 @@ import os
 import json
 import base64
 
-def predict(content, language='python'):
 
+def predict(content, language='python'):
+ 
     # JPype is used to access the Java FormalModel library
     if not jpype.isJVMStarted():
         jpype.startJVM(classpath=['SHOracle.jar'])
