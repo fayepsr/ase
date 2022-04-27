@@ -11,13 +11,11 @@ import base64
 
 
 def predict(content, language='python'):
-
+ 
     # JPype is used to access the Java FormalModel library
     if not jpype.isJVMStarted():
         jpype.startJVM(classpath=['SHOracle.jar'])
     Python3Resolver = jpype.JClass("resolver.Python3Resolver")
-
-    print("hello world")
 
     if (language == 'python'):
         model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'finetuning_model')

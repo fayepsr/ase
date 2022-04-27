@@ -3,6 +3,8 @@ import flask
 import json
 import sys
 from flask import request, abort
+from datetime import datetime
+import pytz
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -15,8 +17,7 @@ def test():
 
 @app.route('/predict', methods=['POST'])
 def api_predict():
-    try:
-        print("hello") 
+    try: 
         code_to_format = request.form.get('code_to_format')
         language = request.form.get('language')
         res = highlight.predict(code_to_format, language)
@@ -24,9 +25,17 @@ def api_predict():
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
     except ValueError as e:
-        #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
-        abort(500, message)
+        # creating/opening a file
+        f = open("errorlog.txt", "a")
+ 
+        # writing in the file
+        timezone = pytz.timezone('Europe/Madrid')
+        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
+      
+        # closing the file 
+        f.close()
+        abort(500, message) 
     return result
 
 @app.route('/finetune', methods=['POST'])
@@ -39,8 +48,16 @@ def api_finetune():
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
     except ValueError  as e:
-        #TODO: Add to error_log
         message = "BaseLearnerException " + str(e)
+        # creating/opening a file
+        f = open("errorlog.txt", "a")
+ 
+        # writing in the file
+        timezone = pytz.timezone('Europe/Madrid')
+        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
+      
+        # closing the file
+        f.close()
         abort(500, message)
     return result
 
