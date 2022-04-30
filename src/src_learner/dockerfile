@@ -5,12 +5,23 @@ COPY --from=builder1 /usr/java/openjdk-17 /usr/java/openjdk-17
 WORKDIR /
 
 COPY requirements.txt ./requirements.txt
+COPY credentials.txt ./credentials.txt
+COPY accuracyTestData ./accuracyTestData
+
 COPY flask_endpoints.py ./flask_endpoints.py
 COPY highlight.py ./highlight.py
+COPY accuracy_check.py ./accuracy_check.py
+COPY persist_model.py ./persist_model.py
+
 COPY SHModelUtils.py ./SHModelUtils.py
-COPY python3_base_model.pt ./python3_base_model.pt
 COPY SHOracle.jar ./SHOracle.jar
-COPY accuracyTestData ./accuracyTestData
+
+COPY python3_base_model.pt ./python3_base_model.pt
+COPY python3_finetuning_model.pt ./python3_finetuning_model.pt
+COPY java_base_model.pt ./java_base_model.pt
+COPY java_finetuning_model.pt ./java_finetuning_model.pt
+COPY kotlin_base_model.pt ./kotlin_base_model.pt
+COPY kotlin_finetuning_model.pt ./kotlin_finetuning_model.pt
 
 ENV JAVA_HOME /usr/java/openjdk-17
 ENV PATH $JAVA_HOME/bin:$PATH

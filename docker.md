@@ -26,7 +26,7 @@ Doc: https://docs.docker.com/engine/reference/commandline/build/
 
 Explanation: shows the current images on this machine. Check that python1 exists and check its id.
 
->docker run -p 5000:9070 -d python1
+>docker run -p 5000:9007 -d python1
 
 Explanation: docker run; starts a container from image. -p redirects public port to private port
 so if our e.g. flask API on the inside of the docker container is listening to the port 9070, then
