@@ -30,6 +30,17 @@ class api{
             throw new ApiException(406, "Invalid Input Programming Language");
         }
 
+        if(api::decide_if_predict()){
+            try {
+                $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => $lang));
+                //print( $output);
+            } catch (\Throwable $th) {
+                throw new ApiExceptionHTML(500, $th->getMessage()  );
+            }
+    
+        }
+
+
         try {
             $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' => $lang));
         } catch (\Throwable $th) {
@@ -377,5 +388,11 @@ class api{
         curl_close($curl);
         return $output;
 
+        
+    }
+
+    private static function  decide_if_predict(){
+        $rand = rand();
+        return ($rand % 2 == 0) ? true : false;
     }
 }
