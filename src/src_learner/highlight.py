@@ -15,20 +15,24 @@ def predict(content, language='python'):
     # JPype is used to access the Java FormalModel library
     if not jpype.isJVMStarted():
         jpype.startJVM(classpath=['SHOracle.jar'])
-    Python3Resolver = jpype.JClass("resolver.Python3Resolver")
 
     # Choose language
     if language == 'python':
         model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'base_model')
+        Python3Resolver = jpype.JClass("resolver.Python3Resolver")
+        resolver = Python3Resolver()
     elif language == 'java':
         model = bl.SHModel(bl.JAVA_LANG_NAME, 'base_model')
+        JavaResolver = jpype.JClass("resolver.JavaResolver")
+        resolver = JavaResolver()
     elif language == 'kotlin':
         model = bl.SHModel(bl.KOTLIN_LANG_NAME, 'base_model')
+        KotlinResolver = jpype.JClass("resolver.KotlinResolver")
+        resolver = KotlinResolver()
     else:
         return {'ok': -1, 'msg': 'Not yet accepting this language'}
 
     # Do prediction
-    resolver = Python3Resolver()
     model.setup_for_prediction()
     content = base64.b64decode(content).decode('UTF-8')
     lToks = resolver.lex(content)
@@ -58,15 +62,18 @@ def finetune(content, language='python'):
     if not jpype.isJVMStarted():
         jpype.startJVM(classpath=['SHOracle.jar'])
 
-    Python3Resolver = jpype.JClass("resolver.Python3Resolver")
-    resolver = Python3Resolver()
-
     if language == 'python':
         model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'finetuning_model')
+        Python3Resolver = jpype.JClass("resolver.Python3Resolver")
+        resolver = Python3Resolver()
     elif language == 'java':
         model = bl.SHModel(bl.JAVA_LANG_NAME, 'finetuning_model')
+        JavaResolver = jpype.JClass("resolver.JavaResolver")
+        resolver = JavaResolver()
     elif language == 'kotlin':
         model = bl.SHModel(bl.KOTLIN_LANG_NAME, 'finetuning_model')
+        KotlinResolver = jpype.JClass("resolver.KotlinResolver")
+        resolver = KotlinResolver()
     else:
         return {'ok': '-1', 'msg': 'Not yet accepting this language'}
 
