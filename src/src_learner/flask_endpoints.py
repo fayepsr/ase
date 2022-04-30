@@ -7,6 +7,7 @@ import pytz
 
 import highlight
 import accuracy_check
+import persist_model
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -146,6 +147,25 @@ def api_accuracy():
         # closing the file
         f.close()
         abort(500, message)
+
+
+"""
+persists the model that is given via filename
+
+Args:
+filename: .pt model like java_base_model.pt, kotlin_finetuning.pt
+
+Returns:
+result: json with ok or error
+"""
+
+
+@app.route('/persist', methods=['POST'])
+def api_persist():
+
+    filename = request.args.get('filename')
+    res = persist_model.persist_model(filename)
+    return res
 
 
 app.run(debug=True,host='0.0.0.0', port=9007)
