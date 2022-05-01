@@ -26,37 +26,44 @@ class api{
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
     public static function highlight($lang = '', $code = '', $secret = ''){
-        //Logger::log("test highliight");
         if(empty($lang) || empty($code)){
+            Logger::log("Empty code or lang " , Logger::ERROR);  
             throw new ApiException(406, "Invalid Input Arguments");
         }
 
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
+            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);            
             throw new ApiException(406, "Invalid Input Programming Language");
         }
         
         if ( base64_encode(base64_decode($code, true)) !== $code){
+            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
             throw new ApiException(406, "The code field must be base64 encoded ");
         }
-        
 
         if($secret != get_secret()){
+            Logger::log("Anauthorized use of the API. Wrong secret. Input was: " .$secret, Logger::ERROR);
             throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
         }
 
+        Logger::log("Input for prediction. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
+
         if(api::decide_if_predict()){
+            Logger::log("Input chosen for finetuning", Logger::INFO);
             try {
                 $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
                 //print( $output);
             } catch (\Throwable $th) {
+                Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
                 throw new ApiExceptionHTML(500, $th->getMessage()  );
             }
-    
         }
+
 
         try {
             $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
         } catch (\Throwable $th) {
+            Logger::log("Predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
        
@@ -64,6 +71,7 @@ class api{
         try {
             $full_HTML = api::getHTML(base64_decode($code), $output);
         } catch (\Throwable $th) {
+            Logger::log("api::getHTML threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage());
         }
         
@@ -85,22 +93,25 @@ class api{
     public static function finetune($lang = '', $code = '', $secret = ''){
 
         if(empty($lang) || empty($code)){
+            Logger::log("Empty code or lang " , Logger::ERROR);  
             throw new ApiException(406, "Invalid Input Arguments");
         }
 
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
+            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);            
             throw new ApiException(406, "Invalid Input Programming Language");
         }
         
         if ( base64_encode(base64_decode($code, true)) !== $code){
+            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
             throw new ApiException(406, "The code field must be base64 encoded ");
         }
-        
 
         if($secret != get_secret()){
+            Logger::log("Anauthorized use of the API. Wrong secret. Input was: " .$secret, Logger::ERROR);
             throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
         }
-
+        Logger::log("Input for finetuninf. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
         try {
             $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
         } catch (\Throwable $th) {
