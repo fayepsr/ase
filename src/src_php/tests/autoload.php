@@ -1,7 +1,7 @@
 <?php 
 
 function src_autoloader($class) {
-    include '/var/www/html/'.$class.'.class.php';
+    include '/var/www/html/classes/'.$class.'.class.php';
 
 }
    
