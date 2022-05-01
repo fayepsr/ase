@@ -354,6 +354,7 @@ class api{
      * @return string 
      */
     private static function format_special_chars_to_html($string){
+        $string = str_replace(' ', '&nbsp;', $string);
         $string = nl2br($string);
         return $string;
     }
