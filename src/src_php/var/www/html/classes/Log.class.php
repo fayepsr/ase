@@ -31,7 +31,7 @@ class Logger
     {
         $date = date('Y-m-d H:i:s');
         $severity = "[$level]";
-        $message = "$date $severity ::$message";
+        $message = "$date $severity :: $message";
         self::getInstance()->writeToFile($message);
     }
 }
