@@ -426,8 +426,8 @@ class api{
         
     }
 
-    private static function  decide_if_predict(){
+    private static function decide_if_predict(){
         $rand = rand();
-        return ($rand % 2 == 0) ? true : false;
+        return ($rand % 10 == 0) ? true : false;
     }
 }
