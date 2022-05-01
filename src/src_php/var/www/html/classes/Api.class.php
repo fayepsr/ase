@@ -34,6 +34,11 @@ class api{
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
             throw new ApiException(406, "Invalid Input Programming Language");
         }
+        
+        if ( base64_encode(base64_decode($code, true)) !== $code){
+            throw new ApiException(406, "The code field must be base64 encoded ");
+        }
+        
 
         if($secret != get_secret()){
             throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
@@ -86,6 +91,11 @@ class api{
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
             throw new ApiException(406, "Invalid Input Programming Language");
         }
+        
+        if ( base64_encode(base64_decode($code, true)) !== $code){
+            throw new ApiException(406, "The code field must be base64 encoded ");
+        }
+        
 
         if($secret != get_secret()){
             throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
