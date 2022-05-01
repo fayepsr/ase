@@ -109,26 +109,22 @@ final class ApiUnitTest extends TestCase
 
     public function test_getHCodeVals_EmptyArrayReturnsEmptyArray()
     {
-        $throwsException = false;
         try {
             $foo = self::getMethod('getHCodeVals');
             $result = $foo->invokeArgs(null, array(array("prediction" => array())));
         } catch (\Throwable $th)
          {
-            $throwsException = true;
         }
         $this->assertEquals($result, array());
     }
 
     public function test_getHCodeVals_SimpleExample()
     {
-        $throwsException = false;
         try {
             $foo = self::getMethod('getHCodeVals');
             $result = $foo->invokeArgs(null, array(array("prediction" => array("tt"))));
         } catch (\Throwable $th)
          {
-            $throwsException = true;
         }
         $this->assertEquals($result, array("tt"));
     }
@@ -173,6 +169,19 @@ final class ApiUnitTest extends TestCase
         $this->assertTrue( $throwsException);
     }
     
+    public function test_highlight_valid_example_returnswellbase64encodedresult()
+    {
+       
+        try {
+            $foo = self::getMethod('highlight');
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
+        } catch (Exception $th)
+         {
+        }
+     
+        $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
+    }
+    
     
     public function test_finetune_non_accepted_language_throws_exception()
     {
@@ -213,7 +222,19 @@ final class ApiUnitTest extends TestCase
         }
         $this->assertTrue( $throwsException);
     }
-    
+   
+    public function test_finetune_valid_example_returnswellbase64encodedresult()
+    {
+       
+        try {
+            $foo = self::getMethod('finetune');
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
+        } catch (Exception $th)
+         {
+        }
+     
+        $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
+    }
 
     protected static function getMethod($name)
     {
