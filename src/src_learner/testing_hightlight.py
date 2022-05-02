@@ -2,10 +2,11 @@ import SHModelUtils as bl
 import unittest
 import highlight
 
+#testing return for each possible return statement
 
 class Test(unittest.TestCase):
     
-    def runTest(self):
+    def test_predict(self):
         #For Predict
         #Test for empty content for python
         self.assertEqual(highlight.predict('', 'python'), {'ok': 1, 'prediction': [], 'result': []}, "Unsuccessful run of function")
@@ -18,6 +19,7 @@ class Test(unittest.TestCase):
         #Test with language not in use
         self.assertEqual(highlight.predict('', 'R'),{'ok': -1, 'msg': 'Not yet accepting this language'}, "Language error")
 
+    def test_finetune(self):
         #For Finetune
         #Test for empty content for python
         self.assertEqual(highlight.finetune('', 'python'), {'ok': 1}, "Unsuccessful run of function")
