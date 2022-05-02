@@ -32,6 +32,7 @@ export default class Form extends React.Component {
     var formdata = new FormData();
     formdata.append('lang', this.state.lang);
     formdata.append('code', Buffer.from(this.state.code).toString('base64'));
+    formdata.append('secret', "hsdiwu8&%$$");
 
     var requestOptions = {
       method: 'POST',
@@ -39,15 +40,16 @@ export default class Form extends React.Component {
       redirect: 'follow',
     };
 
-    let url = '';
+    let url_highlight = '';
+    let url = window.location.href;
     if (url.indexOf('localhost') !== -1 || url.indexOf('127.0.0.1') !== -1) {
-      url = 'http://localhost:8089/api/v1/highlight';
+      url_highlight = 'http://localhost:8089/api/v1/highlight';
     } else {
-      url =
+      url_highlight =
         'https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/api/v1/highlight';
     }
 
-    fetch(url, requestOptions)
+    fetch(url_highlight, requestOptions)
       .then((response) => {
         if (response.ok) return response.json();
         return response.text().then((text) => {

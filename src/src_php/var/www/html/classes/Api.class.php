@@ -10,17 +10,22 @@ function get_learner_url(){
     }
 } 
 
+function get_secret(){
+    return "hsdiwu8&%$$";
+}
+
 class api{
 
     /**
      * 
      * @param string $lang 
      * @param string $code 
+     * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
      * @return string[] 
      * @throws ApiException if the arguments are empty or non valid 
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
-    public static function highlight($lang = '', $code = ''){
+    public static function highlight($lang = '', $code = '', $secret = ''){
         //Logger::log("test highliight");
         if(empty($lang) || empty($code)){
             throw new ApiException(406, "Invalid Input Arguments");
@@ -30,9 +35,13 @@ class api{
             throw new ApiException(406, "Invalid Input Programming Language");
         }
 
+        if($secret != get_secret()){
+            throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
+        }
+
         if(api::decide_if_predict()){
             try {
-                $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => $lang));
+                $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
                 //print( $output);
             } catch (\Throwable $th) {
                 throw new ApiExceptionHTML(500, $th->getMessage()  );
@@ -40,9 +49,8 @@ class api{
     
         }
 
-
         try {
-            $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' => $lang));
+            $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
@@ -64,11 +72,12 @@ class api{
      * 
      * @param string $lang 
      * @param string $code 
+     * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
      * @return int[] 
      * @throws ApiException if the arguments are empty or non valid
      * @throws ApiExceptionHTML if the finetune endpoint curl_post fails
      */
-    public static function finetune($lang = '', $code = ''){
+    public static function finetune($lang = '', $code = '', $secret = ''){
 
         if(empty($lang) || empty($code)){
             throw new ApiException(406, "Invalid Input Arguments");
@@ -78,8 +87,12 @@ class api{
             throw new ApiException(406, "Invalid Input Programming Language");
         }
 
+        if($secret != get_secret()){
+            throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
+        }
+
         try {
-            $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => $lang));
+            $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
@@ -341,6 +354,7 @@ class api{
      * @return string 
      */
     private static function format_special_chars_to_html($string){
+        $string = str_replace(' ', '&nbsp;', $string);
         $string = nl2br($string);
         return $string;
     }

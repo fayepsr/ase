@@ -10,10 +10,10 @@
 	try {	
 		switch ($uri[2]) {
 			case 'highlight':
-				$response = api::highlight($_POST['lang'], $_POST['code']);
+				$response = api::highlight($_POST['lang'], $_POST['code'], $_POST['secret']);
 				break;
 			case 'finetune':
-				$response = api::finetune($_POST['lang'], $_POST['code']);
+				$response = api::finetune($_POST['lang'], $_POST['code'],  $_POST['secret']);
 				break;
 			case 'app_health':
 				$response ='ok';
