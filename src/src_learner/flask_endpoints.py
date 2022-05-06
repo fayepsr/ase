@@ -1,6 +1,5 @@
 import flask
 import json
-import sys
 from flask import request, abort
 from datetime import datetime
 import pytz
@@ -31,7 +30,6 @@ def test():
     ob = {'user' : user}
     return json.dumps(ob, indent=4)
 
-
 """
 Highlights code in a given language
 
@@ -60,14 +58,14 @@ def api_predict():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
-        # closing the file 
+
+        # closing the file
         f.close()
-        abort(500, message) 
+        abort(500, message)
     return result
 
 
@@ -100,11 +98,11 @@ def api_finetune():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
+
         # closing the file
         f.close()
         abort(500, message)
@@ -139,11 +137,11 @@ def api_accuracy():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
+
         # closing the file
         f.close()
         abort(500, message)
