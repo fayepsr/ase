@@ -25,7 +25,7 @@ jobs:
       working-directory: ./
       id: compose
       run: |
-        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from learner --exit-code-from php --exit-code-from react
+        docker-compose -f "./src/docker-compose-tests.yml" up 
         echo $?
     - name: Stop containers
       working-directory: ./
