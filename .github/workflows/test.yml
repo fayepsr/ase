@@ -21,27 +21,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Start containers
+    - name: Start php container
+      working-directory: ./
+      run: |
+        docker build -f "./src/dockerfile . -t php
+        
+    - name: run php container
       working-directory: ./
       id: php
       run: |
-        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from php
-        echo $?
-        
-    - name: Start containers
-      working-directory: ./
-      id: learner
-      run: |
-        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from learner
-        echo $?
-        
-    - name: Start containers
-      working-directory: ./
-      id: react
-      run: |
-        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from react
-        echo $?
-        
+        docker run --entrypoint sh -c "cd tests && composer require --dev phpunit/phpunit ^9 && /tests/vendor/bin/phpunit --bootstrap ./autoload.php tests" -t php
+
     - name: Stop containers
       working-directory: ./
       if: always()
