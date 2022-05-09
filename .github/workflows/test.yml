@@ -22,12 +22,12 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Start containers
-      working-directory: ./src
+      working-directory: ./
       id: compose
       run: |
-        docker-compose -f "docker-compose.yml" up --exit-code-from learner --exit-code-from php --exit-code-from react
+        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from learner --exit-code-from php --exit-code-from react
         echo $?
     - name: Stop containers
       working-directory: ./
       if: always()
-      run: docker-compose -f "docker-compose.yml" down
+      run: docker-compose -f "./src/docker-compose-tests.yml" down
