@@ -8,6 +8,7 @@ from pathlib import Path
 import os
 import json
 import base64
+import update_model
 
 
 def predict(content, language='python'):
@@ -91,5 +92,6 @@ def finetune(content, language='python'):
 
         model.finetune_on(tokenIds, hCodeValues)
         model.persist_model()
+        update(language)
         return {'ok': 1}
     return {'ok': -1}

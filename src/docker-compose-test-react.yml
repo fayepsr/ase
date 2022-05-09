@@ -1,0 +1,10 @@
+version: '3'
+services:
+  react:
+    build: 
+        context: ./src_react
+    image: src_react:latest
+    ports:
+      - '3007:3000'
+    working_dir: /app
+    command: sh -c 'npm test'

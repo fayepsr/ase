@@ -1,0 +1,55 @@
+name: CI tests
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  docker:
+    name: tests
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Start learner
+      working-directory: ./
+      id: learner
+      run: |
+        docker-compose -f "./src/docker-compose-test-learner.yml" up --exit-code-from learner
+        
+    - name: Stop learner
+      working-directory: ./
+      if: always()
+      run: docker-compose -f "./src/docker-compose-test-learner.yml" down
+      
+    - name: Start php
+      working-directory: ./
+      id: php
+      run: |
+        docker-compose -f "./src/docker-compose-test-php.yml" up --exit-code-from php
+        
+    - name: Stop learner
+      working-directory: ./
+      if: always()
+      run: docker-compose -f "./src/docker-compose-test-php.yml" down
+      
+    - name: Start react
+      working-directory: ./
+      id: react
+      run: |
+        docker-compose -f "./src/docker-compose-test-react.yml" up --exit-code-from react
+        
+    - name: Stop react
+      working-directory: ./
+      if: always()
+      run: docker-compose -f "./src/docker-compose-test-react.yml" down

@@ -60,6 +60,21 @@ final class ApiUnitTest extends TestCase
         $this->assertEquals($result,array("test", "55") );
     }
 
+    public function test_format_html_code_EmptyInputThrowsException()
+    {
+
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('format_html_code');
+            $foo->invokeArgs(null, array('', array()));
+        } catch (\Throwable $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+
+
     public function testformat_html_code_simple_example()
     {
 
@@ -76,9 +91,150 @@ final class ApiUnitTest extends TestCase
         } catch (\Throwable $th)
          {
         }
-        $this->assertEquals($result, '<code class="UNKNOWN">test</code> <code class="UNKNOWN">55</code>' );
+        $this->assertEquals($result, '<code class="UNKNOWN">test</code>&nbsp;<code class="UNKNOWN">55</code>' );
     }
 
+    public function test_getHCodeVals_EmptyInputThrowsException()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('getHCodeVals');
+            $foo->invokeArgs(null, array('', array()));
+        } catch (\Throwable $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+
+    public function test_getHCodeVals_EmptyArrayReturnsEmptyArray()
+    {
+        try {
+            $foo = self::getMethod('getHCodeVals');
+            $result = $foo->invokeArgs(null, array(array("prediction" => array())));
+        } catch (\Throwable $th)
+         {
+        }
+        $this->assertEquals($result, array());
+    }
+
+    public function test_getHCodeVals_SimpleExample()
+    {
+        try {
+            $foo = self::getMethod('getHCodeVals');
+            $result = $foo->invokeArgs(null, array(array("prediction" => array("tt"))));
+        } catch (\Throwable $th)
+         {
+        }
+        $this->assertEquals($result, array("tt"));
+    }
+
+    public function test_highlight_non_accepted_language_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('highlight');
+             $foo->invokeArgs(null, array("tt", "tt"));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+
+    }
+
+    public function test_highlight_empty_code_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('highlight');
+            $foo->invokeArgs(null, array("python", ""));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+
+    public function test_highlight_nonbase64encoded_code_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('highlight');
+            $foo->invokeArgs(null, array("python", "tt"));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+    
+    public function test_highlight_valid_example_returnswellbase64encodedresult()
+    {
+       
+        try {
+            $foo = self::getMethod('highlight');
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
+        } catch (Exception $th)
+         {
+        }
+     
+        $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
+    }
+    
+    
+    public function test_finetune_non_accepted_language_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('finetune');
+            $foo->invokeArgs(null, array("tt", "tt"));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+
+    }
+
+    public function test_finetune_empty_code_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('finetune');
+            $foo->invokeArgs(null, array("python", ""));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+
+    public function test_finetune_nonbase64encoded_code_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('finetune');
+            $foo->invokeArgs(null, array("python", "tt"));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+    }
+   
+    public function test_finetune_valid_example_returnswellbase64encodedresult()
+    {
+       
+        try {
+            $foo = self::getMethod('finetune');
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
+        } catch (Exception $th)
+         {
+        }
+     
+        $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
+    }
 
     protected static function getMethod($name)
     {

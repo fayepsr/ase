@@ -19,6 +19,7 @@
 				$response ='ok';
 				break;					
 			default:
+				Logger::log("Unknown URI requested. URI: " .$args, Logger::ERROR);
 				throw new ApiException(404, 'The request was not found');
 		}	
 	

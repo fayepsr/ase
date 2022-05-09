@@ -3,3 +3,4 @@ src/src_learner/__pycache__/*
 src/src_learner/.idea/*
 .idea/workspace.xml
 src/src_learner/errorlog.txt
+src/src_php/var/www/html/tmp/*

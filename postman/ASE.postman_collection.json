@@ -20,7 +20,12 @@
 						},
 						{
 							"key": "code",
-							"value": "aW1wb3J0IFNITW9kZWxVdGlscyBhcyBibAppbXBvcnQgYXJncGFyc2UKaW1wb3J0IHN5cwppbXBvcnQganB5cGUKaW1wb3J0IGpweXBlLmltcG9ydHMKZnJvbSBqcHlwZS50eXBlcyBpbXBvcnQgKgpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKaW1wb3J0IG9zCmltcG9ydCBqc29uCmltcG9ydCBiYXNlNjQKZGVmIHByZWRpY3QoY29kZV90b19mb3JtYXQsIGxhbmd1YWdlPSdweXRob24nKToKICAgICNvcy5jaGRpcignL3NyY19sZWFybmVyLycpCiAgICAjIEpQeXBlIGlzIHVzZWQgdG8gYWNjZXNzIHRoZSBKYXZhIEZvcm1hbE1vZGVsIGxpYnJhcnkKICAgIGlmIG5vdCBqcHlwZS5pc0pWTVN0YXJ0ZWQoKToKICAgICAgICBqcHlwZS5zdGFydEpWTShjbGFzc3BhdGg9WydTSE9yYWNsZS5qYXInXSkKICAgIFB5dGhvbjNSZXNvbHZlciA9IGpweXBlLkpDbGFzcygicmVzb2x2ZXIuUHl0aG9uM1Jlc29sdmVyIikKICAgIG1vZGVsID0gYmwuU0hNb2RlbChibC5QWVRIT04zX0xBTkdfTkFNRSwgJ2Jhc2VfbW9kZWwnKQogICAgcmVzb2x2ZXIgPSBQeXRob24zUmVzb2x2ZXIoKQogICAgbW9kZWwuc2V0dXBfZm9yX3ByZWRpY3Rpb24oKQogICAgY29udGVudCA9IGNvZGVfdG9fZm9ybWF0CiAgICBjb250ZW50ID0gYmFzZTY0LmI2NGRlY29kZShjb250ZW50KS5kZWNvZGUoJ1VURi04JykKICAgIGxUb2tzID0gcmVzb2x2ZXIubGV4KGNvbnRlbnQpCiAgICBpZiAoaXNpbnN0YW5jZShsVG9rcywgSkFycmF5KSk6CiAgICAgICAgdG9rZW5JZHMgPSBbXQogICAgICAgIHJlc3VsdCA9IFtdCiAgICAgICAgZm9yIGkgaW4gcmFuZ2UobFRva3MubGVuZ3RoKToKICAgICAgICAgICAgdG9rZW5JZHMuYXBwZW5kKGxUb2tzW2ldLnRva2VuSWQpCiAgICAgICAgICAgIHJlc3VsdC5hcHBlbmQoCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgInN0YXJ0SW5kZXgiOiBsVG9rc1tpXS5zdGFydEluZGV4LAogICAgICAgICAgICAgICAgICAgICJlbmRJbmRleCI6IGxUb2tzW2ldLmVuZEluZGV4LAogICAgICAgICAgICAgICAgICAgICJsSXRlbXRva2VuSWQiOiBsVG9rc1tpXS50b2tlbklkCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICkKICAgICAgICBwcmVkaWN0aW9uID0gbW9kZWwucHJlZGljdCh0b2tlbklkcykKICAgICAgICByZXR1cm4geydvayc6IDEsICdwcmVkaWN0aW9uJzogcHJlZGljdGlvbiwgJ3Jlc3VsdCc6IHJlc3VsdH0KICAgIHJldHVybiB7J2Vycm9yJzogLTF9CiMgcHJlZGljdCgiWVNBOUlEQUtabTl5SUdrZ2FXNGdjbUZ1WjJVb01UQXBPZ29nSUNBZ1lTczlNUW89IikK",
+							"value": "aW1wb3J0IGphdmEudXRpbC5TY2FubmVyOwoKcHVibGljIGNsYXNzIEhlbGxvV29ybGQgewoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKCiAgICAgICAgLy8gQ3JlYXRlcyBhIHJlYWRlciBpbnN0YW5jZSB3aGljaCB0YWtlcwogICAgICAgIC8vIGlucHV0IGZyb20gc3RhbmRhcmQgaW5wdXQgLSBrZXlib2FyZAogICAgICAgIFNjYW5uZXIgcmVhZGVyID0gbmV3IFNjYW5uZXIoU3lzdGVtLmluKTsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50KCJFbnRlciBhIG51bWJlcjogIik7CgogICAgICAgIC8vIG5leHRJbnQoKSByZWFkcyB0aGUgbmV4dCBpbnRlZ2VyIGZyb20gdGhlIGtleWJvYXJkCiAgICAgICAgaW50IG51bWJlciA9IHJlYWRlci5uZXh0SW50KCk7CgogICAgICAgIC8vIHByaW50bG4oKSBwcmludHMgdGhlIGZvbGxvd2luZyBsaW5lIHRvIHRoZSBvdXRwdXQgc2NyZWVuCiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJZb3UgZW50ZXJlZDogIiArIG51bWJlcik7CiAgICB9Cn0=",
+							"type": "text"
+						},
+						{
+							"key": "secret",
+							"value": "hsdiwu8&%$$",
 							"type": "text"
 						}
 					]
@@ -40,7 +45,46 @@
 			"response": []
 		},
 		{
-			"name": "BaseLearner Endpoint",
+			"name": "PHP Endpoint Highlight",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lang",
+							"value": "python",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "aW1wb3J0IGphdmEudXRpbC5TY2FubmVyOwoKcHVibGljIGNsYXNzIEhlbGxvV29ybGQgewoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKCiAgICAgICAgLy8gQ3JlYXRlcyBhIHJlYWRlciBpbnN0YW5jZSB3aGljaCB0YWtlcwogICAgICAgIC8vIGlucHV0IGZyb20gc3RhbmRhcmQgaW5wdXQgLSBrZXlib2FyZAogICAgICAgIFNjYW5uZXIgcmVhZGVyID0gbmV3IFNjYW5uZXIoU3lzdGVtLmluKTsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50KCJFbnRlciBhIG51bWJlcjogIik7CgogICAgICAgIC8vIG5leHRJbnQoKSByZWFkcyB0aGUgbmV4dCBpbnRlZ2VyIGZyb20gdGhlIGtleWJvYXJkCiAgICAgICAgaW50IG51bWJlciA9IHJlYWRlci5uZXh0SW50KCk7CgogICAgICAgIC8vIHByaW50bG4oKSBwcmludHMgdGhlIGZvbGxvd2luZyBsaW5lIHRvIHRoZSBvdXRwdXQgc2NyZWVuCiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJZb3UgZW50ZXJlZDogIiArIG51bWJlcik7CiAgICB9Cn0=",
+							"type": "text"
+						},
+						{
+							"key": "secret",
+							"value": "hsdiwu8&%$$",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}/api/v1/highlight",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"highlight"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "python BaseLearner Endpoint Predict",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -74,7 +118,7 @@
 			"response": []
 		},
 		{
-			"name": "PHP Endpoint Highlight",
+			"name": "python Finetune",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -82,26 +126,25 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "lang",
-							"value": "python",
-							"type": "text"
+							"key": "code_to_format",
+							"value": "YSA9IDEKZm9yIGkgaW4gcmFuZ2UoMTApOgogICAgYSArPTEK"
 						},
 						{
-							"key": "code",
-							"value": "aW1wb3J0IFNITW9kZWxVdGlscyBhcyBibAppbXBvcnQgYXJncGFyc2UKaW1wb3J0IHN5cwppbXBvcnQganB5cGUKaW1wb3J0IGpweXBlLmltcG9ydHMKZnJvbSBqcHlwZS50eXBlcyBpbXBvcnQgKgpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKaW1wb3J0IG9zCmltcG9ydCBqc29uCmltcG9ydCBiYXNlNjQKZGVmIHByZWRpY3QoY29kZV90b19mb3JtYXQsIGxhbmd1YWdlPSdweXRob24nKToKICAgICNvcy5jaGRpcignL3NyY19sZWFybmVyLycpCiAgICAjIEpQeXBlIGlzIHVzZWQgdG8gYWNjZXNzIHRoZSBKYXZhIEZvcm1hbE1vZGVsIGxpYnJhcnkKICAgIGlmIG5vdCBqcHlwZS5pc0pWTVN0YXJ0ZWQoKToKICAgICAgICBqcHlwZS5zdGFydEpWTShjbGFzc3BhdGg9WydTSE9yYWNsZS5qYXInXSkKICAgIFB5dGhvbjNSZXNvbHZlciA9IGpweXBlLkpDbGFzcygicmVzb2x2ZXIuUHl0aG9uM1Jlc29sdmVyIikKICAgIG1vZGVsID0gYmwuU0hNb2RlbChibC5QWVRIT04zX0xBTkdfTkFNRSwgJ2Jhc2VfbW9kZWwnKQogICAgcmVzb2x2ZXIgPSBQeXRob24zUmVzb2x2ZXIoKQogICAgbW9kZWwuc2V0dXBfZm9yX3ByZWRpY3Rpb24oKQogICAgY29udGVudCA9IGNvZGVfdG9fZm9ybWF0CiAgICBjb250ZW50ID0gYmFzZTY0LmI2NGRlY29kZShjb250ZW50KS5kZWNvZGUoJ1VURi04JykKICAgIGxUb2tzID0gcmVzb2x2ZXIubGV4KGNvbnRlbnQpCiAgICBpZiAoaXNpbnN0YW5jZShsVG9rcywgSkFycmF5KSk6CiAgICAgICAgdG9rZW5JZHMgPSBbXQogICAgICAgIHJlc3VsdCA9IFtdCiAgICAgICAgZm9yIGkgaW4gcmFuZ2UobFRva3MubGVuZ3RoKToKICAgICAgICAgICAgdG9rZW5JZHMuYXBwZW5kKGxUb2tzW2ldLnRva2VuSWQpCiAgICAgICAgICAgIHJlc3VsdC5hcHBlbmQoCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgInN0YXJ0SW5kZXgiOiBsVG9rc1tpXS5zdGFydEluZGV4LAogICAgICAgICAgICAgICAgICAgICJlbmRJbmRleCI6IGxUb2tzW2ldLmVuZEluZGV4LAogICAgICAgICAgICAgICAgICAgICJsSXRlbXRva2VuSWQiOiBsVG9rc1tpXS50b2tlbklkCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICkKICAgICAgICBwcmVkaWN0aW9uID0gbW9kZWwucHJlZGljdCh0b2tlbklkcykKICAgICAgICByZXR1cm4geydvayc6IDEsICdwcmVkaWN0aW9uJzogcHJlZGljdGlvbiwgJ3Jlc3VsdCc6IHJlc3VsdH0KICAgIHJldHVybiB7J2Vycm9yJzogLTF9CiMgcHJlZGljdCgiWVNBOUlEQUtabTl5SUdrZ2FXNGdjbUZ1WjJVb01UQXBPZ29nSUNBZ1lTczlNUW89IikK",
+							"key": "language",
+							"value": "python",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{URL}}/api/v1/highlight",
+					"raw": "http://localhost:5000/finetune",
+					"protocol": "http",
 					"host": [
-						"{{URL}}"
+						"localhost"
 					],
+					"port": "5000",
 					"path": [
-						"api",
-						"v1",
-						"highlight"
+						"finetune"
 					]
 				}
 			},
