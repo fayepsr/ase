@@ -8,6 +8,8 @@ COPY requirements.txt ./requirements.txt
 COPY credentials.txt ./credentials.txt
 COPY accuracyTestData ./accuracyTestData
 
+COPY testing_hightlight.py /testing_hightlight.py
+
 COPY flask_endpoints.py ./flask_endpoints.py
 COPY highlight.py ./highlight.py
 COPY accuracy_check.py ./accuracy_check.py

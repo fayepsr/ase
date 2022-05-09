@@ -1,0 +1,13 @@
+version: '3'
+services:
+  php:
+    build: 
+        context: ./src_php
+    image: src_php:latest
+    ports:
+      - '8089:80'
+    working_dir: /
+    command: sh -c "cd tests &&
+        composer require --dev phpunit/phpunit ^9 &&
+        /tests/vendor/bin/phpunit --bootstrap ./autoload.php tests"
+
