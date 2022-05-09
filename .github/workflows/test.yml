@@ -23,10 +23,25 @@ jobs:
 
     - name: Start containers
       working-directory: ./
-      id: compose
+      id: php
       run: |
-        docker-compose -f "./src/docker-compose-tests.yml" up --abort-on-container-exit
+        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from php
         echo $?
+        
+    - name: Start containers
+      working-directory: ./
+      id: learner
+      run: |
+        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from learner
+        echo $?
+        
+    - name: Start containers
+      working-directory: ./
+      id: react
+      run: |
+        docker-compose -f "./src/docker-compose-tests.yml" up --exit-code-from react
+        echo $?
+        
     - name: Stop containers
       working-directory: ./
       if: always()
