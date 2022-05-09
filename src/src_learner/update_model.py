@@ -10,7 +10,7 @@ Args:
 
 """
 
-def update(language = "python"):
+def update_m(language = "python"):
     
     # text file storing number of input requests used for fine-tuning, accuracy
     # of the base model, and accuracy of the fine-tuning model
@@ -115,7 +115,3 @@ def update(language = "python"):
     else:
         lines = ['num_requests=' + str(num_requests)]
         lines.append('accuracy_base_model=' + str(accuracy_base_model))
-        lines.append('accuracy_finetune_model=' + str(accuracy_finetune_model))
-        with open(model_status, "w+", encoding="utf-8") as f:
-            f.write('\n'.join(lines))
-        return {'ok': 1, 'msg': 'No update required yet'}
