@@ -24,7 +24,7 @@ jobs:
     - name: Start php container
       working-directory: ./
       run: |
-        docker build -f "./src/dockerfile . -t php
+        docker build -f "./src/dockerfile" . -t php
         
     - name: run php container
       working-directory: ./
