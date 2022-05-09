@@ -1,0 +1,9 @@
+version: '3'
+services:
+  learner:
+    build: 
+        context: ./src_learner
+    image: src_learner:latest
+    ports:
+      - '5000:9007'
+    command: sh -c 'python -m unittest discover /'

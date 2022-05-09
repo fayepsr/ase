@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 
 const url =
-  'https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/api/v1/highlight';
+  'http://localhost:8089/api/v1/highlight';
 
 test('should correctly set defaults', () => {
   render(<App />);

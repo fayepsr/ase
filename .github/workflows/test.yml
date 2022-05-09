@@ -21,18 +21,35 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Start php container
-      working-directory: ./src/src_php/
+    - name: Start learner
+      working-directory: ./
+      id: learner
       run: |
-        docker build -f "dockerfile" . -t php
+        docker-compose -f "./src/docker-compose-test-learner.yml" up --exit-code-from learner
         
-    - name: run php container
+    - name: Stop learner
+      working-directory: ./
+      if: always()
+      run: docker-compose -f "./src/docker-compose-test-learner.yml" down
+      
+    - name: Start php
       working-directory: ./
       id: php
       run: |
-        docker run --entrypoint sh -c "cd tests && composer require --dev phpunit/phpunit ^9 && /tests/vendor/bin/phpunit --bootstrap ./autoload.php tests" -t php
-
-    - name: Stop containers
+        docker-compose -f "./src/docker-compose-test-php.yml" up --exit-code-from php
+        
+    - name: Stop learner
       working-directory: ./
       if: always()
-      run: docker-compose -f "./src/docker-compose-tests.yml" down
+      run: docker-compose -f "./src/docker-compose-test-php.yml" down
+      
+    - name: Start react
+      working-directory: ./
+      id: react
+      run: |
+        docker-compose -f "./src/docker-compose-test-react.yml" up --exit-code-from react
+        
+    - name: Stop react
+      working-directory: ./
+      if: always()
+      run: docker-compose -f "./src/docker-compose-test-react.yml" down
