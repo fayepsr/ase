@@ -22,9 +22,9 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Start php container
-      working-directory: ./
+      working-directory: ./src/src_php/
       run: |
-        docker build -f "./src/src_php/dockerfile" . -t php
+        docker build -f "dockerfile" . -t php
         
     - name: run php container
       working-directory: ./
