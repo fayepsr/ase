@@ -12,6 +12,7 @@ COPY flask_endpoints.py ./flask_endpoints.py
 COPY highlight.py ./highlight.py
 COPY accuracy_check.py ./accuracy_check.py
 COPY persist_model.py ./persist_model.py
+COPY update_model.py ./update_model.py
 
 COPY SHModelUtils.py ./SHModelUtils.py
 COPY SHOracle.jar ./SHOracle.jar

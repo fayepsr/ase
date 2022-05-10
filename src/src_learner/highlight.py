@@ -92,6 +92,6 @@ def finetune(content, language='python'):
 
         model.finetune_on(tokenIds, hCodeValues)
         model.persist_model()
-        update(language)
+        update_model.update_m(language)
         return {'ok': 1}
     return {'ok': -1}
