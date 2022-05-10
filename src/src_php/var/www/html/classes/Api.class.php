@@ -1,8 +1,8 @@
 <?php
 
-//TODO: Transfer it to a config file
 function get_learner_url(){
-    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" ){
+
+    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
         return "http://learner:9007/";
     }
     else{
@@ -25,7 +25,12 @@ class api{
      * @throws ApiException if the arguments are empty or non valid 
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
-    public static function highlight($lang = '', $code = '', $secret = ''){
+    public static function highlight($lang = '', $code = '', $secret = '', $mode = 'html'){
+
+        if(empty($mode)){
+            $mode = 'html';
+        }
+
         if(empty($lang) || empty($code)){
             Logger::log("Empty code or lang " , Logger::ERROR);  
             throw new ApiException(406, "Invalid Input Arguments");
@@ -37,8 +42,13 @@ class api{
         }
         
         if ( base64_encode(base64_decode($code, true)) !== $code){
-            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
+            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR); 
             throw new ApiException(406, "The code field must be base64 encoded ");
+        }
+
+        if($mode != "html" && $mode != "json"){
+            Logger::log("The input parameter mode can only be json or html " .$mode, Logger::ERROR);
+            throw new ApiException(406, "The input parameter mode can only be json or html ");      
         }
 
         if($secret != get_secret()){
@@ -69,14 +79,18 @@ class api{
        
 
         try {
-            $full_HTML = api::getHTML(base64_decode($code), $output);
+            if($mode == "html"){
+                $full_HTML = api::getHTML(base64_decode($code), $output);
+                return array('resp' => base64_encode($full_HTML));
+            }
+            else{
+                $json_array = api::getJSON(base64_decode($code), $output);
+                return $json_array;
+            }
         } catch (\Throwable $th) {
             Logger::log("api::getHTML threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage());
         }
-        
-           
-        return array('resp' => base64_encode($full_HTML));
 
     }
 
@@ -139,7 +153,7 @@ class api{
         $setHtmlString = "<!DOCTYPE html>
         <html>
         <style>
-        .ANY {
+        .GENERAL {
             color: black;
             font-weight: normal;
             font-style: normal;
@@ -219,7 +233,39 @@ class api{
         return $full_string;
 
     }
+    private static function getJSON($code, $output){
+        //output was a string - need an array
+        $output = json_decode($output, 1);
+        if(empty($output) || $output === FALSE){
+            throw new Exception("Baselearner did not return a valid json string");
+        }
 
+        if(!isset($output["result"])){
+            throw new Exception("getStrings Output is not set");
+        }
+
+        $result_array = array();
+
+        $words = api::getStrings($code, $output);
+        $hcodearray = api::getHCodeVals($output);
+
+        foreach ($output["result"] as $key => $value) {
+           
+            $type = api::getType($hcodearray[$key]);
+
+            $word = array(
+                'startIndex' => $value["startIndex"],
+                'endIndex' => $value["endIndex"],
+                'type' => $type,
+                'token' => $words[$key]
+            );
+
+            array_push($result_array, $word);    
+		}
+
+        return $result_array;
+
+    }
     /**
      * This function returns the predicted hcode as an array from the $output variable
      * @param mixed $output 
@@ -291,49 +337,7 @@ class api{
         $class_string_arr = array();
         for ($i=0; $i < count($hcodearray); $i++) {
             $class_string = "";
-            $css_class = "";
-		    switch ($hcodearray[$i]) {
-                case 0:
-                    $css_class = "ANY";
-                    break;
-                case 1:
-                    $css_class = "KEYWORD";
-                    break;
-                case 2:
-                    $css_class = "LITERAL";
-                    break;
-                case 3:
-                    $css_class = "CHAR_STRING_LITERAL";
-                    break;
-                case 4:
-                    $css_class = "COMMENT";
-                    break;
-                case 5:
-                    $css_class = "CLASS_DECLARATOR";
-                    break;
-                case 6:
-                    $css_class = "FUNCTION_DECLARATOR";
-                    break;
-                case 7:
-                    $css_class = "VARIABLE_DECLARATOR";
-                    break;
-                case 8:
-                    $css_class = "TYPE_IDENTIFIER";
-                    break;
-                case 9:
-                    $css_class = "FUNCTION_IDENTIFIER";
-                    break;
-                case 10:
-                    $css_class = "FIELD_IDENTIFIER";
-                    break;
-                case 11:
-                    $css_class = "ANNOTATION_DECLARATOR";
-                    break;
-                default:
-                    $css_class = "UNKONOWN";
-                    break;
-
-            }
+            $css_class = api::getType($hcodearray[$i]);   
                 
             // $tt = str_split($strarray[$i]);
             // echo $strarray[$i];
@@ -345,6 +349,51 @@ class api{
             $class_string_arr[] = $class_string;
         }
         return $class_string_arr;
+    }
+
+    private static function getType($hcodevalue){
+        switch ($hcodevalue) {
+            case 0:
+                $type = "GENERAL";
+                break;
+            case 1:
+                $type = "KEYWORD";
+                break;
+            case 2:
+                $type = "LITERAL";
+                break;
+            case 3:
+                $type = "CHAR_STRING_LITERAL";
+                break;
+            case 4:
+                $type = "COMMENT";
+                break;
+            case 5:
+                $type = "CLASS_DECLARATOR";
+                break;
+            case 6:
+                $type = "FUNCTION_DECLARATOR";
+                break;
+            case 7:
+                $type = "VARIABLE_DECLARATOR";
+                break;
+            case 8:
+                $type = "TYPE_IDENTIFIER";
+                break;
+            case 9:
+                $type = "FUNCTION_IDENTIFIER";
+                break;
+            case 10:
+                $type = "FIELD_IDENTIFIER";
+                break;
+            case 11:
+                $type = "ANNOTATION_DECLARATOR";
+                break;
+            default:
+                $type = "UNKONOWN";
+                break;
+        }
+        return $type;
     }
 
     /**

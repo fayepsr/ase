@@ -23,8 +23,6 @@ final class ApiEndpointsTest  extends TestCase{
             require_once("../var/www/html/public/index.php");
         } catch (Exception $th) {
             $exception_thrown = true;
-            echo "Thrown".$th;
-            print($th->getMessage());
         }
         $this->assertFalse($exception_thrown);
     }
@@ -37,8 +35,6 @@ final class ApiEndpointsTest  extends TestCase{
             require_once("../var/www/html/public/index.php");
         } catch (Exception $th) {
             $exception_thrown = true;
-            echo "Thrown".$th;
-            print($th->getMessage());
         }
         $this->assertFalse($exception_thrown);
     }    

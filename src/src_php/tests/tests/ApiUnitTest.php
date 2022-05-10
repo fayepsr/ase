@@ -143,6 +143,21 @@ final class ApiUnitTest extends TestCase
 
     }
 
+    public function test_highlight_non_accepted_mode_throws_exception()
+    {
+        $throwsException = false;
+        try {
+            $foo = self::getMethod('highlight');
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", get_secret(), "wrong_mode"));
+        } catch (Exception $th)
+         {
+            $throwsException = true;
+        }
+        $this->assertTrue( $throwsException);
+
+    }
+
+
     public function test_highlight_empty_code_throws_exception()
     {
         $throwsException = false;
@@ -174,7 +189,7 @@ final class ApiUnitTest extends TestCase
        
         try {
             $foo = self::getMethod('highlight');
-            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
+            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", get_secret()));
         } catch (Exception $th)
          {
         }
@@ -223,18 +238,13 @@ final class ApiUnitTest extends TestCase
         $this->assertTrue( $throwsException);
     }
    
-    public function test_finetune_valid_example_returnswellbase64encodedresult()
-    {
-       
-        try {
-            $foo = self::getMethod('finetune');
-            $result = $foo->invokeArgs(null, array("python", "cHJpbnQoJzU1Jyk=", "hsdiwu8&%$$"));
-        } catch (Exception $th)
-         {
-        }
-     
-        $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
-    }
+    public function test_getJSON(){
+
+        $config  = require_once("/tests/tests/predict_correct_output.php");
+        $foo = self::getMethod('getJSON');
+        $result = $foo->invokeArgs(null, array(base64_decode($config["input"]["code_to_format"]), $config["output"]));
+        $this->assertIsArray($result);
+    } 
 
     protected static function getMethod($name)
     {
@@ -243,4 +253,6 @@ final class ApiUnitTest extends TestCase
         $method->setAccessible(true);
         return $method;
     }
+
+
 }
