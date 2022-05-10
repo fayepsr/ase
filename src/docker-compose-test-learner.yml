@@ -4,6 +4,5 @@ services:
     build: 
         context: ./src_learner
     image: src_learner:latest
-    ports:
-      - '5000:9007'
-    command: sh -c 'python -m unittest discover /'
+    command: sh -c "python /tests/tests_highlight.py"
+     

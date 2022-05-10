@@ -44,11 +44,11 @@ result: json with prediction and tokens (tokens = result)
 Exceptions:
 500: BaseLearnerException
 """
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def api_predict():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.predict(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -84,11 +84,11 @@ result: json with prediction and tokens (tokens = result)
 Exceptions:
 500: BaseLearnerException
 """
-@app.route('/finetune', methods=['POST'])
+@app.route('/finetune', methods=['GET', 'POST'])
 def api_finetune():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.finetune(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
