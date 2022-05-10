@@ -62,7 +62,7 @@ a container that is running).
 
 > docker system prune
 or
-> docker system prune -all
+> docker system prune -a
 
 Explanation: if after removing the images, the disk space is still used up by docker, try the two commands
 above. If this does not help, restart your machine.
@@ -76,6 +76,10 @@ Move to the folder where you want to create dockerfile
 ## 2.1 Start docker-compose
 
 > docker-compose up
+
+> docker-compose -f "docker-compose-tests.yml" up
+
+> docker-compose -f docker-compose-test-learner.yml up --remove-orphans
 
 Explanation: builds container from images (if this has not been done yet) and starts container. 
 Also defines ports and volumes.

@@ -1,6 +1,5 @@
 import flask
 import json
-import sys
 from flask import request, abort
 from datetime import datetime
 import pytz
@@ -31,7 +30,6 @@ def test():
     ob = {'user' : user}
     return json.dumps(ob, indent=4)
 
-
 """
 Highlights code in a given language
 
@@ -46,11 +44,11 @@ result: json with prediction and tokens (tokens = result)
 Exceptions:
 500: BaseLearnerException
 """
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def api_predict():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.predict(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -60,14 +58,14 @@ def api_predict():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
-        # closing the file 
+
+        # closing the file
         f.close()
-        abort(500, message) 
+        abort(500, message)
     return result
 
 
@@ -86,11 +84,11 @@ result: json with prediction and tokens (tokens = result)
 Exceptions:
 500: BaseLearnerException
 """
-@app.route('/finetune', methods=['POST'])
+@app.route('/finetune', methods=['GET', 'POST'])
 def api_finetune():
     try:
-        code_to_format = request.form.get('code_to_format')
-        language = request.form.get('language')
+        code_to_format = request.args.get('code_to_format')
+        language = request.args.get('language')
         res = highlight.finetune(code_to_format, language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
@@ -100,11 +98,11 @@ def api_finetune():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
+
         # closing the file
         f.close()
         abort(500, message)
@@ -139,11 +137,11 @@ def api_accuracy():
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
         f = open("errorlog.txt", "a")
- 
+
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
         f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-      
+
         # closing the file
         f.close()
         abort(500, message)
