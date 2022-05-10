@@ -23,7 +23,8 @@ def update_m(language = "python"):
     REQUEST_FREQUENCY = 100
     
     # Text file with current details of the models
-    with open(model_status, "rt", encoding="utf-8") as f:
+    with open(model_status, "a+", encoding="utf-8") as f:
+        f.seek(0)
         status_list = f.read().splitlines()
     
     num_requests = 0
@@ -51,7 +52,7 @@ def update_m(language = "python"):
         # Check accuracies of base and fine-tuning models
         model_types = ["finetuning", "base"]
         res_finetuning = accuracy_check.check_accuracy(model_types[0], language)
-        res_base = accuracy_check.check_accuracy(model_types[1], laccuracy_finetune_modelanguage)
+        res_base = accuracy_check.check_accuracy(model_types[1], language)
         if res_finetuning['ok'] != 1:
             raise ValueError('In Finetuning model: ' + res_finetuning['msg'])
         elif res_base['ok'] != 1:
