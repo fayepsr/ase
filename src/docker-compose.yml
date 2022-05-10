@@ -27,6 +27,6 @@ services:
     image: src_learner:latest
     ports:
       - '5000:9007'
-    working_dir: /src_learner
+    working_dir: /src
     volumes:
-      - ./src_learner:/src_learner:cached
+      - ./src_learner:/src:cached
