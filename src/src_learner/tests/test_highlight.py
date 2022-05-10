@@ -68,5 +68,7 @@ class Test(unittest.TestCase):
         self.assertEqual(highlight.finetune('', 'R'), {'ok': '-1', 'msg': 'Not yet accepting this language'},
                          "Language error")
 
-#run the rest
-unittest.main()
+
+if __name__ == '__main__':
+    # begin the unittest.main()
+    unittest.main(exit=True)

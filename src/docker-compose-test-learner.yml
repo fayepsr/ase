@@ -4,5 +4,17 @@ services:
     build: 
         context: ./src_learner
     image: src_learner:latest
-    command: sh -c "python /tests/tests_highlight.py"
+    volumes:
+      - ./src_learner:/src_learner:cached
+    ports:
+      - '5000:9007'
+  tests:
+    build: 
+        context: ./src_learner
+    image: src_learner:latest
+    depends_on:
+      - learner
+    volumes:
+      - ./src_learner:/src_learner:cached
+    command: sh -c "python -m unittest discover /tests"
      

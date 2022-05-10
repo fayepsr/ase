@@ -3,7 +3,7 @@ import requests
 import json
 
 class TestAPI(unittest.TestCase):
-    URL = "http://localhost:5000/"
+    URL = "http://learner:9007/"
 
     def test_test(self):
         user = {'user': 'charl'}
@@ -99,4 +99,7 @@ class TestAPI(unittest.TestCase):
         resp = requests.get(URL, params=params)
         self.assertEquals(resp.status_code, 200)
 
-unittest.main()
+
+if __name__ == '__main__':
+    # begin the unittest.main()
+    unittest.main(exit=True)
