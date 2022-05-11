@@ -18,5 +18,5 @@ services:
     working_dir: /src  
     volumes:
       - ./src_learner:/src:cached
-    command: sh -c "python -m unittest discover /tests"
+    command: sh -c "python -m unittest discover /src/tests"
      

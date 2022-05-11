@@ -4,11 +4,11 @@ FROM python:3.9
 COPY --from=builder1 /usr/java/openjdk-17 /usr/java/openjdk-17
 WORKDIR /
 
-COPY / ./src
+COPY / /src
 
 ENV JAVA_HOME /usr/java/openjdk-17
 ENV PATH $JAVA_HOME/bin:$PATH
 
-RUN pip install -r ./src/requirements.txt
+RUN pip install -r /src/requirements.txt
 
-CMD [ "python", "./flask_endpoints.py"]
+CMD [ "python", "/src/flask_endpoints.py"]
