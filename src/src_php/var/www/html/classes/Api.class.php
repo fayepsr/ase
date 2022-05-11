@@ -58,16 +58,16 @@ class Api{
 
         Logger::log("Input for prediction. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
 
-        if(Api::decide_if_predict()){
-            Logger::log("Input chosen for finetuning", Logger::INFO);
-            try {
-                $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
-                //print( $output);
-            } catch (\Throwable $th) {
-                Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
-                throw new ApiExceptionHTML(500, $th->getMessage()  );
-            }
+        
+        Logger::log("Finetuning", Logger::INFO);
+        try {
+            $output = Api::curl_post_exec("finetune_async", array('code_to_format' => $code, 'language' => strtolower($lang)));
+            //print( $output);
+        } catch (\Throwable $th) {
+            Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
+            throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
+        
 
 
         try {
@@ -475,8 +475,4 @@ class Api{
         
     }
 
-    private static function decide_if_predict(){
-        $rand = rand();
-        return ($rand % 10 == 0) ? true : false;
-    }
 }

@@ -8,6 +8,9 @@ import highlight
 import accuracy_check
 import persist_model
 
+
+from threading import Thread
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -68,7 +71,13 @@ def api_predict():
         abort(500, message)
     return result
 
-
+@app.route('/finetune_async', methods=['POST'])
+def api_finetune_async():
+    code_to_format = request.form.get('code_to_format')
+    language = request.form.get('language')
+    Thread(target = highlight.finetune, args=[code_to_format, language]).start()
+    ob = {'resp': 'Async Reponse'}
+    return json.dumps(ob, indent=4)
 
 """
 fine-tunes the model with the code given
@@ -86,6 +95,7 @@ Exceptions:
 """
 @app.route('/finetune', methods=['POST'])
 def api_finetune():
+
     try:
         code_to_format = request.form.get('code_to_format')
         language = request.form.get('language')
@@ -97,7 +107,7 @@ def api_finetune():
     except ValueError  as e:
         message = "BaseLearnerException " + str(e)
         # creating/opening a file
-        f = open("errorlog.txt", "a")
+        f = open("errorlog.txt", "a") 
 
         # writing in the file
         timezone = pytz.timezone('Europe/Madrid')
