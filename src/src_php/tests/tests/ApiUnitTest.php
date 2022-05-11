@@ -248,7 +248,7 @@ final class ApiUnitTest extends TestCase
 
     protected static function getMethod($name)
     {
-        $class = new ReflectionClass('api');
+        $class = new ReflectionClass('Api');
         $method = $class->getMethod($name);
         $method->setAccessible(true);
         return $method;

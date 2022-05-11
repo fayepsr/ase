@@ -14,7 +14,7 @@ function get_secret(){
     return "hsdiwu8&%$$";
 }
 
-class api{
+class Api{
 
     /**
      * 
@@ -58,10 +58,10 @@ class api{
 
         Logger::log("Input for prediction. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
 
-        if(api::decide_if_predict()){
+        if(Api::decide_if_predict()){
             Logger::log("Input chosen for finetuning", Logger::INFO);
             try {
-                $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+                $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
                 //print( $output);
             } catch (\Throwable $th) {
                 Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
@@ -71,7 +71,7 @@ class api{
 
 
         try {
-            $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
+            $output = Api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
         } catch (\Throwable $th) {
             Logger::log("Predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiExceptionHTML(500, $th->getMessage()  );
@@ -80,11 +80,11 @@ class api{
 
         try {
             if($mode == "html"){
-                $full_HTML = api::getHTML(base64_decode($code), $output);
+                $full_HTML = Api::getHTML(base64_decode($code), $output);
                 return array('resp' => base64_encode($full_HTML));
             }
             else{
-                $json_array = api::getJSON(base64_decode($code), $output);
+                $json_array = Api::getJSON(base64_decode($code), $output);
                 return $json_array;
             }
         } catch (\Throwable $th) {
@@ -127,7 +127,7 @@ class api{
         }
         Logger::log("Input for finetuninf. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
         try {
-            $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+            $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
@@ -216,17 +216,17 @@ class api{
         </style>";
         $full_string = $setHtmlString."<pre>";
 
-        $hcodearray = api::getHCodeVals($output);
-        $strarray = api::getStrings($code, $output);
+        $hcodearray = Api::getHCodeVals($output);
+        $strarray = Api::getStrings($code, $output);
         
 
-        $class_string_arr = api::format_html_code_strings($hcodearray,  $strarray);
+        $class_string_arr = Api::format_html_code_strings($hcodearray,  $strarray);
         
         // for ($i=0; $i < sizeof($hcodearray); $i++) { 
         //     echo $hcodearray[$i] . ": " . $strarray[$i] . "code: " . $class_string_arr[$i]."\n";
         // }
 
-        $full_string .=  api::format_html_code($class_string_arr, $output, $code);
+        $full_string .=  Api::format_html_code($class_string_arr, $output, $code);
 
         $full_string = $full_string."</pre>"."</html>";
         //print($full_string);
@@ -246,12 +246,12 @@ class api{
 
         $result_array = array();
 
-        $words = api::getStrings($code, $output);
-        $hcodearray = api::getHCodeVals($output);
+        $words = Api::getStrings($code, $output);
+        $hcodearray = Api::getHCodeVals($output);
 
         foreach ($output["result"] as $key => $value) {
            
-            $type = api::getType($hcodearray[$key]);
+            $type = Api::getType($hcodearray[$key]);
 
             $word = array(
                 'startIndex' => $value["startIndex"],
@@ -303,7 +303,7 @@ class api{
             if($value["startIndex"] - ($end_of_last_token + 1)  > 0 ){
 
                 $characters_in_between = mb_substr($code, $end_of_last_token + 1,   $value["startIndex"] - ($end_of_last_token + 1) , "UTF-8");
-                $characters_in_between = api::format_special_chars_to_html($characters_in_between);
+                $characters_in_between = Api::format_special_chars_to_html($characters_in_between);
                 array_push($all_code_in_strings, $characters_in_between);
 
                 // echo "startIndex: ". $value["startIndex"] ."\n";
@@ -337,7 +337,7 @@ class api{
         $class_string_arr = array();
         for ($i=0; $i < count($hcodearray); $i++) {
             $class_string = "";
-            $css_class = api::getType($hcodearray[$i]);   
+            $css_class = Api::getType($hcodearray[$i]);   
                 
             // $tt = str_split($strarray[$i]);
             // echo $strarray[$i];
@@ -345,7 +345,7 @@ class api{
             //     echo 'char: ' .mb_ord($ss) . "\n";
             // }
             // echo $hcodearray[$i] . $strarray[$i] ."\n";
-            $class_string = "<code class=\"".$css_class."\">".api::format_special_chars_to_html($strarray[$i])."</code>";
+            $class_string = "<code class=\"".$css_class."\">".Api::format_special_chars_to_html($strarray[$i])."</code>";
             $class_string_arr[] = $class_string;
         }
         return $class_string_arr;
