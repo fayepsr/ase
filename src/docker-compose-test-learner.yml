@@ -4,8 +4,9 @@ services:
     build: 
         context: ./src_learner
     image: src_learner:latest
+    working_dir: /src  
     volumes:
-      - ./src_learner:/src_learner:cached
+      - ./src_learner:/src:cached
     ports:
       - '5000:9007'
   tests:
@@ -14,7 +15,8 @@ services:
     image: src_learner:latest
     depends_on:
       - learner
+    working_dir: /src  
     volumes:
-      - ./src_learner:/src_learner:cached
-    command: sh -c "python -m unittest discover /tests"
+      - ./src_learner:/src:cached
+    command: sh -c "python -m unittest discover /src/tests"
      
