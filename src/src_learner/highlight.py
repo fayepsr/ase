@@ -37,6 +37,7 @@ def predict(content, language='python'):
     model.setup_for_prediction()
     content = base64.b64decode(content).decode('UTF-8')
     lToks = resolver.lex(content)
+    content_list = []
 
     if isinstance(lToks, JArray):
         tokenIds = []
@@ -51,9 +52,12 @@ def predict(content, language='python'):
                     "lItemtokenId": lToks[i].tokenId
                 }
             )
+            print(len(lToks))
+            print(i)
+            content_list.append([content[int(lToks[i].startIndex):int(lToks[i].endIndex)+1], lToks[i].startIndex, lToks[i].endIndex])
 
         prediction = model.predict(tokenIds)
-        return {'ok': 1, 'prediction': prediction, 'result': result}
+        return {'ok': 1, 'prediction': prediction, 'result': result, 'content_list':content_list, 'should be':len(content_list)}
     return {'ok': -1}
 
 
