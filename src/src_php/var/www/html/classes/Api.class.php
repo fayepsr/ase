@@ -1,8 +1,8 @@
 <?php
 
-//TODO: Transfer it to a config file
 function get_learner_url(){
-    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" ){
+
+    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
         return "http://learner:9007/";
     }
     else{
@@ -14,7 +14,7 @@ function get_secret(){
     return "hsdiwu8&%$$";
 }
 
-class api{
+class Api{
 
     /**
      * 
@@ -25,7 +25,12 @@ class api{
      * @throws ApiException if the arguments are empty or non valid 
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
-    public static function highlight($lang = '', $code = '', $secret = ''){
+    public static function highlight($lang = '', $code = '', $secret = '', $mode = 'html'){
+
+        if(empty($mode)){
+            $mode = 'html';
+        }
+
         if(empty($lang) || empty($code)){
             Logger::log("Empty code or lang " , Logger::ERROR);  
             throw new ApiException(406, "Invalid Input Arguments");
@@ -37,8 +42,13 @@ class api{
         }
         
         if ( base64_encode(base64_decode($code, true)) !== $code){
-            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
+            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR); 
             throw new ApiException(406, "The code field must be base64 encoded ");
+        }
+
+        if($mode != "html" && $mode != "json"){
+            Logger::log("The input parameter mode can only be json or html " .$mode, Logger::ERROR);
+            throw new ApiException(406, "The input parameter mode can only be json or html ");      
         }
 
         if($secret != get_secret()){
@@ -48,10 +58,10 @@ class api{
 
         Logger::log("Input for prediction. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
 
-        if(api::decide_if_predict()){
+        if(Api::decide_if_predict()){
             Logger::log("Input chosen for finetuning", Logger::INFO);
             try {
-                $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+                $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
                 //print( $output);
             } catch (\Throwable $th) {
                 Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
@@ -61,7 +71,7 @@ class api{
 
 
         try {
-            $output = api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
+            $output = Api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
         } catch (\Throwable $th) {
             Logger::log("Predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiExceptionHTML(500, $th->getMessage()  );
@@ -69,14 +79,18 @@ class api{
        
 
         try {
-            $full_HTML = api::getHTML(base64_decode($code), $output);
+            if($mode == "html"){
+                $full_HTML = Api::getHTML(base64_decode($code), $output);
+                return array('resp' => base64_encode($full_HTML));
+            }
+            else{
+                $json_array = Api::getJSON(base64_decode($code), $output);
+                return $json_array;
+            }
         } catch (\Throwable $th) {
             Logger::log("api::getHTML threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiException(500, "api::getHTML error. Log: ". $th->getMessage());
         }
-        
-           
-        return array('resp' => base64_encode($full_HTML));
 
     }
 
@@ -113,7 +127,7 @@ class api{
         }
         Logger::log("Input for finetuninf. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
         try {
-            $output = api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+            $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
@@ -139,7 +153,7 @@ class api{
         $setHtmlString = "<!DOCTYPE html>
         <html>
         <style>
-        .ANY {
+        .GENERAL {
             color: black;
             font-weight: normal;
             font-style: normal;
@@ -202,24 +216,56 @@ class api{
         </style>";
         $full_string = $setHtmlString."<pre>";
 
-        $hcodearray = api::getHCodeVals($output);
-        $strarray = api::getStrings($code, $output);
+        $hcodearray = Api::getHCodeVals($output);
+        $strarray = Api::getStrings($code, $output);
         
 
-        $class_string_arr = api::format_html_code_strings($hcodearray,  $strarray);
+        $class_string_arr = Api::format_html_code_strings($hcodearray,  $strarray);
         
         // for ($i=0; $i < sizeof($hcodearray); $i++) { 
         //     echo $hcodearray[$i] . ": " . $strarray[$i] . "code: " . $class_string_arr[$i]."\n";
         // }
 
-        $full_string .=  api::format_html_code($class_string_arr, $output, $code);
+        $full_string .=  Api::format_html_code($class_string_arr, $output, $code);
 
         $full_string = $full_string."</pre>"."</html>";
         //print($full_string);
         return $full_string;
 
     }
+    private static function getJSON($code, $output){
+        //output was a string - need an array
+        $output = json_decode($output, 1);
+        if(empty($output) || $output === FALSE){
+            throw new Exception("Baselearner did not return a valid json string");
+        }
 
+        if(!isset($output["result"])){
+            throw new Exception("getStrings Output is not set");
+        }
+
+        $result_array = array();
+
+        $words = Api::getStrings($code, $output);
+        $hcodearray = Api::getHCodeVals($output);
+
+        foreach ($output["result"] as $key => $value) {
+           
+            $type = Api::getType($hcodearray[$key]);
+
+            $word = array(
+                'startIndex' => $value["startIndex"],
+                'endIndex' => $value["endIndex"],
+                'type' => $type,
+                'token' => $words[$key]
+            );
+
+            array_push($result_array, $word);    
+		}
+
+        return $result_array;
+
+    }
     /**
      * This function returns the predicted hcode as an array from the $output variable
      * @param mixed $output 
@@ -257,7 +303,7 @@ class api{
             if($value["startIndex"] - ($end_of_last_token + 1)  > 0 ){
 
                 $characters_in_between = mb_substr($code, $end_of_last_token + 1,   $value["startIndex"] - ($end_of_last_token + 1) , "UTF-8");
-                $characters_in_between = api::format_special_chars_to_html($characters_in_between);
+                $characters_in_between = Api::format_special_chars_to_html($characters_in_between);
                 array_push($all_code_in_strings, $characters_in_between);
 
                 // echo "startIndex: ". $value["startIndex"] ."\n";
@@ -291,49 +337,7 @@ class api{
         $class_string_arr = array();
         for ($i=0; $i < count($hcodearray); $i++) {
             $class_string = "";
-            $css_class = "";
-		    switch ($hcodearray[$i]) {
-                case 0:
-                    $css_class = "ANY";
-                    break;
-                case 1:
-                    $css_class = "KEYWORD";
-                    break;
-                case 2:
-                    $css_class = "LITERAL";
-                    break;
-                case 3:
-                    $css_class = "CHAR_STRING_LITERAL";
-                    break;
-                case 4:
-                    $css_class = "COMMENT";
-                    break;
-                case 5:
-                    $css_class = "CLASS_DECLARATOR";
-                    break;
-                case 6:
-                    $css_class = "FUNCTION_DECLARATOR";
-                    break;
-                case 7:
-                    $css_class = "VARIABLE_DECLARATOR";
-                    break;
-                case 8:
-                    $css_class = "TYPE_IDENTIFIER";
-                    break;
-                case 9:
-                    $css_class = "FUNCTION_IDENTIFIER";
-                    break;
-                case 10:
-                    $css_class = "FIELD_IDENTIFIER";
-                    break;
-                case 11:
-                    $css_class = "ANNOTATION_DECLARATOR";
-                    break;
-                default:
-                    $css_class = "UNKONOWN";
-                    break;
-
-            }
+            $css_class = Api::getType($hcodearray[$i]);   
                 
             // $tt = str_split($strarray[$i]);
             // echo $strarray[$i];
@@ -341,10 +345,55 @@ class api{
             //     echo 'char: ' .mb_ord($ss) . "\n";
             // }
             // echo $hcodearray[$i] . $strarray[$i] ."\n";
-            $class_string = "<code class=\"".$css_class."\">".api::format_special_chars_to_html($strarray[$i])."</code>";
+            $class_string = "<code class=\"".$css_class."\">".Api::format_special_chars_to_html($strarray[$i])."</code>";
             $class_string_arr[] = $class_string;
         }
         return $class_string_arr;
+    }
+
+    private static function getType($hcodevalue){
+        switch ($hcodevalue) {
+            case 0:
+                $type = "GENERAL";
+                break;
+            case 1:
+                $type = "KEYWORD";
+                break;
+            case 2:
+                $type = "LITERAL";
+                break;
+            case 3:
+                $type = "CHAR_STRING_LITERAL";
+                break;
+            case 4:
+                $type = "COMMENT";
+                break;
+            case 5:
+                $type = "CLASS_DECLARATOR";
+                break;
+            case 6:
+                $type = "FUNCTION_DECLARATOR";
+                break;
+            case 7:
+                $type = "VARIABLE_DECLARATOR";
+                break;
+            case 8:
+                $type = "TYPE_IDENTIFIER";
+                break;
+            case 9:
+                $type = "FUNCTION_IDENTIFIER";
+                break;
+            case 10:
+                $type = "FIELD_IDENTIFIER";
+                break;
+            case 11:
+                $type = "ANNOTATION_DECLARATOR";
+                break;
+            default:
+                $type = "UNKONOWN";
+                break;
+        }
+        return $type;
     }
 
     /**
