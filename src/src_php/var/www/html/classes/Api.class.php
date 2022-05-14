@@ -1,14 +1,5 @@
 <?php
 
-function get_learner_url(){
-
-    if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
-        return "http://learner:9007/";
-    }
-    else{
-        return "http://ase-service-1.service.local:9007/";
-    }
-} 
 
 function get_secret(){
     return "hsdiwu8&%$$";
@@ -441,7 +432,7 @@ class Api{
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => get_learner_url() . $method,
+          CURLOPT_URL => Api::get_learner_url() . $method,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => '',
           CURLOPT_MAXREDIRS => 10,
@@ -457,14 +448,14 @@ class Api{
 
 
         if (curl_errno($curl)) {
-            $error_msg = 'CURL Error url: ' . get_learner_url() . $method . ' error:' . curl_error($curl);
+            $error_msg = 'CURL Error url: ' . Api::get_learner_url() . $method . ' error:' . curl_error($curl);
             $curl_errno = curl_errno($curl);
             throw new Exception($error_msg, $curl_errno);
         }
         else{
             $curl_info = curl_getinfo($curl);
             if($curl_info['http_code'] != 200){
-                $error_msg = 'CURL Error url: ' . get_learner_url() . $method . ' http_code:' . $curl_info['http_code'].  ' msg: '.  $output;
+                $error_msg = 'CURL Error url: ' . Api::get_learner_url() . $method . ' http_code:' . $curl_info['http_code'].  ' msg: '.  $output;
                 throw new Exception($error_msg, $curl_info['http_status']);
             }
         }
@@ -475,8 +466,25 @@ class Api{
         
     }
 
+    /**
+     * This function exists in case we need to decide which input should be sent for prediction. At the moment it returns always true
+     * @return bool 
+     */
     private static function decide_if_predict(){
-        $rand = rand();
-        return ($rand % 10 == 0) ? true : false;
+        return true;
     }
+
+    /**
+     * Define the learner's URL
+     * @return string 
+     */
+    private static function get_learner_url(){
+
+        if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
+            return "http://learner:9007/";
+        }
+        else{
+            return "http://ase-service-1.service.local:9007/";
+        }
+    } 
 }
