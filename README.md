@@ -1,5 +1,5 @@
 ## Rest API 
-You may find in [Postman Collection](postman/ASE.postman_collection.json) the collection of our Rest API. 
+You may find in [Postman Collection](postman/) the collection of our Rest API. 
 You may find instructions as to how to import the postman collection [here](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/).
 There are two endpoints exposed: Finetune and Predict
 The code to be used for training or to highlight must be given base64encoded. 
