@@ -5,6 +5,7 @@ There are two endpoints exposed: Finetune and Predict
 The code to be used for training or to highlight must be given base64encoded. 
 
 ### Example api calls
+*This comment would not exist in a real application. The secret to use is: hsdiwu8&%$$*
 
 #### Finetune
 curl --location --request POST 'http://localhost:8089/api/v1/finetune' \
@@ -67,3 +68,8 @@ docker-compose up
 
 ## Our demo (AWS lightsail)
 Our public domain https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
+
+## Our Containers 
+[React](./src/src_ract/README.md)
+[PHP](./src/src_php/README.md)
+[python_JAVA](./src/src_learner/README.md)
