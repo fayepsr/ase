@@ -5,6 +5,10 @@
   position: relative;
 }
 
+.form-box div {
+  margin: 5vh;
+}
+
 .form-box h5 {
   font-size: 35px;
   text-align: center;
@@ -12,11 +16,14 @@
   margin: 0 0 0.5vh 0;
 }
 
+.form-box input[type='radio'] {
+  margin: 0 2vw;
+}
+
 .form-box label {
   display: block;
   text-align: start;
   font-size: 20px;
-  margin: 0 0 2vh 0;
 }
 
 .form-box select {
