@@ -1,9 +1,0 @@
-https://phpunit.de/getting-started/phpunit-9.html
-These are the commands to run when testing
-
-The test files are not copied in the image ... only added via the compose ... I do not need them in production 
-
-cd tests
-composer require --dev phpunit/phpunit ^9
-export PATH=/tests/vendor/bin/:$PATH
-phpunit --bootstrap ./autoload.php tests
