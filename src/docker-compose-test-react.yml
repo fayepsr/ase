@@ -7,4 +7,6 @@ services:
     ports:
       - '3007:3000'
     working_dir: /app
+    environment:
+    - CI=true
     command: sh -c 'npm test'
