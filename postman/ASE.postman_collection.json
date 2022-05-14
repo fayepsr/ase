@@ -66,6 +66,11 @@
 							"key": "secret",
 							"value": "hsdiwu8&%$$",
 							"type": "text"
+						},
+						{
+							"key": "mode",
+							"value": "json",
+							"type": "text"
 						}
 					]
 				},
