@@ -70,6 +70,6 @@ docker-compose up
 Our public domain https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
 
 ## Our Containers 
-[React](./src/src_ract/README.md)
-[PHP](./src/src_php/README.md)
-[python_JAVA](./src/src_learner/README.md)
+- [React](./src/src_ract/README.md)
+- [PHP](./src/src_php/README.md)
+- [python_JAVA](./src/src_learner/README.md)
