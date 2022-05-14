@@ -37,5 +37,13 @@ composer require --dev phpunit/phpunit ^9
 export PATH=/tests/vendor/bin/:$PATH
 phpunit --bootstrap ./autoload.php tests
 ```
+## The documentation
+The documentation of our classes is [here](./docs/index.html) . You can open it in your browser.
 
 
+We created the documentation using phpDocumentor using the folllowing commands: 
+```
+wget https://phpdoc.org/phpDocumentor.phar
+chmod +x phpDocumentor.phar
+phpDocumentor  -d ./classes/  -t ./docs --title="PHP Documentation"
+```

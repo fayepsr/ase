@@ -8,11 +8,12 @@ function get_secret(){
 class Api{
 
     /**
-     * 
+     * This function returns the highlighted code. It returns either a full HTML document or a JSON
      * @param string $lang 
      * @param string $code 
      * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
-     * @return string[] 
+     * @param string $mode : Accepts html or JSON
+     * @return array
      * @throws ApiException if the arguments are empty or non valid 
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
@@ -87,11 +88,11 @@ class Api{
 
 
     /**
-     * 
+     * It uses the finetune function of the model
      * @param string $lang 
      * @param string $code 
      * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
-     * @return int[] 
+     * @return array
      * @throws ApiException if the arguments are empty or non valid
      * @throws ApiExceptionHTML if the finetune endpoint curl_post fails
      */
@@ -128,7 +129,7 @@ class Api{
     }
 
     /**
-     * Rturns the whole <html> formated code
+     * Returns the whole <html> formated code
      * @param mixed $code 
      * @param mixed $output 
      * @return string 
