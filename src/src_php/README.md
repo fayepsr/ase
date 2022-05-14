@@ -38,12 +38,14 @@ export PATH=/tests/vendor/bin/:$PATH
 phpunit --bootstrap ./autoload.php tests
 ```
 ## The documentation
-The documentation of our classes is [here](./docs/index.html) . You can open it in your browser.
+A short documentatiOn of the public interface of our classes is [here](documentation.md)
+Alternative, the original documentation from phpDocumentor is [here](./docs/index.html) . You need to open the html file from your browser.
 
 
 We created the documentation using phpDocumentor using the folllowing commands: 
 ```
+composer require onspli/phpdoc-markdown
 wget https://phpdoc.org/phpDocumentor.phar
 chmod +x phpDocumentor.phar
-phpDocumentor  -d ./classes/  -t ./docs --title="PHP Documentation"
+phpDocumentor  -d ./classes/  -t ./docs --title="PHP Documentation" --template=vendor/onspli/phpdoc-markdown/templates/public-onefile
 ```
