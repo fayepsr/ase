@@ -4,8 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 
-const url =
-  'http://localhost:8089/api/v1/highlight';
+const url = 'http://localhost:8089/api/v1/highlight';
 
 test('should correctly set defaults', () => {
   render(<App />);
@@ -17,6 +16,10 @@ test('should correctly set defaults', () => {
 
   // Code text area should be empty
   expect(screen.getByLabelText('Code:')).toHaveTextContent('');
+
+  // Default result format is HTML
+  expect(screen.getByLabelText('HTML')).toBeChecked();
+  expect(screen.getByLabelText('JSON')).not.toBeChecked();
 
   // Result and error are not displayed
   expect(screen.queryByTestId('result')).not.toBeInTheDocument();
@@ -37,6 +40,13 @@ test('should simulate entering code in text area', async () => {
   expect(screen.getByLabelText('Code:')).toHaveTextContent(
     'print("hello world")'
   );
+});
+
+test('should simulate changing result format', async () => {
+  render(<App />);
+  userEvent.click(screen.getByLabelText('JSON'));
+  expect(screen.getByLabelText('HTML')).not.toBeChecked();
+  expect(screen.getByLabelText('JSON')).toBeChecked();
 });
 
 test('should simulate success on button click and display result', async () => {

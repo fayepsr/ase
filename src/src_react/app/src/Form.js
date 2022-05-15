@@ -58,7 +58,10 @@ export default class Form extends React.Component {
           throw new Error(text);
         });
       })
-      .then((response) => Buffer.from(response.resp, 'base64').toString())
+      .then((response) => {
+        if (this.state.mode === 'json') return JSON.stringify(response);
+        return Buffer.from(response.resp, 'base64').toString();
+      })
       .then((result) => this.setState({ result: result }))
       .catch((error) =>
         this.setState({
