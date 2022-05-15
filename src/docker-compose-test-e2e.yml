@@ -1,0 +1,29 @@
+version: '3'
+services:
+  cypress:
+    build:
+      context: ./e2e
+    image: e2e:latest
+    working_dir: /
+    command: sh -c "npx cypress run"
+  react:
+    build:
+      context: ./src_react
+    image: src_react:latest
+    ports:
+      - '3007:3000'
+    working_dir: /app
+  php:
+    build:
+      context: ./src_php
+    image: src_php:latest
+    ports:
+      - '8089:80'
+    working_dir: /
+  learner:
+    build:
+      context: ./src_learner
+    image: src_learner:latest
+    ports:
+      - '5000:9007'
+    working_dir: /src
