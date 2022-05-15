@@ -9,6 +9,7 @@ export default class Form extends React.Component {
     this.state = {
       lang: 'java',
       code: '',
+      mode: 'html',
       result: '',
       error: '',
     };
@@ -32,7 +33,8 @@ export default class Form extends React.Component {
     var formdata = new FormData();
     formdata.append('lang', this.state.lang);
     formdata.append('code', Buffer.from(this.state.code).toString('base64'));
-    formdata.append('secret', "hsdiwu8&%$$");
+    formdata.append('secret', 'hsdiwu8&%$$');
+    formdata.append('mode', this.state.mode);
 
     var requestOptions = {
       method: 'POST',
@@ -56,7 +58,10 @@ export default class Form extends React.Component {
           throw new Error(text);
         });
       })
-      .then((response) => Buffer.from(response.resp, 'base64').toString())
+      .then((response) => {
+        if (this.state.mode === 'json') return JSON.stringify(response);
+        return Buffer.from(response.resp, 'base64').toString();
+      })
       .then((result) => this.setState({ result: result }))
       .catch((error) =>
         this.setState({
@@ -78,27 +83,54 @@ export default class Form extends React.Component {
           )}
         </div>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Language:
-            <select
-              name="lang"
-              value={this.state.lang}
-              onChange={this.handleInputChange}
-            >
-              <option value="java">Java</option>
-              <option value="kotlin">Kotlin</option>
-              <option value="python">Python</option>
-            </select>
-          </label>
-          <br />
-          <label>
-            Code:
-            <textarea
-              name="code"
-              value={this.state.code}
-              onChange={this.handleInputChange}
-            />
-          </label>
+          <div>
+            <label>
+              Language:
+              <select
+                name="lang"
+                value={this.state.lang}
+                onChange={this.handleInputChange}
+              >
+                <option value="java">Java</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="python">Python</option>
+              </select>
+            </label>
+          </div>
+          <div>
+            <label>
+              Code:
+              <textarea
+                name="code"
+                value={this.state.code}
+                onChange={this.handleInputChange}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Result format:
+              <label>
+                <input
+                  type="radio"
+                  value="html"
+                  name="mode"
+                  defaultChecked
+                  onChange={this.handleInputChange}
+                />
+                HTML
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="json"
+                  name="mode"
+                  onChange={this.handleInputChange}
+                />
+                JSON
+              </label>
+            </label>
+          </div>
           <input className="submit" type="submit" value="Submit" />
         </form>
         <div>
