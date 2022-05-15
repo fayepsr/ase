@@ -24,7 +24,13 @@ class Logger
 
     private function writeToFile($message)
     {
-        file_put_contents($this->config['log_file'], "$message\n", FILE_APPEND);
+        if(!file_exists($this->config['log_file'])){
+            file_put_contents($this->config['log_file'], "$message\n");
+        }
+        else{
+            file_put_contents($this->config['log_file'], "$message\n", FILE_APPEND);
+        }
+        
     }
 
     public static function log($message, $level = Logger::INFO)
