@@ -24,6 +24,9 @@ class Logger
 
     private function writeToFile($message)
     {
+        if(!is_dir($this->config['log_folder'])){
+            mkdir($this->config['log_folder']);
+        }
         if(!file_exists($this->config['log_file'])){
             file_put_contents($this->config['log_file'], "$message\n");
         }
