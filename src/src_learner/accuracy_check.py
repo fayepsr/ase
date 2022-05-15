@@ -51,7 +51,9 @@ def check_accuracy(model_type, language):
     model.setup_for_prediction()
 
     total_correct_files = 0
+    total_correct_tokens = 0
     total_files = 0
+    total_tokens = 0
 
     # Iterate through the Python source files in the provided directory and subdirectories
     for file in Path(data_directory).rglob(ext):
@@ -71,17 +73,24 @@ def check_accuracy(model_type, language):
                 hCodeValues = []
 
                 for hTok in hToks:
+                    total_tokens += 1
                     tokenIds.append(hTok.tokenId)
                     hCodeValues.append(hTok.hCodeValue)
 
                 prediction = model.predict(tokenIds)
 
+                # Compares the tokens for each file
+                for j in range(len(hCodeValues)):
+                    if prediction[j] == hCodeValues[j]:
+                        total_correct_tokens += 1
+
                 if prediction == hCodeValues:
                     total_correct_files += 1
 
-    # Calculates the accuracy based on each correctly highlighted file
+    # Calculates the accuracy based on each correctly highlighted file's tokens
     if total_files > 0:
-        accuracy = total_correct_files / total_files
+        #accuracy = total_correct_files / total_files
+        accuracy = total_correct_tokens / total_tokens
     else:
         accuracy = 0
-    return {'ok': 1, 'accuracy': accuracy, 'total_files': total_files, 'total_correct_files': total_correct_files}
+    return {'ok': 1, 'accuracy': accuracy, 'total_tokens': total_tokens, 'total_correct_tokens': total_correct_tokens}
