@@ -42,21 +42,15 @@ def predict(content, language='python'):
         tokenIds = []
         result = []
 
-        #checking to make sure that the start and end index doesn't repeat (resolver issue)
-        tempstartindex = -1
-        tempendindex = -1
         for i in range(lToks.length):
             tokenIds.append(lToks[i].tokenId)
-            if ((tempstartindex < lToks[i].startIndex) and (tempendindex < lToks[i].endIndex)):
-                result.append(
-                    {
-                        "startIndex": lToks[i].startIndex,
-                        "endIndex": lToks[i].endIndex,
-                        "lItemtokenId": lToks[i].tokenId
-                    }
-                )
-            tempstartindex = lToks[i].startIndex
-            tempendindex = lToks[i].endIndex
+            result.append(
+                {
+                    "startIndex": lToks[i].startIndex,
+                    "endIndex": lToks[i].endIndex,
+                    "lItemtokenId": lToks[i].tokenId
+                }
+            )
 
         prediction = model.predict(tokenIds)
         return {'ok': 1, 'prediction': prediction, 'result': result}
