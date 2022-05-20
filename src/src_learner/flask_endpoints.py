@@ -71,10 +71,9 @@ def api_predict():
 
 
 """
-fine-tunes the model with the code given
+fine-tunes the model with code that has been previously saved
 
 Args:
-code_to_format: code that should be formatted
 language: language the code is in. possible values: python, java, kotlin
 
 Returns:
@@ -87,9 +86,8 @@ Exceptions:
 @app.route('/finetune', methods=['POST'])
 def api_finetune():
     try:
-        code_to_format = request.form.get('code_to_format')
         language = request.form.get('language')
-        res = highlight.finetune(code_to_format, language)
+        res = highlight.finetune(language)
         if res['ok'] != 1:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
@@ -106,46 +104,6 @@ def api_finetune():
         # closing the file
         f.close()
         abort(500, message)
-
-
-
-"""
-get the accuracy of the models
-
-Args:
-model_type: base, finetuning
-language: language the code is in. possible values: python, java, kotlin
-
-Returns:
-result: json with prediction and tokens (tokens = result)
-{'ok': 1, 'prediction': prediction, 'result': result}
-
-Exceptions:
-500: BaseLearnerException
-"""
-@app.route('/accuracy', methods=['GET'])
-def api_accuracy():
-    try:
-        model_type = request.args.get('model_type')
-        language = request.args.get('language')
-        res = accuracy_check.check_accuracy(model_type, language)
-        if res['ok'] != 1:
-            raise ValueError(res['msg'])
-        result = json.dumps(res, indent=4)
-        return result
-    except ValueError as e:
-        message = "BaseLearnerException " + str(e)
-        # creating/opening a file
-        f = open("errorlog.txt", "a")
-
-        # writing in the file
-        timezone = pytz.timezone('Europe/Madrid')
-        f.write(str(datetime.now(tz = timezone))+" BaseLearnerException " + str(e) +"\n")
-
-        # closing the file
-        f.close()
-        abort(500, message)
-
 
 """
 persists the model that is given via filename
