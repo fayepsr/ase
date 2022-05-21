@@ -1,6 +1,6 @@
 ## Rest API 
-You may find in [Postman Collection](postman/) the collection of our Rest API. 
-You may find instructions as to how to import the postman collection [here](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/).
+You can find in [Postman Collection](postman/) the collection of our Rest API. 
+You can find instructions as to how to import the postman collection [here](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/).
 There are two endpoints exposed: Finetune and Predict
 The code to be used for training or to highlight must be given base64encoded. 
 
@@ -45,8 +45,9 @@ The json mode will return a json array as shown in the example below. Each eleme
     ....
 ] ```
 
-## Docker
+## Docker and Docker-Compose
 To compose the containers navigate inside src and run [.\build_and_run_all.bat](./src/build_and_run_all.bat) (for Windows Environments).
+After that, you can start all microservices via the command "docker-compose up" inside the src folder
 
 If not in a Windows Environment, you may run the following commands: 
 ```
@@ -64,6 +65,11 @@ docker build -f ./dockerfile -t src_learner:latest .
 cd ../
 docker-compose up
 ```
+
+The following files exist:
+- one dockerfile each inside /src/src_learner, /src/src_php and /src/src_react
+- the file "docker-compose.yml" inside the /src folder for running the whole application
+- multiple docker-compose files with "test" in their name for running the tests of the microservices
 
 
 ## Our demo (AWS lightsail)

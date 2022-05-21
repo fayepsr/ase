@@ -3,6 +3,11 @@ import boto3
 from botocore.exceptions import ClientError
 
 def persist_model(filename):
+    """
+
+    @param filename: name of the .pt file that should be saved (e.g. python3_base_model.pt)
+    @return: ok if file was saved, error otherwise
+    """
     # credentials are saved in a separate file so that they are not shared by accident
     with open('credentials.txt') as f:
         data = f.read()

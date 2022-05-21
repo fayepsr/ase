@@ -5,28 +5,25 @@ services:
         context: ./src_react
     image: src_react:latest
     ports:
-      - '3007:3000'
-    working_dir: /app
+      - '6000:6000'
+    working_dir: /src_react
     volumes:
-      - ./src_react/app/src:/src:cached
+      - ./src_react:/src_react:cached
   php:
     build: 
         context: ./src_php
     image: src_php:latest
     ports:
       - '8089:80'
-    working_dir: /
+    working_dir: /var/www/html
     volumes:
       - ./src_php/var/www/html:/var/www/html:cached
-      - ./src_php/tests/tests:/tests/tests:cached
-      - ./src_php/tests/phpunitstart.txt:/tests/phpunitstart.txt:cached
-      - ./src_php/tests/autoload.php:/tests/autoload.php:cached
   learner:
     build: 
         context: ./src_learner
     image: src_learner:latest
     ports:
       - '5000:9007'
-    working_dir: /src
+    working_dir: /src_learner
     volumes:
       - ./src_learner:/src:cached
