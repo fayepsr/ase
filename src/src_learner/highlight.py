@@ -91,59 +91,15 @@ def finetune(language='python'):
     with open(test_current_path, 'rt', encoding='utf-8') as f_test_current:
         txt_test_current = f_test_current.read().splitlines()
     
-    num_training_samples = len(txt_training_current)
-    num_test_samples = len(txt_test_current)
-        
-    # Remove overlaps between current training and test docs
-    txt_training_current = [i for i in txt_training_current if i not in txt_test_current]
-    
-    # Remove duplicate token sequences from current training and test sets
-    # already present in saved training sets
-    training_filenum = 1
-    while os.path.exists(training_directory + f'/training_{training_filenum}.txt'):
-        with open(training_directory + f'/training_{training_filenum}.txt', 'rt',
-                  encoding='utf-8') as f_train:
-            training_set = f_train.read().splitlines()
-        txt_training_current = [i for i in txt_training_current if i not in training_set]
-        txt_test_current = [i for i in txt_test_current if i not in training_set]
-        training_filenum += 1
-        
-    # Remove duplicate token sequences from current training and test sets 
-    # already present in saved test sets
-    test_filenum = 1
-    while os.path.exists(test_directory + f'/test_{test_filenum}.txt'):
-        with open(test_directory + f'/test_{test_filenum}.txt', 'rt',
-                  encoding='utf-8') as f_test:
-            test_set = f_test.read().splitlines()
-        txt_training_current = [i for i in txt_training_current if i not in test_set]
-        txt_test_current = [i for i in txt_test_current if i not in test_set]
-        test_filenum += 1
-    
-    # Check if the number of training samples have decreased and update the file
-    if num_training_samples > len(txt_training_current):
-        num_training_samples = len(txt_training_current)
-        
-        if num_training_samples == 0:
-            os.remove(training_current_path)
-        else:
-            with open(training_current_path, 'w', encoding="utf-8") as f_training_current:
-                f_training_current.write("\n".join(txt_training_current))
-    
-    # Check if the number of test samples have decreased and update the file
-    if num_test_samples > len(txt_test_current):
-        num_test_samples = len(txt_test_current)
-        
-        if num_test_samples == 0:
-            os.remove(test_current_path)
-            # replace the current test with an archived one for testing after training
-            txt_test_current = test_set
-        else:
-            with open(test_current_path, 'w', encoding="utf-8") as f_test_current:
-                f_test_current.write("\n".join(txt_test_current))
-    
+    result_check_overlap = check_overlap(txt_training_current, txt_test_current, language)
+    txt_training_current = result_check_overlap.get('training_current')
+    txt_test_current = result_check_overlap.get('test_current')
+    training_filenum = result_check_overlap.get('training_filenum')
+    test_filenum = result_check_overlap.get('test_filenum')    
+     
     # Check if there are at least min_num_training_samples to train on
     if len(txt_training_current) < min_num_training_samples:
-        return {'ok': -1, 'msg': 'Not enough training samples'}           
+        return {'ok': -1, 'msg': 'Not enough training samples'}        
     
     if language == 'python':
         model = bl.SHModel(bl.PYTHON3_LANG_NAME, 'finetuning_model')
@@ -247,3 +203,64 @@ def check_accuracy(model, tokenId_set, hCodeValue_set):
         accuracy = 0
     
     return {'ok': 1, 'accuracy': accuracy, 'total_tokens': total_tokens, 'total_correct_tokens': total_correct_tokens}
+
+def check_overlap(txt_training_current, txt_test_current, language):
+    training_directory = "trainingData/" + language
+    training_current_path = training_directory + "/training_current.txt"
+    test_directory = "accuracyTestData/" + language
+    test_current_path = test_directory + "/test_current.txt"
+    
+    num_training_samples = len(txt_training_current)
+    num_test_samples = len(txt_test_current)
+    
+    # Remove overlaps between current training and test docs
+    txt_training_current = [i for i in txt_training_current if i not in txt_test_current]
+    
+    # Remove duplicate token sequences from current training and test sets
+    # already present in saved training sets
+    training_filenum = 1
+    while os.path.exists(training_directory + f'/training_{training_filenum}.txt'):
+        with open(training_directory + f'/training_{training_filenum}.txt', 'rt',
+                  encoding='utf-8') as f_train:
+            training_set = f_train.read().splitlines()
+        txt_training_current = [i for i in txt_training_current if i not in training_set]
+        txt_test_current = [i for i in txt_test_current if i not in training_set]
+        training_filenum += 1
+        
+    # Remove duplicate token sequences from current training and test sets 
+    # already present in saved test sets
+    test_filenum = 1
+    while os.path.exists(test_directory + f'/test_{test_filenum}.txt'):
+        with open(test_directory + f'/test_{test_filenum}.txt', 'rt',
+                  encoding='utf-8') as f_test:
+            test_set = f_test.read().splitlines()
+        txt_training_current = [i for i in txt_training_current if i not in test_set]
+        txt_test_current = [i for i in txt_test_current if i not in test_set]
+        test_filenum += 1
+        
+    # Check if the number of training samples have decreased and update the file
+    if num_training_samples > len(txt_training_current):
+        num_training_samples = len(txt_training_current)
+        
+        if num_training_samples == 0:
+            os.remove(training_current_path)
+        else:
+            with open(training_current_path, 'w', encoding="utf-8") as f_training_current:
+                f_training_current.write("\n".join(txt_training_current))
+    
+    # Check if the number of test samples have decreased and update the file
+    if num_test_samples > len(txt_test_current):
+        num_test_samples = len(txt_test_current)
+        
+        if num_test_samples == 0:
+            os.remove(test_current_path)
+            # replace the current test with an archived one for testing after training
+            txt_test_current = test_set
+        else:
+            with open(test_current_path, 'w', encoding="utf-8") as f_test_current:
+                f_test_current.write("\n".join(txt_test_current))
+ 
+    return {'training_current': txt_training_current,
+            'test_current': txt_test_current,
+            'training_filenum': training_filenum,
+            'test_filenum': test_filenum}
