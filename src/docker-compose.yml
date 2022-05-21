@@ -1,8 +1,8 @@
 version: '3'
 services:
   react:
-    build: 
-        context: ./src_react
+    build:
+      context: ./src_react
     image: src_react:latest
     ports:
       - '3007:3000'
@@ -10,8 +10,8 @@ services:
     volumes:
       - ./src_react/app/src:/src:cached
   php:
-    build: 
-        context: ./src_php
+    build:
+      context: ./src_php
     image: src_php:latest
     ports:
       - '8089:80'
@@ -22,8 +22,8 @@ services:
       - ./src_php/tests/phpunitstart.txt:/tests/phpunitstart.txt:cached
       - ./src_php/tests/autoload.php:/tests/autoload.php:cached
   learner:
-    build: 
-        context: ./src_learner
+    build:
+      context: ./src_learner
     image: src_learner:latest
     ports:
       - '5000:9007'

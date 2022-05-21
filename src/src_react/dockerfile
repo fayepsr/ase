@@ -4,11 +4,13 @@ FROM node:latest
 WORKDIR /app
 
 ENV PATH /app/node_modules/.bin:${PATH}
+ENV REACT_APP_API_URL="http://host.docker.internal:8089/api/v1/highlight"
 
 # Install app dependencies
 COPY /app/public ./public
 COPY /app/src ./src
 COPY /app/package*.json ./
+COPY /app/.env ./
 RUN npm install
 
 EXPOSE 3000
