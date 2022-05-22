@@ -131,9 +131,9 @@ def load_test_set(path):
     return txt_test_current
 
 def check_overlap(txt_training_current, txt_test_current, language):
-    training_directory = "trainingData/" + language
+    training_directory = "/src/trainingData/" + language
     training_current_path = training_directory + "/training_current.txt"
-    test_directory = "accuracyTestData/" + language
+    test_directory = "/src/accuracyTestData/" + language
     test_current_path = test_directory + "/test_current.txt"
 
     num_training_samples = len(txt_training_current)
@@ -196,19 +196,26 @@ def check_accuracy(model, txt_test_current):
     total_tokens = 0
     total_correct_tokens = 0
 
+    # check that file is not empty
+    if len(txt_test_current) == 0:
+        return {'ok': -1, 'msg': 'file is empty'}
+
     # Test on test set
     split_test_current = [i.split(':') for i in txt_test_current]
     tokenId_set = [[int(token) for token in tokenRow[0].split(',')]
                    for tokenRow in split_test_current]
     hCodeValue_set = [[int(hCodeValue) for hCodeValue in hCodeValueRow[1].split(',')]
                       for hCodeValueRow in split_test_current]
+    # check that we have the right amount of tokens and Ids
+    if len(tokenId_set) != len(hCodeValue_set):
+        return {'ok': -1, 'msg': 'tokens do not match hCode', 'len_tokenId': len(tokenId_set), 'len_hCode': len(hCodeValue_set)}
 
     for sample in range(len(tokenId_set)):
         prediction = model.predict(tokenId_set[sample])
         for hCodeValue in range(len(hCodeValue_set[sample])):
             total_tokens += 1
-            hCodevalue_sample = hCodeValue_set[sample]
-            if hCodevalue_sample[hCodeValue] == prediction[hCodeValue]:
+            hCodeValue_sample = hCodeValue_set[sample]
+            if hCodeValue_sample[hCodeValue] == prediction[hCodeValue]:
                 total_correct_tokens += 1
 
     if total_tokens > 0:
@@ -292,7 +299,7 @@ def finetune(language='python', min_num_training_samples=1):
 
     # Check if there are at least min_num_training_samples to train on
     if len(txt_training_current) < min_num_training_samples:
-        return {'ok': -1, 'msg': 'Not enough training samples'}
+        return {'ok': -1, 'msg': 'Not enough training samples 1'}
 
     # correct overlap if necessary
     result_check_overlap = check_overlap(txt_training_current, txt_test_current, language)
@@ -300,6 +307,10 @@ def finetune(language='python', min_num_training_samples=1):
     txt_test_current = result_check_overlap.get('test_current')
     training_filenum = result_check_overlap.get('training_filenum')
     test_filenum = result_check_overlap.get('test_filenum')
+
+    # Check if there are at least min_num_training_samples to train on
+    if len(txt_training_current) < min_num_training_samples:
+        return {'ok': -1, 'msg': 'Not enough training samples 2'}
 
     # load models for training
     model = model_loader(language, 'finetuning_model')
@@ -328,6 +339,11 @@ def finetune(language='python', min_num_training_samples=1):
 
     accuracy_finetuning = check_accuracy(model, txt_test_current).get('accuracy')
     accuracy_base = check_accuracy(base_model, txt_test_current).get('accuracy')
+
+    if accuracy_finetuning.get('ok') != 1:
+        return accuracy_finetuning
+    elif accuracy_base.get('ok') != 1:
+        return accuracy_base
 
     # exchange models if accuracy is higher of finetuning_model than base model
     status_msg = exchange_models(language, accuracy_base, accuracy_finetuning)
