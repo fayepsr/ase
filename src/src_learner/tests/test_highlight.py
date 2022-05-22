@@ -89,15 +89,15 @@ class Test(unittest.TestCase):
 
     def test_finetune_python(self):
         response = highlight.finetune('python')
-        self.assertEquals(response.get('ok'), 1)
+        self.assertGreater(response.get('ok'), -1)
 
     def test_finetune_kotlin(self):
         response = highlight.finetune('kotlin')
-        self.assertEquals(response.get('ok'), 1)
+        self.assertGreater(response.get('ok'), -1)
 
     def test_finetune_java(self):
         response = highlight.finetune('java')
-        self.assertEquals(response.get('ok'), 1)
+        self.assertGreater(response.get('ok'), -1)
 
 
 
