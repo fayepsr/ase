@@ -57,11 +57,6 @@ class TestAPI(unittest.TestCase):
         resp = requests.post(URL, data=params)
         self.assertEquals(resp.status_code, 200)
 
-        # error when language that does not exist yet?
-        params = {'language': 'golang'}
-        resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 500)
-
 
 if __name__ == '__main__':
     # begin the unittest.main()

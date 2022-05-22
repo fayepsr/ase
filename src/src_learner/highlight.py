@@ -130,11 +130,15 @@ def load_test_set(path):
         txt_test_current = f_test_current.read().splitlines()
     return txt_test_current
 
-def check_overlap(txt_training_current, txt_test_current, language):
-    training_directory = "/src/trainingData/" + language
-    training_current_path = training_directory + "/training_current.txt"
-    test_directory = "/src/accuracyTestData/" + language
-    test_current_path = test_directory + "/test_current.txt"
+def check_overlap(txt_training_current, txt_test_current, language, training_directory='', training_current_path='', test_directory='', test_current_path=''):
+    if not training_directory:
+        training_directory = "/src/trainingData/" + language
+    if not training_current_path:
+        training_current_path = training_directory + "/training_current.txt"
+    if not test_directory:
+        test_directory = "/src/accuracyTestData/" + language
+    if not test_current_path:
+        test_current_path = test_directory + "/test_current.txt"
 
     num_training_samples = len(txt_training_current)
     num_test_samples = len(txt_test_current)
@@ -174,7 +178,7 @@ def check_overlap(txt_training_current, txt_test_current, language):
             with open(training_current_path, 'w', encoding="utf-8") as f_training_current:
                 f_training_current.write("\n".join(txt_training_current))
 
-    # Check if the number of test samples have decreased and update the file
+    # Check if the number of test samples has decreased and update the file
     if num_test_samples > len(txt_test_current):
         num_test_samples = len(txt_test_current)
 
