@@ -9,15 +9,16 @@ class Test(unittest.TestCase):
     def test_predict(self):
         #For Predict
         #Test for empty content for python
-        self.assertEqual(highlight.predict('', 'python'), {'ok': 1, 'prediction': [], 'result': []}, "Unsuccessful run of function")
+        response = highlight.predict('', 'python')
+        self.assertEqual(response.get('ok'), 1)
         #Test for empty content for kotlin
-        self.assertEqual(highlight.predict('', 'kotlin'), {'ok': 1, 'prediction': [], 'result': []}, "Unsuccessful run of function")
+        response = highlight.predict('', 'kotlin')
+        self.assertEqual(response.get('ok'), 1)
         #Test for empty content for java
-        self.assertEqual(highlight.predict('', 'java'), {'ok': 1, 'prediction': [], 'result': []}, "Unsuccessful run of function")
-        #Test with content (without testing what prediction returns)
-        self.assertDictContainsSubset( {'ok': 1}, highlight.predict('ZGVmIHR5cGluZyh3b3JkKToK', 'python'), "Unuccessful run of function")
+        response = highlight.predict('', 'java')
+        self.assertEqual(response.get('ok'), 1)
         #Test with language not in use
-        self.assertEqual(highlight.predict('', 'R'),{'ok': -1, 'msg': 'Not yet accepting this language'}, "Language error")
+        self.assertEqual(highlight.predict('', 'R'), {'ok': -1, 'msg': 'not yet accepting this language'}, "Language error")
 
     def test_accuracy_empty_file(self):
         model = highlight.model_loader('python', 'base_model')
@@ -85,6 +86,18 @@ class Test(unittest.TestCase):
             f_train_current.write("\n".join(txt_train_current))
 
         self.assertEquals(result.get('training_current'), [])
+
+    def test_finetune_python(self):
+        response = highlight.finetune('python')
+        self.assertEquals(response.get('ok'), 1)
+
+    def test_finetune_kotlin(self):
+        response = highlight.finetune('kotlin')
+        self.assertEquals(response.get('ok'), 1)
+
+    def test_finetune_java(self):
+        response = highlight.finetune('java')
+        self.assertEquals(response.get('ok'), 1)
 
 
 

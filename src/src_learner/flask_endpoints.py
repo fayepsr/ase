@@ -88,7 +88,7 @@ def api_finetune():
     try:
         language = request.form.get('language')
         res = highlight.finetune(language)
-        if res['ok'] != 1:
+        if res['ok'] < 0:
             raise ValueError(res['msg'])
         result = json.dumps(res, indent=4)
         return result

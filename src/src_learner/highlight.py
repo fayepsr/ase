@@ -65,6 +65,9 @@ def predict(content, language='python'):
     if not jpype.isJVMStarted():
         jpype.startJVM(classpath=['SHOracle.jar'])
 
+    if not (language == 'python' or language == 'java' or language == 'kotlin'):
+        return {'ok': -1, 'msg': 'not yet accepting this language'}
+
     model = model_loader(language, 'base_model')
     resolver = resolver_loader(language)
 
@@ -112,9 +115,11 @@ def load_training_set(path):
     @param path: path to the file that should be opened
     @return: txt_training_current
     """
-
-    with open(path, 'rt', encoding='utf-8') as f_training_current:
-        txt_training_current = f_training_current.read().splitlines()
+    try:
+        with open(path, 'rt', encoding='utf-8') as f_training_current:
+            txt_training_current = f_training_current.read().splitlines()
+    except FileNotFoundError:
+        txt_training_current = []
     return txt_training_current
 
 def load_test_set(path):
@@ -124,10 +129,12 @@ def load_test_set(path):
     @param path: path to the file that should be opened
     @return: txt_test_current
     """
-
-    # Read the current test set
-    with open(path, 'rt', encoding='utf-8') as f_test_current:
-        txt_test_current = f_test_current.read().splitlines()
+    try:
+        # Read the current test set
+        with open(path, 'rt', encoding='utf-8') as f_test_current:
+            txt_test_current = f_test_current.read().splitlines()
+    except FileNotFoundError:
+        txt_test_current = []
     return txt_test_current
 
 def check_overlap(txt_training_current, txt_test_current, language, training_directory='', training_current_path='', test_directory='', test_current_path=''):
@@ -303,7 +310,7 @@ def finetune(language='python', min_num_training_samples=1):
 
     # Check if there are at least min_num_training_samples to train on
     if len(txt_training_current) < min_num_training_samples:
-        return {'ok': -1, 'msg': 'Not enough training samples 1'}
+        return {'ok': 0, 'msg': 'Not enough training samples 1'}
 
     # correct overlap if necessary
     result_check_overlap = check_overlap(txt_training_current, txt_test_current, language)
@@ -314,7 +321,7 @@ def finetune(language='python', min_num_training_samples=1):
 
     # Check if there are at least min_num_training_samples to train on
     if len(txt_training_current) < min_num_training_samples:
-        return {'ok': -1, 'msg': 'Not enough training samples 2'}
+        return {'ok': 0, 'msg': 'Not enough training samples 2'}
 
     # load models for training
     model = model_loader(language, 'finetuning_model')
@@ -341,13 +348,16 @@ def finetune(language='python', min_num_training_samples=1):
             break
         training_error = epoch_error
 
+    accuracy_finetuning_msg = check_accuracy(model, txt_test_current)
+    accuracy_base_msg = check_accuracy(base_model, txt_test_current)
+
+    if accuracy_finetuning_msg.get('ok') != 1:
+        return accuracy_finetuning_msg
+    elif accuracy_base_msg.get('ok') != 1:
+        return accuracy_base_msg
+
     accuracy_finetuning = check_accuracy(model, txt_test_current).get('accuracy')
     accuracy_base = check_accuracy(base_model, txt_test_current).get('accuracy')
-
-    if accuracy_finetuning.get('ok') != 1:
-        return accuracy_finetuning
-    elif accuracy_base.get('ok') != 1:
-        return accuracy_base
 
     # exchange models if accuracy is higher of finetuning_model than base model
     status_msg = exchange_models(language, accuracy_base, accuracy_finetuning)
