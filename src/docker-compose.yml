@@ -28,5 +28,3 @@ services:
     ports:
       - '5000:9007'
     working_dir: /src
-    volumes:
-      - ./src_learner:/src:cached
