@@ -90,16 +90,15 @@ class Api{
     /**
      * It uses the finetune function of the model
      * @param string $lang 
-     * @param string $code 
      * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
      * @return array
      * @throws ApiException if the arguments are empty or non valid
      * @throws ApiExceptionHTML if the finetune endpoint curl_post fails
      */
-    public static function finetune($lang = '', $code = '', $secret = ''){
+    public static function finetune($lang = '', $secret = ''){
 
-        if(empty($lang) || empty($code)){
-            Logger::log("Empty code or lang " , Logger::ERROR);  
+        if(empty($lang)){
+            Logger::log("Empty lang " , Logger::ERROR);  
             throw new ApiException(406, "Invalid Input Arguments");
         }
 
@@ -107,19 +106,15 @@ class Api{
             Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);            
             throw new ApiException(406, "Invalid Input Programming Language");
         }
-        
-        if ( base64_encode(base64_decode($code, true)) !== $code){
-            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
-            throw new ApiException(406, "The code field must be base64 encoded ");
-        }
+    
 
         if($secret != get_secret()){
             Logger::log("Anauthorized use of the API. Wrong secret. Input was: " .$secret, Logger::ERROR);
             throw new ApiException(401, "Anauthorized use of the API. Wrong secret");
         }
-        Logger::log("Input for finetuninf. Language: " . $lang ." \nInput:\n". substr(base64_decode($code, true), 0, 20) . "..."  , Logger::INFO);
+        Logger::log("Finetuning..."  , Logger::INFO);
         try {
-            $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+            $output = Api::curl_post_exec("finetune", array('language' => strtolower($lang)));
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }

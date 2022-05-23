@@ -1,4 +1,4 @@
-# Short PHP Documentation 
+# Short PHP Documentation
 
 ## Table of Contents
 
@@ -44,8 +44,6 @@ Api::highlight( string lang = '', string code = '', mixed secret = '', string mo
 | `mode` | **string** | : Accepts html or JSON |
 
 
-**Return Value:**
-- array
 
 
 
@@ -56,7 +54,7 @@ Api::highlight( string lang = '', string code = '', mixed secret = '', string mo
 It uses the finetune function of the model
 
 ```php
-Api::finetune( string lang = '', string code = '', mixed secret = '' ): array
+Api::finetune( string lang = '', mixed secret = '' ): array
 ```
 
 
@@ -67,12 +65,9 @@ Api::finetune( string lang = '', string code = '', mixed secret = '' ): array
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `lang` | **string** |  |
-| `code` | **string** |  |
 | `secret` | **mixed** |  |
 
 
-**Return Value:**
-- array
 
 
 
@@ -144,8 +139,6 @@ ApiExceptionHTML::__construct( mixed code, mixed html ): mixed
 
 
 
-
-
 ---
 ## Logger
 
@@ -173,7 +166,6 @@ Logger::log( mixed message, mixed level = Logger::INFO ): mixed
 |-----------|------|-------------|
 | `message` | **mixed** |  |
 | `level` | **mixed** |  |
-
 
 
 
