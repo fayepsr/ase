@@ -5,8 +5,6 @@ services:
         context: ./src_learner
     image: src_learner:latest
     working_dir: /src  
-    volumes:
-      - ./src_learner:/src:cached
     ports:
       - '5000:9007'
   tests:
@@ -17,7 +15,6 @@ services:
       - learner
     working_dir: /src  
     volumes:
-      - ./src_learner:/src:cached
       - ./src_learner:/tests:cached
     command: sh -c "python -m unittest discover /src/tests"
      
