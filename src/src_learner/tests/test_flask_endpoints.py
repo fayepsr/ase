@@ -45,59 +45,19 @@ class TestAPI(unittest.TestCase):
     def test_api_finetune(self):
         URL = self.URL + 'finetune'
         # the same tests but for finetune
-        params = {'code_to_format': 'cHVibGljIE1haW4oaW50IHkpIHsKICAgIHggPSB5OwogIH0K', 'language': 'java'}
+        params = {'language': 'java'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 200)
+        self.assertEquals(resp.msg, 200)
 
-        params = {'code_to_format': 'cHVibGljIE1haW4oaW50IHkpIHsKICAgIHggPSB5OwogIH0K', 'language': 'python'}
+        params = {'language': 'python'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 200)
+        self.assertEquals(resp.msg, 200)
 
-        params = {'code_to_format': 'cHVibGljIE1haW4oaW50IHkpIHsKICAgIHggPSB5OwogIH0K', 'language': 'kotlin'}
+        params = {'language': 'kotlin'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 200)
+        self.assertEquals(resp.msg, 200)
 
-        # error when language that does not exist yet?
-        params = {'code_to_format': 'cHVibGljIE1haW4oaW50IHkpIHsKICAgIHggPSB5OwogIH0K', 'language': 'golang'}
-        resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 500)
 
-        # can handle no code?
-        params = {'code_to_format': '', 'language': 'python'}
-        resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 200)
-
-        # can handle just nonsense in code?
-        params = {'code_to_format': 'this is unformatted code', 'language': 'python'}
-        resp = requests.post(URL, data=params)
-        self.assertEquals(resp.status_code, 500)
-
-    def test_api_accuracy(self):
-        URL = self.URL + 'accuracy'
-        # check if all model types and languages are working: ('base','finetuning') X ('python','java','kotlin)
-        params = {'model_type': 'base', 'language': 'python'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
-
-        params = {'model_type': 'base', 'language': 'java'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
-
-        params = {'model_type': 'base', 'language': 'kotlin'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
-
-        params = {'model_type': 'finetuning', 'language': 'python'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
-
-        params = {'model_type': 'finetuning', 'language': 'java'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
-
-        params = {'model_type': 'finetuning', 'language': 'kotlin'}
-        resp = requests.get(URL, params=params)
-        self.assertEquals(resp.status_code, 200)
 
 
 if __name__ == '__main__':
