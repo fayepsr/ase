@@ -53,7 +53,7 @@ class Api{
         if(Api::decide_if_predict()){
             Logger::log("Input chosen for finetuning", Logger::INFO);
             try {
-                $output = Api::curl_post_exec("finetune", array('code_to_format' => $code, 'language' => strtolower($lang)));
+                $output = Api::curl_post_exec("finetune", array('language' => strtolower($lang)));
                 //print( $output);
             } catch (\Throwable $th) {
                 Logger::log("Finetune inside predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
