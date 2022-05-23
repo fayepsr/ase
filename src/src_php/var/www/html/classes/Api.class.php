@@ -64,6 +64,7 @@ class Api{
 
         try {
             $output = Api::curl_post_exec("predict", array('code_to_format' => $code, 'language' =>  strtolower($lang)));
+            $output = Api::sanitize_output($output);
         } catch (\Throwable $th) {
             Logger::log("Predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiExceptionHTML(500, $th->getMessage()  );
@@ -220,6 +221,45 @@ class Api{
         return $full_string;
 
     }
+    /**
+     * This function makes sure that no invalid inputs are added to the code. 
+     * We had the prblem where in some specific inputs there were characters added at the end
+     * @param mixed $output 
+     * @return $output
+     */
+    private static function sanitize_output($output){
+        $output = json_decode($output, 1);
+
+        if(count($output['prediction']) !=  count($output['result'])){
+            return json_encode($output);
+        }
+
+        $element_end = -1;
+        $prediction = array();
+        $result = array();
+
+        foreach ($output['result'] as $key => $value) {
+            if($value["startIndex"] >= $element_end ){
+                array_push($result, $value);
+                array_push($prediction, $output['prediction'][$key]);
+                $element_end = $value["endIndex"];
+            }
+           
+        }
+        $output['prediction'] = $prediction;
+        $output['result'] = $result;
+
+        // var_dump($output);
+        return json_encode($output);
+    }
+
+    /**
+     * 
+     * @param mixed $code 
+     * @param mixed $output 
+     * @return array 
+     * @throws Exception 
+     */
     private static function getJSON($code, $output){
         //output was a string - need an array
         $output = json_decode($output, 1);
