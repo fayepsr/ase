@@ -47,20 +47,20 @@ To run, navigate to the app/ folder and run: npm test
 
 There are three ways to run the React application.
 
-Via Docker:
+### Via Docker:
 
 Run with the other microservices on Docker by navigating to the parent src/
 directory and running the command: ./build_and_run_all.bat
 
 Then access the application locally from http://localhost:3007/
 
-Via Local Machine:
+### Via Local Machine:
 
 Navigate to the app/ folder and run: npm start
 
 This should start up the application on http://localhost:3000/
 
-Via the Cloud:
+### Via the Cloud:
 
 The deployed version on Lightsail can be accessed from
 https://container-service-2.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
