@@ -20,9 +20,7 @@ export default class Form extends React.Component {
   }
 
   handleInputChange(event) {
-    let name = event.target.name;
-    let value = event.target.value;
-    this.setState({ [name]: value });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit(event) {
