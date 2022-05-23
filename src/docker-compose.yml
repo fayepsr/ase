@@ -19,7 +19,6 @@ services:
     volumes:
       - ./src_php/var/www/html:/var/www/html:cached
       - ./src_php/tests/tests:/tests/tests:cached
-      - ./src_php/tests/phpunitstart.txt:/tests/phpunitstart.txt:cached
       - ./src_php/tests/autoload.php:/tests/autoload.php:cached
   learner:
     build: 
