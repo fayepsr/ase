@@ -41,7 +41,7 @@ send requests to the Docker version of our service.
 The unit tests are located in app/src/App.test.js. They utilize the React
 testing library and mock the service API.
 
-To run, navigate to the app/ folder and run: npm test
+To run, navigate to the app/ folder and run `npm test`
 
 ## Run the Microservice
 
@@ -50,13 +50,13 @@ There are three ways to run the React application.
 ### Via Docker:
 
 Run with the other microservices on Docker by navigating to the parent src/
-directory and running the command: ./build_and_run_all.bat
+directory and running `./build_and_run_all.bat`
 
 Then access the application locally from http://localhost:3007/
 
 ### Via Local Machine:
 
-Navigate to the app/ folder and run: npm start
+Navigate to the app/ folder and run `npm start`
 
 This should start up the application on http://localhost:3000/
 
