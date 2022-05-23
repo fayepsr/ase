@@ -22,6 +22,6 @@ Screenshots and videos are saved here for debugging failed runs.
 
 ## To run
 
-Run this command in the parent src/ directory:
+Build all Docker images and run this command in the parent src/ directory:
 
 `docker-compose -f docker-compose-test-e2e.yml up`

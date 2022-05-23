@@ -41,7 +41,8 @@ send requests to the Docker version of our service.
 The unit tests are located in app/src/App.test.js. They utilize the React
 testing library and mock the service API.
 
-To run, navigate to the app/ folder and run `npm test`
+To run, build the React Docker image, navigate to the parent src/ directory, and
+run `docker-compose -f docker-compose-test-react.yml up`
 
 ## Run the Microservice
 
