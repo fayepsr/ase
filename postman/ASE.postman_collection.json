@@ -108,7 +108,7 @@
 						},
 						{
 							"key": "mode",
-							"value": "json",
+							"value": "html",
 							"type": "text"
 						}
 					]
