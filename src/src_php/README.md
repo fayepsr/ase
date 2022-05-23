@@ -45,7 +45,9 @@ Alternatively, the original documentation from phpDocumentor is [here](./docs/in
 We created the documentation using phpDocumentor using the folllowing commands: 
 ```
 composer require onspli/phpdoc-markdown
+apt-get install wget
 wget https://phpdoc.org/phpDocumentor.phar
 chmod +x phpDocumentor.phar
 phpDocumentor  -d ./classes/  -t ./docs --title="PHP Documentation" --template=vendor/onspli/phpdoc-markdown/templates/public-onefile
+phpDocumentor  -d ./classes/  -t ./docs
 ```
