@@ -89,7 +89,7 @@ def api_finetune():
 def api_persist():
     """
     persists the model that is given via filename
-    
+
     @param filename: .pt model like java_base_model.pt, kotlin_finetuning.pt
     @return: json with ok or error
     """
