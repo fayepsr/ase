@@ -19,11 +19,6 @@
 							"type": "text"
 						},
 						{
-							"key": "code",
-							"value": "aW1wb3J0IGphdmEudXRpbC5TY2FubmVyOwoKcHVibGljIGNsYXNzIEhlbGxvV29ybGQgewoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKCiAgICAgICAgLy8gQ3JlYXRlcyBhIHJlYWRlciBpbnN0YW5jZSB3aGljaCB0YWtlcwogICAgICAgIC8vIGlucHV0IGZyb20gc3RhbmRhcmQgaW5wdXQgLSBrZXlib2FyZAogICAgICAgIFNjYW5uZXIgcmVhZGVyID0gbmV3IFNjYW5uZXIoU3lzdGVtLmluKTsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50KCJFbnRlciBhIG51bWJlcjogIik7CgogICAgICAgIC8vIG5leHRJbnQoKSByZWFkcyB0aGUgbmV4dCBpbnRlZ2VyIGZyb20gdGhlIGtleWJvYXJkCiAgICAgICAgaW50IG51bWJlciA9IHJlYWRlci5uZXh0SW50KCk7CgogICAgICAgIC8vIHByaW50bG4oKSBwcmludHMgdGhlIGZvbGxvd2luZyBsaW5lIHRvIHRoZSBvdXRwdXQgc2NyZWVuCiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJZb3UgZW50ZXJlZDogIiArIG51bWJlcik7CiAgICB9Cn0=",
-							"type": "text"
-						},
-						{
 							"key": "secret",
 							"value": "hsdiwu8&%$$",
 							"type": "text"
@@ -113,7 +108,7 @@
 						},
 						{
 							"key": "mode",
-							"value": "json",
+							"value": "html",
 							"type": "text"
 						}
 					]

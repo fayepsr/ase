@@ -193,7 +193,7 @@ final class ApiUnitTest extends TestCase
         } catch (Exception $th)
          {
         }
-     
+        $result = $result['resp'];
         $this->assertEquals(  base64_encode(base64_decode($result, true)), $result );
     }
     
@@ -203,7 +203,7 @@ final class ApiUnitTest extends TestCase
         $throwsException = false;
         try {
             $foo = self::getMethod('finetune');
-            $foo->invokeArgs(null, array("tt", "tt"));
+            $foo->invokeArgs(null, array("tt"));
         } catch (Exception $th)
          {
             $throwsException = true;
@@ -212,31 +212,6 @@ final class ApiUnitTest extends TestCase
 
     }
 
-    public function test_finetune_empty_code_throws_exception()
-    {
-        $throwsException = false;
-        try {
-            $foo = self::getMethod('finetune');
-            $foo->invokeArgs(null, array("python", ""));
-        } catch (Exception $th)
-         {
-            $throwsException = true;
-        }
-        $this->assertTrue( $throwsException);
-    }
-
-    public function test_finetune_nonbase64encoded_code_throws_exception()
-    {
-        $throwsException = false;
-        try {
-            $foo = self::getMethod('finetune');
-            $foo->invokeArgs(null, array("python", "tt"));
-        } catch (Exception $th)
-         {
-            $throwsException = true;
-        }
-        $this->assertTrue( $throwsException);
-    }
    
     public function test_getJSON(){
 
