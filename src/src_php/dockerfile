@@ -13,6 +13,9 @@ COPY tests /tests
 RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/ && \
 cp /etc/apache2/mods-available/headers.load /etc/apache2/mods-enabled/  && \ 
 
+mkdir -p /var/www/html/tmp && \ 
+chmod 777 /var/www/html/tmp && \ 
+
 apt-get update && \ 
 apt-get install -y libzip-dev && \ 
 docker-php-ext-install zip
