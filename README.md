@@ -70,6 +70,8 @@ docker-compose up
 Our public domain: https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/  
 Our demo frontend: https://container-service-2.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
 
+We have scheduled an event using AWS eventbridge and the finetune function is called every 30 minutes. 
+
 ## Our Containers 
 - [React](./src/src_ract/README.md)
 - [PHP](./src/src_php/README.md)
