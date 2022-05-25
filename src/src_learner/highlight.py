@@ -32,7 +32,7 @@ def model_loader(language, name):
 
 def resolver_loader(language):
     if not jpype.isJVMStarted():
-        jpype.startJVM(classpath=['SHOracle.jar'])
+        jpype.startJVM(classpath=['/src/SHOracle.jar'])
     """
     Load the resolver
     @param language: python, java, kotlin
@@ -63,7 +63,7 @@ def predict(content, language='python'):
 
     # JPype is used to access the Java FormalModel library
     if not jpype.isJVMStarted():
-        jpype.startJVM(classpath=['SHOracle.jar'])
+        jpype.startJVM(classpath=['/src/SHOracle.jar'])
 
     if not (language == 'python' or language == 'java' or language == 'kotlin'):
         return {'ok': -1, 'msg': 'not yet accepting this language'}
