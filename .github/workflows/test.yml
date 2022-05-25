@@ -47,7 +47,7 @@ jobs:
       working-directory: ./
       id: react
       run: |
-        docker-compose -f "./src/docker-compose-test-react.yml" up --exit-code-from react
+        docker-compose -f "./src/docker-compose-test-react.yml" up --build --exit-code-from react
         
     - name: Stop react
       working-directory: ./
