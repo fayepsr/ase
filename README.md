@@ -67,7 +67,8 @@ docker-compose up
 
 
 ## Our demo (AWS lightsail)
-Our public domain https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
+Our public domain: https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
+Our demo frontend: https://container-service-2.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/
 
 ## Our Containers 
 - [React](./src/src_ract/README.md)
