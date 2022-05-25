@@ -47,15 +47,15 @@ class TestAPI(unittest.TestCase):
         # the same tests but for finetune
         params = {'language': 'java'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.msg, 200)
+        self.assertEquals(resp.status_code, 200)
 
         params = {'language': 'python'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.msg, 200)
+        self.assertEquals(resp.status_code, 200)
 
         params = {'language': 'kotlin'}
         resp = requests.post(URL, data=params)
-        self.assertEquals(resp.msg, 200)
+        self.assertEquals(resp.status_code, 200)
 
 
 
