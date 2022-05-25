@@ -16,42 +16,34 @@ export default class Form extends React.Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.sendRequest = this.sendRequest.bind(this);
   }
 
   handleInputChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    this.setState({ result: '' });
-    this.setState({ error: '' });
+    this.setState({ result: '', error: '' }, () => {
+      var formdata = new FormData();
+      formdata.append('lang', this.state.lang);
+      formdata.append('code', Buffer.from(this.state.code).toString('base64'));
+      formdata.append('secret', process.env.REACT_APP_API_KEY);
+      formdata.append('mode', this.state.mode);
+      this.sendRequest(formdata);
+    });
+  }
 
-    var formdata = new FormData();
-    formdata.append('lang', this.state.lang);
-    formdata.append('code', Buffer.from(this.state.code).toString('base64'));
-    formdata.append('secret', 'hsdiwu8&%$$');
-    formdata.append('mode', this.state.mode);
-
+  sendRequest(formdata) {
     var requestOptions = {
       method: 'POST',
       body: formdata,
       redirect: 'follow',
     };
 
-    let url_highlight = '';
-    let url = window.location.href;
-    if (url.indexOf('localhost') !== -1 || url.indexOf('127.0.0.1') !== -1) {
-      url_highlight = 'http://localhost:8089/api/v1/highlight';
-    } else {
-      url_highlight =
-        'https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/api/v1/highlight';
-    }
-
-    fetch(url_highlight, requestOptions)
+    fetch(process.env.REACT_APP_API_URL, requestOptions)
       .then((response) => {
         if (response.ok) return response.json();
         return response.text().then((text) => {
@@ -113,19 +105,20 @@ export default class Form extends React.Component {
               <label>
                 <input
                   type="radio"
-                  value="html"
                   name="mode"
-                  defaultChecked
-                  onChange={this.handleInputChange}
+                  value="html"
+                  checked={this.state.mode === 'html'}
+                  onClick={this.handleInputChange}
                 />
                 HTML
               </label>
               <label>
                 <input
                   type="radio"
-                  value="json"
                   name="mode"
-                  onChange={this.handleInputChange}
+                  value="json"
+                  checked={this.state.mode === 'json'}
+                  onClick={this.handleInputChange}
                 />
                 JSON
               </label>

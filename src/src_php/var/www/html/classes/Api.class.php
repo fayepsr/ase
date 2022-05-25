@@ -9,12 +9,12 @@ class Api{
 
     /**
      * This function returns the highlighted code. It returns either a full HTML document or a JSON
-     * @param string $lang 
-     * @param string $code 
-     * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
+     * @param string $lang
+     * @param string $code
+     * @param string $secret: It is a shared secret used to prevent anauthorized use of the API
      * @param string $mode : Accepts html or JSON
      * @return array
-     * @throws ApiException if the arguments are empty or non valid 
+     * @throws ApiException if the arguments are empty or non valid
      * @throws ApiExceptionHTML if the predict endpoint curl_post fails or the html format failed
      */
     public static function highlight($lang = '', $code = '', $secret = '', $mode = 'html'){
@@ -24,23 +24,23 @@ class Api{
         }
 
         if(empty($lang) || empty($code)){
-            Logger::log("Empty code or lang " , Logger::ERROR);  
+            Logger::log("Empty code or lang " , Logger::ERROR);
             throw new ApiException(406, "Invalid Input Arguments");
         }
 
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
-            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);            
+            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);
             throw new ApiException(406, "Invalid Input Programming Language");
         }
-        
+
         if ( base64_encode(base64_decode($code, true)) !== $code){
-            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR); 
+            Logger::log("The code field must be base64 encoded. Input was: " .$code, Logger::ERROR);
             throw new ApiException(406, "The code field must be base64 encoded ");
         }
 
         if($mode != "html" && $mode != "json"){
             Logger::log("The input parameter mode can only be json or html " .$mode, Logger::ERROR);
-            throw new ApiException(406, "The input parameter mode can only be json or html ");      
+            throw new ApiException(406, "The input parameter mode can only be json or html ");
         }
 
         if($secret != get_secret()){
@@ -69,7 +69,7 @@ class Api{
             Logger::log("Predict threw exception. Exception Message" .$th->getMessage(), Logger::ERROR);
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
-       
+
 
         try {
             if($mode == "html"){
@@ -90,24 +90,27 @@ class Api{
 
     /**
      * It uses the finetune function of the model
+
      * @param string $lang 
      * @param string $secret: It is a shared secret used to prevent anauthorized use of the API 
+
      * @return array
      * @throws ApiException if the arguments are empty or non valid
      * @throws ApiExceptionHTML if the finetune endpoint curl_post fails
      */
     public static function finetune($lang = '', $secret = ''){
 
+
         if(empty($lang)){
             Logger::log("Empty lang " , Logger::ERROR);  
-            throw new ApiException(406, "Invalid Input Arguments");
+
         }
 
         if(strtolower($lang) != "java" && strtolower($lang) != "kotlin" && strtolower($lang) != "python"){
-            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);            
+            Logger::log("Invalid Input Programming Language. Input was: " .$lang, Logger::ERROR);
             throw new ApiException(406, "Invalid Input Programming Language");
         }
-    
+
 
         if($secret != get_secret()){
             Logger::log("Anauthorized use of the API. Wrong secret. Input was: " .$secret, Logger::ERROR);
@@ -119,16 +122,16 @@ class Api{
         } catch (\Throwable $th) {
             throw new ApiExceptionHTML(500, $th->getMessage()  );
         }
-  
+
         return array('ok' => 1);
 
     }
 
     /**
      * Returns the whole <html> formated code
-     * @param mixed $code 
-     * @param mixed $output 
-     * @return string 
+     * @param mixed $code
+     * @param mixed $output
+     * @return string
      * @throws Exception if the output is not well formatted
      */
     private static function getHTML($code, $output){
@@ -206,11 +209,11 @@ class Api{
 
         $hcodearray = Api::getHCodeVals($output);
         $strarray = Api::getStrings($code, $output);
-        
+
 
         $class_string_arr = Api::format_html_code_strings($hcodearray,  $strarray);
-        
-        // for ($i=0; $i < sizeof($hcodearray); $i++) { 
+
+        // for ($i=0; $i < sizeof($hcodearray); $i++) {
         //     echo $hcodearray[$i] . ": " . $strarray[$i] . "code: " . $class_string_arr[$i]."\n";
         // }
 
@@ -277,7 +280,7 @@ class Api{
         $hcodearray = Api::getHCodeVals($output);
 
         foreach ($output["result"] as $key => $value) {
-           
+
             $type = Api::getType($hcodearray[$key]);
 
             $word = array(
@@ -287,7 +290,7 @@ class Api{
                 'token' => $words[$key]
             );
 
-            array_push($result_array, $word);    
+            array_push($result_array, $word);
 		}
 
         return $result_array;
@@ -295,8 +298,8 @@ class Api{
     }
     /**
      * This function returns the predicted hcode as an array from the $output variable
-     * @param mixed $output 
-     * @return array 
+     * @param mixed $output
+     * @return array
      * @throws Exception if the output is not well formatted
      */
     private static function getHCodeVals($output){
@@ -312,10 +315,10 @@ class Api{
 
     /**
      * Formats the HTML code replacing with <code></code> elements the highlighted code.
-     * @param mixed $class_string_arr 
-     * @param mixed $output 
-     * @param mixed $code 
-     * @return string 
+     * @param mixed $class_string_arr
+     * @param mixed $output
+     * @param mixed $code
+     * @return string
      * @throws Exception if the output is not well formatted
      */
     private static function format_html_code($class_string_arr, $output, $code){
@@ -340,7 +343,7 @@ class Api{
                 // echo "=========\n";
 
             }
-            
+
             $code_string = $class_string_arr[$i++];
             array_push($all_code_in_strings, $code_string);
             $end_of_last_token = $value["endIndex"];
@@ -355,17 +358,17 @@ class Api{
 
     /**
      * Returns the array of <code class="{class}"></code> elememts where class is decided by the hcodearray value
-     * @param mixed $hcodearray 
-     * @param mixed $strarray 
-     * @return array 
+     * @param mixed $hcodearray
+     * @param mixed $strarray
+     * @return array
      */
     private static function format_html_code_strings($hcodearray, $strarray){
 
         $class_string_arr = array();
         for ($i=0; $i < count($hcodearray); $i++) {
             $class_string = "";
-            $css_class = Api::getType($hcodearray[$i]);   
-                
+            $css_class = Api::getType($hcodearray[$i]);
+
             // $tt = str_split($strarray[$i]);
             // echo $strarray[$i];
             // foreach ($tt as  $ss) {
@@ -425,9 +428,9 @@ class Api{
 
     /**
      * Returns an array of all the substrings in the code from startIndex to endIndex as extracted by the response of the highlight (outout)
-     * @param mixed $code 
-     * @param mixed $output 
-     * @return array 
+     * @param mixed $code
+     * @param mixed $output
+     * @return array
      * @throws Exception if the output is not well formatted
      */
     private static function getStrings($code, $output){
@@ -436,7 +439,7 @@ class Api{
             throw new Exception("getStrings Output is not set");
         }
         foreach ($output["result"] as $key => $value) {
-           
+
             $word = substr($code, $value["startIndex"], $value["endIndex"] - $value["startIndex"]  + 1);
             //echo "startIndex: " .$value["startIndex"].  "endIndex: ". $value["endIndex"] . " word: ".  $word ."\n";
 			array_push($strarray, $word);
@@ -447,8 +450,8 @@ class Api{
     /**
      * Replaces new line with a <br>
      * It is a function in case we need to made other replaces as well.
-     * @param mixed $string 
-     * @return string 
+     * @param mixed $string
+     * @return string
      */
     private static function format_special_chars_to_html($string){
         $string = str_replace(' ', '&nbsp;', $string);
@@ -457,9 +460,9 @@ class Api{
     }
 
     /**
-     * This method executes a curl post 
-     * @param mixed $method 
-     * @param mixed $params 
+     * This method executes a curl post
+     * @param mixed $method
+     * @param mixed $params
      * @return string|bool the response of curl_exec
      * @throws Exception if curl is executed with an error or whether the http_status returned was not 200
      */
@@ -499,12 +502,12 @@ class Api{
         curl_close($curl);
         return $output;
 
-        
+
     }
 
     /**
      * This function exists in case we need to decide which input should be sent for prediction. At the moment it returns always true
-     * @return bool 
+     * @return bool
      */
     private static function decide_if_predict(){
         return true;
@@ -512,15 +515,15 @@ class Api{
 
     /**
      * Define the learner's URL
-     * @return string 
+     * @return string
      */
     private static function get_learner_url(){
 
-        if($_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
+        if($_SERVER['SERVER_NAME'] == "host.docker.internal" || $_SERVER['SERVER_NAME'] == "localhost" || $_SERVER['SERVER_NAME'] == "127.0.0.1" || $_SERVER['SERVER_NAME'] == ""){
             return "http://learner:9007/";
         }
         else{
             return "http://ase-service-1.service.local:9007/";
         }
-    } 
+    }
 }

@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 
-const url = 'http://localhost:8089/api/v1/highlight';
+const url = 'http://host.docker.internal:8089/api/v1/highlight';
 
 test('should correctly set defaults', () => {
   render(<App />);

@@ -1,0 +1,8 @@
+FROM cypress/base:latest
+
+WORKDIR /
+
+RUN npm install --save-dev cypress
+RUN npx cypress verify
+
+COPY . .
