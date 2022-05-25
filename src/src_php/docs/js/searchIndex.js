@@ -26,6 +26,11 @@ Search.appendIndex(
             "summary": "Returns\u0020the\u0020whole\u0020\u003Chtml\u003E\u0020formated\u0020code",
             "url": "classes/Api.html#method_getHTML"
         },                {
+            "fqsen": "\\Api\u003A\u003Asanitize_output\u0028\u0029",
+            "name": "sanitize_output",
+            "summary": "This\u0020function\u0020makes\u0020sure\u0020that\u0020no\u0020invalid\u0020inputs\u0020are\u0020added\u0020to\u0020the\u0020code.",
+            "url": "classes/Api.html#method_sanitize_output"
+        },                {
             "fqsen": "\\Api\u003A\u003AgetJSON\u0028\u0029",
             "name": "getJSON",
             "summary": "",

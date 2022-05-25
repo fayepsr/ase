@@ -13,7 +13,7 @@
 				$response = Api::highlight($_POST['lang'], $_POST['code'], $_POST['secret'], $_POST['mode']);
 				break;
 			case 'finetune':
-				$response = Api::finetune($_POST['lang'], $_POST['code'],  $_POST['secret']);
+				$response = Api::finetune($_POST['lang'],  $_POST['secret']);
 				break;
 			case 'app_health':
 				$response ='ok';
