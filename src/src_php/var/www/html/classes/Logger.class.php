@@ -31,6 +31,7 @@ class Logger
             file_put_contents($this->config['log_file'], "$message\n");
         }
         else{
+            chmod($this->config['log_file'], 0777); 
             file_put_contents($this->config['log_file'], "$message\n", FILE_APPEND);
         }
         
