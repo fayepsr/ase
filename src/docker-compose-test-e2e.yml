@@ -1,5 +1,18 @@
 version: '3'
 services:
+  cypress:
+    depends_on:
+      - react
+      - php
+      - learner
+    build:
+      context: ./e2e
+    image: e2e:latest
+    working_dir: /
+    command: npx cypress run
+    volumes:
+      - ./e2e/cypress:/cypress
+      - ./e2e/cypress.json:/cypress.json
   react:
     build:
       context: ./src_react
@@ -19,6 +32,7 @@ services:
     volumes:
       - ./src_php/var/www/html:/var/www/html:cached
       - ./src_php/tests/tests:/tests/tests:cached
+      - ./src_php/tests/phpunitstart.txt:/tests/phpunitstart.txt:cached
       - ./src_php/tests/autoload.php:/tests/autoload.php:cached
   learner:
     build:
@@ -27,3 +41,5 @@ services:
     ports:
       - '5000:9007'
     working_dir: /src
+    volumes:
+      - ./src_learner:/src:cached

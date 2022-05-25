@@ -1,0 +1,6 @@
+{
+  "baseUrl": "http://host.docker.internal:3007",
+  "env": {
+    "api_url": "http://host.docker.internal:8089/api/v1/highlight"
+  }
+}
