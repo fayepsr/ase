@@ -1,3 +1,0 @@
-num_requests=2
-accuracy_base_model=0.0
-accuracy_finetune_model=0.0
