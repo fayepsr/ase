@@ -19,7 +19,7 @@ FormalModel. Highlighting the input requests is done using the 'predict'
 function. It stores the input request for future training/testing and returns
 the highlighted tokens from the 'base_model' for the language. Finetuning is
 done usingthe 'finetune' function. If there are a minimum number of training
-samples (to be set as 100), the training and test sets are loaded and the
+samples (set as 100), the training and test sets are loaded and the
 samples are checked for over laps with any archived training or test samples
 using the helper functions 'load_training_set', 'load_test_set' and
 'check_overlap'. Then, the 'finetuning_model' is trained on the training set and
@@ -60,9 +60,30 @@ https://github.com/MEPalma/UZH-ASE-AnnotationWS-BaseLearner
 
 ### .pt files
 
-Save the weights of the trained models. Weights that are currently used for
-prediction are saved in files with the "base" tag. Weights that currently
-finetuned are saved in files with the "finetuning" tag.
+These are the saved weights of the trained models. Weights that are currently
+used for prediction are saved in files with the "base" tag. Weights that
+currently finetuned are saved in files with the "finetuning" tag.
+The 'base_model' files have been trained and tested with the following
+specifications for each language:
+- Python: Trained with 100k files downloaded from the 150k Python
+dataset available [here] (https://www.sri.inf.ethz.ch/py150).
+The model was then tested with the 50k files in the test set, giving an
+accuracy of 99.898%.
+- Java: Trained with 48,000 .java files randomly selected from public repositories
+in the first 20 pages for the topic "Java" on GitHub and filtered for java language
+(https://github.com/topics/java?l=java).
+The model was then tested with 5000 .java files randomly selected from the same
+source and gave an accuracy of 99.841%.
+- Kotlin: Trained with 48,000 .kt and .kts files randomly selected from public
+repositories in the first 20 pages for the topic "Kotlin" on GitHub and filtered
+for kotlin language (https://github.com/topics/kotlin?l=kotlin). The model was
+then tested with 5000 .kt and .kts files randomly selected from the same source
+and gave an accuracy of 99.603%.
+
+All the training and test files were checked for duplicate token sequences to
+ensure there is no overfitting, and no overlap between training and test sets.
+Due to the high accuracy achieved in the first epoch itself, training was done
+only for one epoch.
 
 ## Motivation for used Technologies
 
