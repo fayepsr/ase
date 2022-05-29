@@ -291,7 +291,7 @@ def archive_training_samples(training_directory_root, test_directory_root, txt_t
                         f'/test_{test_filenum}.txt')
         os.remove(test_current_path)
 
-def finetune(language='python', min_num_training_samples=1):
+def finetune(language='python', min_num_training_samples=100):
     """
     Finetunes the model based on the files in the folder trainingData
 
@@ -330,7 +330,7 @@ def finetune(language='python', min_num_training_samples=1):
     model.setup_for_finetuning()
 
     # Train on training_current set
-    num_epochs = 10
+    num_epochs = 2
     split_training_current = [i.split(':') for i in txt_training_current]
     tokenId_set = [[int(token) for token in tokenRow[0].split(',')]
                    for tokenRow in split_training_current]
