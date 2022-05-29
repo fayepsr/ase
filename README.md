@@ -4,6 +4,15 @@ You may find instructions as to how to import the postman collection [here](http
 There are two endpoints exposed: Finetune and Predict
 The code to be used for training or to highlight must be given base64encoded. 
 
+## Wiki
+
+We heave also created a Github Wiki with important documents such as the documentation of testing and project organisation.
+You can find it here: https://github.com/fayepsr/ase/wiki
+The wiki also contains:
+- Project Organisation: https://github.com/fayepsr/ase/wiki/Project-Organization
+- Testing: https://github.com/fayepsr/ase/wiki/Testing
+- Microservice Overview: https://github.com/fayepsr/ase/wiki/Microservice-Overview
+
 ### Example api calls
 *This comment would not exist in a real application. The secret to use is: hsdiwu8&%$$*
 
@@ -64,7 +73,14 @@ docker build -f ./dockerfile -t src_learner:latest .
 cd ../
 docker-compose up
 ```
+## Our demo (docker-compose)
 
+You can start the demo by navigating with the command line to the "src" folder in this repo and then type
+"docker-compose up". The yaml file is called "docker-compose.yml". 
+
+Our private domain for highlighting logic learner: http://learner:9007
+Our public domain: http://localhost:8089/api/v1
+Our demo frontend: http://localhost:3007
 
 ## Our demo (AWS lightsail)
 Our public domain: https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/  
