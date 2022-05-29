@@ -3,6 +3,10 @@
 The learner microservice provides the core logic of highlighting for the whole
 application.
 
+## Demo Docker-Compose
+
+Our private domain for learner: http://learner:9007
+
 ## Architecture and Programming Languages
 
 The learner microservice consists of the following components:
@@ -173,4 +177,5 @@ endpoints.
 
 ## Documentation
 
-TODO
+Our documentation was automatically generated via the documentation generator of the pycharm ide. It uses the Epytext standard.
+See also: https://www.jetbrains.com/help/pycharm/creating-documentation-comments.html
