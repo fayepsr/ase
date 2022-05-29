@@ -2,6 +2,11 @@
 This is the container that will implement the Rest API that will be used by the customers. Read more fot the API [here](../../README.md)
 The Web Server set up is Apache. The programming language that works with apache on this container is PHP. 
 
+## Demo
+
+Our local API: http://localhost:8089/api/v1
+Our public domain: https://ase-service-1.iugkfeabdb168.eu-central-1.cs.amazonlightsail.com/  
+
 ## The dockerfile
 Our dockerfile apart from copying the necessary file, installs the [PHP composer](https://getcomposer.org/doc/00-intro.md). This tool was used to install the library "phpunit" during testing.
 
