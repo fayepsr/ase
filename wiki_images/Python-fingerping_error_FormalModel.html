@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<style>
+.ANY {
+    color: black;
+    font-weight: normal;
+    font-style: normal;
+}
+.KEYWORD {
+    color: blue;
+    font-weight: bold;
+    font-style: normal;
+}
+.LITERAL {
+    color: lightskyblue;
+    font-weight: bold;
+    font-style: normal;
+}
+.CHAR_STRING_LITERAL {
+    color: darkgoldenrod;
+    font-weight: normal;
+    font-style: normal;
+}
+.COMMENT {
+    color: grey;
+    font-weight: normal;
+    font-style: italic;
+}
+.CLASS_DECLARATOR {
+    color: crimson;
+    font-weight: bold;
+    font-style: normal;
+}
+.FUNCTION_DECLARATOR {
+    color: fuchsia;
+    font-weight: bold;
+    font-style: normal;
+}
+.VARIABLE_DECLARATOR {
+    color: purple;
+    font-weight: bold;
+    font-style: normal;
+}
+.TYPE_IDENTIFIER {
+    color: darkgreen;
+    font-weight: bold;
+    font-style: normal;
+}
+.FUNCTION_IDENTIFIER {
+    color: dodgerblue;
+    font-weight: normal;
+    font-style: normal;
+}
+.FIELD_IDENTIFIER {
+    color: coral;
+    font-weight: normal;
+    font-style: normal;
+}
+.ANNOTATION_DECLARATOR {
+    color: lightslategray;
+    font-weight: lighter;
+    font-style: italic;
+}
+</style>
+<pre>
+<code class="COMMENT">#!/usr/bin/python</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT"># fingerping: A PNG library fingerprinting tool.</code><code class="ANY">
+</code><code class="COMMENT"># </code><code class="ANY">
+</code><code class="COMMENT"># @author:Dominique Bongard</code><code class="ANY">
+</code><code class="COMMENT"># </code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT"># Code is licensed under -- Apache License 2.0 http://www.apache.org/licenses/</code><code class="ANY">
+</code><code class="COMMENT">#</code>
+<code class="ANY">
+</code><code class="KEYWORD">from</code> <code class="ANY">collections</code> <code class="KEYWORD">import</code> <code class="ANY">namedtuple</code><code class="ANY">
+</code><code class="KEYWORD">from</code> <code class="ANY">operator</code> <code class="KEYWORD">import</code> <code class="ANY">*</code><code class="ANY">
+</code><code class="KEYWORD">from</code> <code class="ANY">struct</code> <code class="KEYWORD">import</code> <code class="ANY">*</code><code class="ANY">
+</code><code class="KEYWORD">import</code> <code class="ANY">os</code><code class="ANY">.</code><code class="ANY">path</code><code class="ANY">
+</code><code class="KEYWORD">import</code> <code class="ANY">sys</code><code class="ANY">
+</code><code class="KEYWORD">import</code> <code class="ANY">zlib</code><code class="ANY">
+</code><code class="KEYWORD">import</code> <code class="ANY">binascii</code><code class="ANY">
+</code><code class="KEYWORD">import</code> <code class="ANY">itertools</code><code class="ANY">
+</code><code class="KEYWORD">from</code> <code class="ANY">xpng</code> <code class="KEYWORD">import</code> <code class="ANY">*</code>
+<code class="ANY">
+</code><code class="COMMENT"># A named tuple representing a fingerprint test</code><code class="ANY">
+</code><code class="COMMENT"># name = name of the test</code><code class="ANY">
+</code><code class="COMMENT"># filename = filename of the png file to test</code><code class="ANY">
+</code><code class="COMMENT"># function = function to call to execute the test</code><code class="ANY">
+</code><code class="COMMENT"># description = description of the test</code><code class="ANY">
+</code><code class="ANY">Test</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">namedtuple</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"test"</code><code class="ANY">,</code> <code class="CHAR_STRING_LITERAL">"name filename function description"</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT"># A named tuple representing the fingerprint of a PNG library</code><code class="ANY">
+</code><code class="COMMENT"># name = name of the language / library / tool</code><code class="ANY">
+</code><code class="COMMENT"># description = description of the library (e.g. version number)</code><code class="ANY">
+</code><code class="COMMENT"># results = a dictionary of test fingerprint test results</code><code class="ANY">
+</code><code class="ANY">Fingerprint</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">namedtuple</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"fingerprint"</code><code class="ANY">,</code><code class="CHAR_STRING_LITERAL">"name description results"</code><code class="ANY">)</code>
+
+<code class="ANY">
+</code><code class="COMMENT">###############################################</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT"># Fingerprinting functions</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT">###############################################</code>
+
+<code class="ANY">
+</code><code class="COMMENT"># The most simple fingerprinting function</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT"># Returns 0 if the image is absent or empty (meaning the target failed to decode the input image)</code><code class="ANY">
+</code><code class="COMMENT"># Returns 10 if the image looks valid at least in surface</code><code class="ANY">
+</code><code class="COMMENT"># Returns between 1 and 9 if the image is corrupt</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">conversionSuccess</code><code class="ANY">(</code> <code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">valid</code>
+<code class="ANY">
+</code><code class="COMMENT"># All the following tests should return values > 10 (or any kind of object like a list actually)</code><code class="ANY">
+</code><code class="COMMENT">################################################################################################</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on the correctness of the checksums of the output image</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">correctChecksums</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">verifyChecksums</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="KEYWORD">else</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint resulting from the set of filters used in the scanlines of the output image (returns a sorted list of the filters)</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">filtersUsed</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="FUNCTION_IDENTIFIER">sorted</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">filtersUsed</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on the palette used to decode images with two palettes (when not rejected)</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">paletteUsed</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code> 
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">hasColor</code><code class="ANY">(</code><code class="ANY">[</code><code class="LITERAL">185</code><code class="ANY">,</code><code class="LITERAL">96</code><code class="ANY">,</code><code class="LITERAL">142</code><code class="ANY">]</code><code class="ANY">)</code> <code class="ANY">:</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="KEYWORD">elif</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">hasColor</code><code class="ANY">(</code><code class="ANY">[</code><code class="LITERAL">96</code><code class="ANY">,</code><code class="LITERAL">142</code><code class="ANY">,</code><code class="LITERAL">185</code><code class="ANY">]</code><code class="ANY">)</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+<code class="ANY">  </code><code class="KEYWORD">else</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on how the decoder treated the gamma information from the input image</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">gamma</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">pixel</code> <code class="ANY">=</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getPixelRgb</code><code class="ANY">(</code><code class="LITERAL">120</code><code class="ANY">,</code><code class="LITERAL">140</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">pixel</code><code class="ANY">[</code><code class="LITERAL">0</code><code class="ANY">]</code><code class="ANY">+</code><code class="ANY">pixel</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">+</code> <code class="ANY">pixel</code><code class="ANY">[</code><code class="LITERAL">2</code><code class="ANY">]</code> <code class="ANY"><</code> <code class="LITERAL">96</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="KEYWORD">else</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">chunk</code> <code class="ANY">=</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"gAMA"</code><code class="ANY">)</code>
+  <code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">chunk</code> <code class="ANY">==</code><code class="ANY">=</code> <code class="KEYWORD">None</code><code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+  <code class="ANY">  </code><code class="ANY">gammav</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">unpack</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"!I"</code><code class="ANY">,</code><code class="ANY">chunk</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">content</code><code class="ANY">)</code>
+  <code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">gammav</code><code class="ANY">[</code><code class="LITERAL">0</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="LITERAL">400000</code> <code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+  <code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">14</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on the ihdr used to decode images with two ihdr (when not rejected)</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">ihdrUsed</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">width</code> <code class="ANY">==</code> <code class="LITERAL">252</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="KEYWORD">elif</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">width</code> <code class="ANY">==</code> <code class="LITERAL">189</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+<code class="ANY">  </code><code class="KEYWORD">else</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on the treatment of images with invalid scanline filters</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">badIdatFilter</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">pixel</code> <code class="ANY">=</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getPixelRgb</code><code class="ANY">(</code><code class="LITERAL">5</code><code class="ANY">,</code><code class="LITERAL">0</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">pixel</code> <code class="ANY">==</code> <code class="ANY">[</code><code class="LITERAL">65</code><code class="ANY">,</code><code class="LITERAL">83</code><code class="ANY">,</code><code class="LITERAL">255</code><code class="ANY">,</code><code class="ANY">]</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code> <code class="COMMENT"># Most libraries return the correct image</code>
+<code class="ANY">  </code><code class="KEYWORD">elif</code> <code class="ANY">pixel</code> <code class="ANY">==</code> <code class="ANY">[</code><code class="LITERAL">57</code><code class="ANY">,</code><code class="LITERAL">82</code><code class="ANY">,</code><code class="LITERAL">255</code><code class="ANY">]</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code> <code class="COMMENT"># One library outputs a corrupted image </code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on the zlib compression level flag of the output image</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">zlibCompression</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code><code class="ANY">+</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">zlevel</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on how the decoder treated the phys information in the input image</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">physChunk</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">chunk</code> <code class="ANY">=</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"pHYs"</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">chunk</code> <code class="ANY">==</code> <code class="KEYWORD">None</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="ANY">x</code><code class="ANY">,</code><code class="ANY">y</code><code class="ANY">,</code><code class="ANY">u</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">unpack</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"!IIB"</code><code class="ANY">,</code><code class="ANY">chunk</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">content</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">x</code> <code class="ANY">==</code> <code class="LITERAL">1</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">x</code> <code class="ANY">==</code> <code class="LITERAL">1500</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">x</code> <code class="ANY">==</code> <code class="LITERAL">1499</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">14</code> <code class="COMMENT"># .net </code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">15</code>
+<code class="ANY">
+</code><code class="COMMENT"># Fingerprint depending on how the decoder treated an input image with a tRNS chunk</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">truecolorTrns</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">colorType</code> <code class="ANY">==</code> <code class="LITERAL">6</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">11</code>
+<code class="ANY">  </code><code class="ANY">chunk</code> <code class="ANY">=</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"tRNS"</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">chunk</code> <code class="ANY">==</code> <code class="KEYWORD">None</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">return</code> <code class="LITERAL">12</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">13</code>
+<code class="ANY">
+</code><code class="COMMENT">###############################################</code>
+<code class="ANY">
+</code><code class="COMMENT"># include all the tests and fingerprints from external files</code>
+<code class="ANY">
+</code><code class="FUNCTION_IDENTIFIER">execfile</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"tests.py"</code><code class="ANY">)</code><code class="ANY">
+</code><code class="FUNCTION_IDENTIFIER">execfile</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"fingerprints.py"</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT">###############################################</code>
+
+<code class="ANY">
+</code><code class="COMMENT"># Test all the images in a directory (don't print warnings when generating fingerprints)</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">doTests</code><code class="ANY">(</code><code class="ANY">tests</code><code class="ANY">,</code><code class="ANY">fingerprints</code><code class="ANY">,</code> <code class="ANY">warn</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">results</code>  <code class="ANY">=</code> <code class="ANY">{</code> <code class="ANY">}</code>
+<code class="ANY">  </code><code class="ANY">fingerprintScores</code> <code class="ANY">=</code> <code class="ANY">{</code><code class="ANY">}</code>
+<code class="ANY">  </code><code class="COMMENT"># Initialite the count of matching tests to zero for each fingerprint</code>
+<code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">fingerprint</code> <code class="KEYWORD">in</code> <code class="ANY">fingerprints</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">fingerprintScores</code><code class="ANY">[</code><code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">]</code> <code class="ANY">=</code> <code class="LITERAL">0</code>
+<code class="ANY">  </code><code class="COMMENT"># Execute each test</code>
+<code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">test</code> <code class="KEYWORD">in</code> <code class="ANY">tests</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">image</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">Png</code><code class="ANY">(</code><code class="ANY">directory</code> <code class="ANY">+</code> <code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">filename</code><code class="ANY">+</code><code class="CHAR_STRING_LITERAL">".png"</code><code class="ANY">)</code>
+  <code class="ANY">  </code><code class="KEYWORD">if</code> <code class="KEYWORD">not</code> <code class="ANY">image</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">valid</code> <code class="ANY">==</code> <code class="LITERAL">0</code><code class="ANY">:</code>
+<code class="ANY">            </code><code class="COMMENT"># Only execute the test if there is an image to test</code>
+    <code class="ANY">  </code><code class="ANY">result</code> <code class="ANY">=</code> <code class="ANY">test</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">function</code><code class="ANY">(</code><code class="ANY">image</code><code class="ANY">)</code> 
+  <code class="ANY">  </code><code class="KEYWORD">else</code> <code class="ANY">:</code>
+<code class="ANY">      </code><code class="ANY">result</code> <code class="ANY">=</code> <code class="LITERAL">0</code>
+  <code class="ANY">  </code><code class="COMMENT"># Save the result of the test</code>
+  <code class="ANY">  </code><code class="ANY">results</code><code class="ANY">[</code><code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">]</code> <code class="ANY">=</code> <code class="ANY">result</code>
+
+  <code class="ANY">  </code><code class="COMMENT"># Check if the result matches some of the fingeprints and if so, increment the match counter</code>
+  <code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">fingerprint</code> <code class="KEYWORD">in</code> <code class="ANY">fingerprints</code> <code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">if</code> <code class="KEYWORD">not</code> <code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code> <code class="KEYWORD">in</code> <code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">results</code><code class="ANY">:</code>
+<code class="ANY">            </code><code class="COMMENT"># warn if a fingerprint is missing the result for the test being run</code>
+      <code class="ANY">  </code><code class="KEYWORD">if</code> <code class="ANY">warn</code><code class="ANY">:</code>
+<code class="ANY">          </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">"warning, missing key"</code><code class="ANY">,</code> <code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">,</code><code class="CHAR_STRING_LITERAL">"in"</code><code class="ANY">,</code> <code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code>
+    <code class="ANY">  </code><code class="KEYWORD">elif</code> <code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">results</code><code class="ANY">[</code><code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="ANY">result</code> <code class="ANY">:</code>
+<code class="ANY">        </code><code class="ANY">fingerprintScores</code><code class="ANY">[</code><code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">]</code> <code class="ANY">+=</code> <code class="LITERAL">1</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="ANY">results</code><code class="ANY">,</code><code class="ANY">fingerprintScores</code>
+<code class="ANY">
+</code><code class="COMMENT"># Generate a csv table with all the test results for each fingerprint (which you can then import in LibreOffice or whatever)</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">generateCsv</code><code class="ANY">(</code><code class="ANY">tests</code><code class="ANY">,</code><code class="ANY">fingerprints</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">header</code> <code class="ANY">=</code> <code class="CHAR_STRING_LITERAL">"/"</code>
+<code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">test</code> <code class="KEYWORD">in</code> <code class="ANY">tests</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">header</code> <code class="ANY">=</code> <code class="ANY">header</code><code class="ANY">+</code> <code class="CHAR_STRING_LITERAL">"\t"</code><code class="ANY">+</code><code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="ANY">header</code>
+
+<code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">fingerprint</code> <code class="KEYWORD">in</code> <code class="ANY">fingerprints</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">row</code> <code class="ANY">=</code> <code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code>
+  <code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">test</code> <code class="KEYWORD">in</code> <code class="ANY">tests</code><code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">if</code> <code class="KEYWORD">not</code> <code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code> <code class="KEYWORD">in</code> <code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">results</code><code class="ANY">:</code>
+<code class="ANY">        </code><code class="ANY">row</code> <code class="ANY">+=</code> <code class="CHAR_STRING_LITERAL">"\t\"\""</code>
+    <code class="ANY">  </code><code class="KEYWORD">else</code><code class="ANY">:</code>
+<code class="ANY">        </code><code class="ANY">row</code> <code class="ANY">+=</code> <code class="CHAR_STRING_LITERAL">"\t"</code><code class="ANY">+</code> <code class="FUNCTION_IDENTIFIER">str</code><code class="ANY">(</code><code class="ANY">fingerprint</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">results</code><code class="ANY">[</code><code class="ANY">test</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">name</code><code class="ANY">]</code><code class="ANY">)</code>
+  <code class="ANY">  </code><code class="ANY">print</code> <code class="ANY">row</code>		
+<code class="ANY">
+</code><code class="COMMENT"># Show the fingerprinting result with the most likely library match at the bottom</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">showResults</code><code class="ANY">(</code><code class="ANY">scores</code><code class="ANY">,</code> <code class="ANY">nb</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">ordered</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">sorted</code><code class="ANY">(</code><code class="ANY">scores</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">iteritems</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">,</code> <code class="ANY">key</code><code class="ANY">=</code><code class="FUNCTION_IDENTIFIER">itemgetter</code><code class="ANY">(</code><code class="LITERAL">1</code><code class="ANY">)</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="KEYWORD">for</code> <code class="ANY">result</code> <code class="KEYWORD">in</code> <code class="ANY">ordered</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">'{:20s} {:3d}/{:3d}'</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">format</code><code class="ANY">(</code><code class="ANY">result</code><code class="ANY">[</code><code class="LITERAL">0</code><code class="ANY">]</code><code class="ANY">,</code> <code class="ANY">result</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code><code class="ANY">,</code> <code class="ANY">nb</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT"># check if the command line has valid options</code><code class="ANY">
+</code><code class="KEYWORD">def</code> <code class="FUNCTION_DECLARATOR">checkCommandLine</code><code class="ANY">(</code><code class="ANY">line</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="FUNCTION_IDENTIFIER">len</code><code class="ANY">(</code><code class="ANY">line</code><code class="ANY">)</code> <code class="ANY">==</code> <code class="LITERAL">3</code> <code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">if</code> <code class="KEYWORD">not</code> <code class="ANY">line</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="CHAR_STRING_LITERAL">"-gen"</code><code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">return</code> <code class="LITERAL">False</code>
+  <code class="ANY">  </code><code class="KEYWORD">else</code><code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">return</code> <code class="LITERAL">True</code>
+<code class="ANY">  </code><code class="KEYWORD">if</code> <code class="FUNCTION_IDENTIFIER">len</code><code class="ANY">(</code><code class="ANY">line</code><code class="ANY">)</code> <code class="ANY">==</code> <code class="LITERAL">2</code><code class="ANY">:</code>
+<code class="ANY">    </code><code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">line</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code><code class="ANY">[</code><code class="LITERAL">0</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="CHAR_STRING_LITERAL">"-"</code><code class="ANY">)</code> <code class="KEYWORD">and</code> <code class="KEYWORD">not</code> <code class="ANY">(</code><code class="ANY">line</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="CHAR_STRING_LITERAL">"-csv"</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">      </code><code class="KEYWORD">return</code> <code class="LITERAL">False</code>
+  <code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">True</code>
+<code class="ANY">  </code><code class="KEYWORD">return</code> <code class="LITERAL">False</code>
+
+<code class="ANY">
+</code><code class="COMMENT">###############################################</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT"># Main program</code><code class="ANY">
+</code><code class="COMMENT">#</code><code class="ANY">
+</code><code class="COMMENT">###############################################</code>
+
+<code class="ANY">
+</code><code class="COMMENT"># use reflection to get all the tests and all the fingeprints in lists</code><code class="ANY">
+</code><code class="ANY">locals</code> <code class="ANY">=</code>  <code class="FUNCTION_IDENTIFIER">locals</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">copy</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">
+</code><code class="ANY">tests</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">sorted</code><code class="ANY">(</code> <code class="ANY">[</code><code class="ANY">t</code> <code class="KEYWORD">for</code> <code class="ANY">t</code> <code class="KEYWORD">in</code> <code class="ANY">locals</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">itervalues</code><code class="ANY">(</code><code class="ANY">)</code> <code class="KEYWORD">if</code> <code class="FUNCTION_IDENTIFIER">isinstance</code><code class="ANY">(</code><code class="ANY">t</code><code class="ANY">,</code><code class="ANY">Test</code><code class="ANY">)</code><code class="ANY">]</code><code class="ANY">,</code> <code class="ANY">key</code><code class="ANY">=</code><code class="FUNCTION_IDENTIFIER">attrgetter</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">'name'</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">
+</code><code class="ANY">fingerprints</code> <code class="ANY">=</code> <code class="ANY">[</code><code class="ANY">t</code> <code class="KEYWORD">for</code> <code class="ANY">t</code> <code class="KEYWORD">in</code> <code class="ANY">locals</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">itervalues</code><code class="ANY">(</code><code class="ANY">)</code> <code class="KEYWORD">if</code> <code class="FUNCTION_IDENTIFIER">isinstance</code><code class="ANY">(</code><code class="ANY">t</code><code class="ANY">,</code><code class="ANY">Fingerprint</code><code class="ANY">)</code><code class="ANY">]</code>
+<code class="ANY">
+</code><code class="KEYWORD">if</code> <code class="KEYWORD">not</code> <code class="FUNCTION_IDENTIFIER">checkCommandLine</code><code class="ANY">(</code><code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">)</code><code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">"usage:"</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">""</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">"fingerping.py path        # Matches the images in the path folder with the fingerprint of known PNG libraries"</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">"fingerping.py -gen path   # Generates a new library fingerprint from the images in the path folder"</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="CHAR_STRING_LITERAL">"fingerping.py -csv        # prints all the known fingerprints as a CSV table"</code>
+<code class="ANY">  </code><code class="ANY">sys</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">exit</code><code class="ANY">(</code><code class="LITERAL">0</code><code class="ANY">)</code> 
+<code class="ANY">
+</code><code class="COMMENT"># Generate a csv output with all the test results for each library fingerprint known to the tool</code><code class="ANY">
+</code><code class="KEYWORD">if</code> <code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="CHAR_STRING_LITERAL">"-csv"</code> <code class="ANY">:</code>
+<code class="ANY">  </code><code class="FUNCTION_IDENTIFIER">generateCsv</code><code class="ANY">(</code><code class="ANY">tests</code><code class="ANY">,</code><code class="ANY">fingerprints</code><code class="ANY">)</code>
+<code class="ANY">  </code><code class="ANY">sys</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">exit</code><code class="ANY">(</code><code class="LITERAL">0</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT"># last command line argument is the directory with all the images to use in a fingerprint test</code><code class="ANY">
+</code><code class="ANY">directory</code> <code class="ANY">=</code> <code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">[</code><code class="FUNCTION_IDENTIFIER">len</code><code class="ANY">(</code><code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">)</code><code class="ANY">-</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">+</code> <code class="CHAR_STRING_LITERAL">"/"</code>
+<code class="ANY">
+</code><code class="ANY">results</code><code class="ANY">,</code> <code class="ANY">fingerprintScores</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">doTests</code><code class="ANY">(</code><code class="ANY">tests</code><code class="ANY">,</code><code class="ANY">fingerprints</code><code class="ANY">,</code><code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">!=</code> <code class="CHAR_STRING_LITERAL">"-gen"</code><code class="ANY">)</code>
+<code class="ANY">
+</code><code class="COMMENT"># If the -gen parameter is given on the command line, don't give the fingerprinting results</code><code class="ANY">
+</code><code class="COMMENT"># but instead generate a new fingerprint</code><code class="ANY">
+</code><code class="KEYWORD">if</code> <code class="ANY">sys</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="ANY">[</code><code class="LITERAL">1</code><code class="ANY">]</code> <code class="ANY">==</code> <code class="CHAR_STRING_LITERAL">"-gen"</code> <code class="ANY">:</code>
+<code class="ANY">  </code><code class="ANY">print</code> <code class="ANY">results</code><code class="ANY">
+</code><code class="KEYWORD">else</code><code class="ANY">:</code>		
+<code class="ANY">  </code><code class="FUNCTION_IDENTIFIER">showResults</code><code class="ANY">(</code><code class="ANY">fingerprintScores</code><code class="ANY">,</code><code class="FUNCTION_IDENTIFIER">len</code><code class="ANY">(</code><code class="ANY">tests</code><code class="ANY">)</code><code class="ANY">)</code>
+</pre>
+</html>
+

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+        <html>
+        <style>
+        .GENERAL {
+            color: black;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .KEYWORD {
+            color: blue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .LITERAL {
+            color: lightskyblue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .CHAR_STRING_LITERAL {
+            color: darkgoldenrod;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .COMMENT {
+            color: grey;
+            font-weight: normal;
+            font-style: italic;
+        }
+        .CLASS_DECLARATOR {
+            color: crimson;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_DECLARATOR {
+            color: fuchsia;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .VARIABLE_DECLARATOR {
+            color: purple;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .TYPE_IDENTIFIER {
+            color: darkgreen;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_IDENTIFIER {
+            color: dodgerblue;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .FIELD_IDENTIFIER {
+            color: coral;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .ANNOTATION_DECLARATOR {
+            color: lightslategray;
+            font-weight: lighter;
+            font-style: italic;
+        }
+        </style><pre><code class="COMMENT">#!/usr/bin/python</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;fingerping:&nbsp;A&nbsp;PNG&nbsp;library&nbsp;fingerprinting&nbsp;tool.</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;@author:Dominique&nbsp;Bongard</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Code&nbsp;is&nbsp;licensed&nbsp;under&nbsp;--&nbsp;Apache&nbsp;License&nbsp;2.0&nbsp;http://www.apache.org/licenses/</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><br />
+<code class="GENERAL"><br />
+</code><code class="KEYWORD">from</code>&nbsp;<code class="GENERAL">collections</code>&nbsp;<code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">namedtuple</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">from</code>&nbsp;<code class="GENERAL">operator</code>&nbsp;<code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">*</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">from</code>&nbsp;<code class="GENERAL">struct</code>&nbsp;<code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">*</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">os</code><code class="GENERAL">.</code><code class="GENERAL">path</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">sys</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">zlib</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">binascii</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">itertools</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">from</code>&nbsp;<code class="GENERAL">xpng</code>&nbsp;<code class="KEYWORD">import</code>&nbsp;<code class="GENERAL">*</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;A&nbsp;named&nbsp;tuple&nbsp;representing&nbsp;a&nbsp;fingerprint&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;name&nbsp;=&nbsp;name&nbsp;of&nbsp;the&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;filename&nbsp;=&nbsp;filename&nbsp;of&nbsp;the&nbsp;png&nbsp;file&nbsp;to&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;function&nbsp;=&nbsp;function&nbsp;to&nbsp;call&nbsp;to&nbsp;execute&nbsp;the&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;description&nbsp;=&nbsp;description&nbsp;of&nbsp;the&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="GENERAL">Test</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">namedtuple</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"test"</code><code class="GENERAL">,</code>&nbsp;<code class="CHAR_STRING_LITERAL">"name&nbsp;filename&nbsp;function&nbsp;description"</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;A&nbsp;named&nbsp;tuple&nbsp;representing&nbsp;the&nbsp;fingerprint&nbsp;of&nbsp;a&nbsp;PNG&nbsp;library</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;name&nbsp;=&nbsp;name&nbsp;of&nbsp;the&nbsp;language&nbsp;/&nbsp;library&nbsp;/&nbsp;tool</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;description&nbsp;=&nbsp;description&nbsp;of&nbsp;the&nbsp;library&nbsp;(e.g.&nbsp;version&nbsp;number)</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;results&nbsp;=&nbsp;a&nbsp;dictionary&nbsp;of&nbsp;test&nbsp;fingerprint&nbsp;test&nbsp;results</code><code class="GENERAL"><br />
+</code><code class="GENERAL">Fingerprint</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">namedtuple</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"fingerprint"</code><code class="GENERAL">,</code><code class="CHAR_STRING_LITERAL">"name&nbsp;description&nbsp;results"</code><code class="GENERAL">)</code><br />
+<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprinting&nbsp;functions</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><br />
+<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;The&nbsp;most&nbsp;simple&nbsp;fingerprinting&nbsp;function</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Returns&nbsp;0&nbsp;if&nbsp;the&nbsp;image&nbsp;is&nbsp;absent&nbsp;or&nbsp;empty&nbsp;(meaning&nbsp;the&nbsp;target&nbsp;failed&nbsp;to&nbsp;decode&nbsp;the&nbsp;input&nbsp;image)</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Returns&nbsp;10&nbsp;if&nbsp;the&nbsp;image&nbsp;looks&nbsp;valid&nbsp;at&nbsp;least&nbsp;in&nbsp;surface</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Returns&nbsp;between&nbsp;1&nbsp;and&nbsp;9&nbsp;if&nbsp;the&nbsp;image&nbsp;is&nbsp;corrupt</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">conversionSuccess</code><code class="GENERAL">(</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">valid</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;All&nbsp;the&nbsp;following&nbsp;tests&nbsp;should&nbsp;return&nbsp;values&nbsp;>&nbsp;10&nbsp;(or&nbsp;any&nbsp;kind&nbsp;of&nbsp;object&nbsp;like&nbsp;a&nbsp;list&nbsp;actually)</code><code class="GENERAL"><br />
+</code><code class="COMMENT">################################################################################################</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;the&nbsp;correctness&nbsp;of&nbsp;the&nbsp;checksums&nbsp;of&nbsp;the&nbsp;output&nbsp;image</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">correctChecksums</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">verifyChecksums</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;resulting&nbsp;from&nbsp;the&nbsp;set&nbsp;of&nbsp;filters&nbsp;used&nbsp;in&nbsp;the&nbsp;scanlines&nbsp;of&nbsp;the&nbsp;output&nbsp;image&nbsp;(returns&nbsp;a&nbsp;sorted&nbsp;list&nbsp;of&nbsp;the&nbsp;filters)</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">filtersUsed</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="FUNCTION_IDENTIFIER">sorted</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">filtersUsed</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;the&nbsp;palette&nbsp;used&nbsp;to&nbsp;decode&nbsp;images&nbsp;with&nbsp;two&nbsp;palettes&nbsp;(when&nbsp;not&nbsp;rejected)</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">paletteUsed</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code>&nbsp;<br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">hasColor</code><code class="GENERAL">(</code><code class="GENERAL">[</code><code class="LITERAL">185</code><code class="GENERAL">,</code><code class="LITERAL">96</code><code class="GENERAL">,</code><code class="LITERAL">142</code><code class="GENERAL">]</code><code class="GENERAL">)</code>&nbsp;<code class="GENERAL">:</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">elif</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">hasColor</code><code class="GENERAL">(</code><code class="GENERAL">[</code><code class="LITERAL">96</code><code class="GENERAL">,</code><code class="LITERAL">142</code><code class="GENERAL">,</code><code class="LITERAL">185</code><code class="GENERAL">]</code><code class="GENERAL">)</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;how&nbsp;the&nbsp;decoder&nbsp;treated&nbsp;the&nbsp;gamma&nbsp;information&nbsp;from&nbsp;the&nbsp;input&nbsp;image</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">gamma</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">pixel</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">getPixelRgb</code><code class="GENERAL">(</code><code class="LITERAL">120</code><code class="GENERAL">,</code><code class="LITERAL">140</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">pixel</code><code class="GENERAL">[</code><code class="LITERAL">0</code><code class="GENERAL">]</code><code class="GENERAL">+</code><code class="GENERAL">pixel</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">+</code>&nbsp;<code class="GENERAL">pixel</code><code class="GENERAL">[</code><code class="LITERAL">2</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL"><</code>&nbsp;<code class="LITERAL">96</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"gAMA"</code><code class="GENERAL">)</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">==</code><code class="GENERAL">=</code>&nbsp;<code class="KEYWORD">None</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">gammav</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">unpack</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"!I"</code><code class="GENERAL">,</code><code class="GENERAL">chunk</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">content</code><code class="GENERAL">)</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">gammav</code><code class="GENERAL">[</code><code class="LITERAL">0</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">400000</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">14</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;the&nbsp;ihdr&nbsp;used&nbsp;to&nbsp;decode&nbsp;images&nbsp;with&nbsp;two&nbsp;ihdr&nbsp;(when&nbsp;not&nbsp;rejected)</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">ihdrUsed</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">width</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">252</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">elif</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">width</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">189</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;the&nbsp;treatment&nbsp;of&nbsp;images&nbsp;with&nbsp;invalid&nbsp;scanline&nbsp;filters</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">badIdatFilter</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">pixel</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">getPixelRgb</code><code class="GENERAL">(</code><code class="LITERAL">5</code><code class="GENERAL">,</code><code class="LITERAL">0</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">pixel</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="GENERAL">[</code><code class="LITERAL">65</code><code class="GENERAL">,</code><code class="LITERAL">83</code><code class="GENERAL">,</code><code class="LITERAL">255</code><code class="GENERAL">,</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code>&nbsp;<code class="COMMENT">#&nbsp;Most&nbsp;libraries&nbsp;return&nbsp;the&nbsp;correct&nbsp;image</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">elif</code>&nbsp;<code class="GENERAL">pixel</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="GENERAL">[</code><code class="LITERAL">57</code><code class="GENERAL">,</code><code class="LITERAL">82</code><code class="GENERAL">,</code><code class="LITERAL">255</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code>&nbsp;<code class="COMMENT">#&nbsp;One&nbsp;library&nbsp;outputs&nbsp;a&nbsp;corrupted&nbsp;image&nbsp;</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;the&nbsp;zlib&nbsp;compression&nbsp;level&nbsp;flag&nbsp;of&nbsp;the&nbsp;output&nbsp;image</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">zlibCompression</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><code class="GENERAL">+</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">zlevel</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;how&nbsp;the&nbsp;decoder&nbsp;treated&nbsp;the&nbsp;phys&nbsp;information&nbsp;in&nbsp;the&nbsp;input&nbsp;image</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">physChunk</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"pHYs"</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="KEYWORD">None</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">x</code><code class="GENERAL">,</code><code class="GENERAL">y</code><code class="GENERAL">,</code><code class="GENERAL">u</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">unpack</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"!IIB"</code><code class="GENERAL">,</code><code class="GENERAL">chunk</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">content</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">x</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">1</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">x</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">1500</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">x</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">1499</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">14</code>&nbsp;<code class="COMMENT">#&nbsp;.net&nbsp;</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">15</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Fingerprint&nbsp;depending&nbsp;on&nbsp;how&nbsp;the&nbsp;decoder&nbsp;treated&nbsp;an&nbsp;input&nbsp;image&nbsp;with&nbsp;a&nbsp;tRNS&nbsp;chunk</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">truecolorTrns</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">colorType</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">6</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">11</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">getChunk</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"tRNS"</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">chunk</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="KEYWORD">None</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">12</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">13</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;include&nbsp;all&nbsp;the&nbsp;tests&nbsp;and&nbsp;fingerprints&nbsp;from&nbsp;external&nbsp;files</code><br />
+<code class="GENERAL"><br />
+</code><code class="FUNCTION_IDENTIFIER">execfile</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"tests.py"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="FUNCTION_IDENTIFIER">execfile</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"fingerprints.py"</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><br />
+<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Test&nbsp;all&nbsp;the&nbsp;images&nbsp;in&nbsp;a&nbsp;directory&nbsp;(don't&nbsp;print&nbsp;warnings&nbsp;when&nbsp;generating&nbsp;fingerprints)</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">doTests</code><code class="GENERAL">(</code><code class="GENERAL">tests</code><code class="GENERAL">,</code><code class="GENERAL">fingerprints</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">warn</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">results</code>&nbsp;&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">{</code>&nbsp;<code class="GENERAL">}</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">fingerprintScores</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">{</code><code class="GENERAL">}</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;Initialite&nbsp;the&nbsp;count&nbsp;of&nbsp;matching&nbsp;tests&nbsp;to&nbsp;zero&nbsp;for&nbsp;each&nbsp;fingerprint</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">fingerprint</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">fingerprints</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">fingerprintScores</code><code class="GENERAL">[</code><code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="LITERAL">0</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;Execute&nbsp;each&nbsp;test</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">test</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">tests</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">image</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">Png</code><code class="GENERAL">(</code><code class="GENERAL">directory</code>&nbsp;<code class="GENERAL">+</code>&nbsp;<code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">filename</code><code class="GENERAL">+</code><code class="CHAR_STRING_LITERAL">".png"</code><code class="GENERAL">)</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="GENERAL">image</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">valid</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">0</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;Only&nbsp;execute&nbsp;the&nbsp;test&nbsp;if&nbsp;there&nbsp;is&nbsp;an&nbsp;image&nbsp;to&nbsp;test</code><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">result</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">function</code><code class="GENERAL">(</code><code class="GENERAL">image</code><code class="GENERAL">)</code>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">result</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="LITERAL">0</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;Save&nbsp;the&nbsp;result&nbsp;of&nbsp;the&nbsp;test</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">results</code><code class="GENERAL">[</code><code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">result</code><br />
+<br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;Check&nbsp;if&nbsp;the&nbsp;result&nbsp;matches&nbsp;some&nbsp;of&nbsp;the&nbsp;fingeprints&nbsp;and&nbsp;if&nbsp;so,&nbsp;increment&nbsp;the&nbsp;match&nbsp;counter</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">fingerprint</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">fingerprints</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">results</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="COMMENT">#&nbsp;warn&nbsp;if&nbsp;a&nbsp;fingerprint&nbsp;is&nbsp;missing&nbsp;the&nbsp;result&nbsp;for&nbsp;the&nbsp;test&nbsp;being&nbsp;run</code><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">warn</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">"warning,&nbsp;missing&nbsp;key"</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">,</code><code class="CHAR_STRING_LITERAL">"in"</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">elif</code>&nbsp;<code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">results</code><code class="GENERAL">[</code><code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="GENERAL">result</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">fingerprintScores</code><code class="GENERAL">[</code><code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">+=</code>&nbsp;<code class="LITERAL">1</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="GENERAL">results</code><code class="GENERAL">,</code><code class="GENERAL">fingerprintScores</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Generate&nbsp;a&nbsp;csv&nbsp;table&nbsp;with&nbsp;all&nbsp;the&nbsp;test&nbsp;results&nbsp;for&nbsp;each&nbsp;fingerprint&nbsp;(which&nbsp;you&nbsp;can&nbsp;then&nbsp;import&nbsp;in&nbsp;LibreOffice&nbsp;or&nbsp;whatever)</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">generateCsv</code><code class="GENERAL">(</code><code class="GENERAL">tests</code><code class="GENERAL">,</code><code class="GENERAL">fingerprints</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">header</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="CHAR_STRING_LITERAL">"/"</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">test</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">tests</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">header</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">header</code><code class="GENERAL">+</code>&nbsp;<code class="CHAR_STRING_LITERAL">"\t"</code><code class="GENERAL">+</code><code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="GENERAL">header</code><br />
+<br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">fingerprint</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">fingerprints</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">row</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">test</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">tests</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">results</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">row</code>&nbsp;<code class="GENERAL">+=</code>&nbsp;<code class="CHAR_STRING_LITERAL">"\t\"\""</code><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">row</code>&nbsp;<code class="GENERAL">+=</code>&nbsp;<code class="CHAR_STRING_LITERAL">"\t"</code><code class="GENERAL">+</code>&nbsp;<code class="FUNCTION_IDENTIFIER">str</code><code class="GENERAL">(</code><code class="GENERAL">fingerprint</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">results</code><code class="GENERAL">[</code><code class="GENERAL">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">]</code><code class="GENERAL">)</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="GENERAL">row</code>		<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Show&nbsp;the&nbsp;fingerprinting&nbsp;result&nbsp;with&nbsp;the&nbsp;most&nbsp;likely&nbsp;library&nbsp;match&nbsp;at&nbsp;the&nbsp;bottom</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">showResults</code><code class="GENERAL">(</code><code class="GENERAL">scores</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">nb</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">ordered</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">sorted</code><code class="GENERAL">(</code><code class="GENERAL">scores</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">iteritems</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">key</code><code class="GENERAL">=</code><code class="FUNCTION_IDENTIFIER">itemgetter</code><code class="GENERAL">(</code><code class="LITERAL">1</code><code class="GENERAL">)</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">result</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">ordered</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">'{:20s}&nbsp;{:3d}/{:3d}'</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">format</code><code class="GENERAL">(</code><code class="GENERAL">result</code><code class="GENERAL">[</code><code class="LITERAL">0</code><code class="GENERAL">]</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">result</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">nb</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;check&nbsp;if&nbsp;the&nbsp;command&nbsp;line&nbsp;has&nbsp;valid&nbsp;options</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">def</code>&nbsp;<code class="FUNCTION_DECLARATOR">checkCommandLine</code><code class="GENERAL">(</code><code class="GENERAL">line</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="FUNCTION_IDENTIFIER">len</code><code class="GENERAL">(</code><code class="GENERAL">line</code><code class="GENERAL">)</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">3</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="GENERAL">line</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-gen"</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">False</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">else</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">True</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="FUNCTION_IDENTIFIER">len</code><code class="GENERAL">(</code><code class="GENERAL">line</code><code class="GENERAL">)</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="LITERAL">2</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">(</code><code class="GENERAL">line</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code><code class="GENERAL">[</code><code class="LITERAL">0</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-"</code><code class="GENERAL">)</code>&nbsp;<code class="KEYWORD">and</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="GENERAL">(</code><code class="GENERAL">line</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-csv"</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">False</code><br />
+&nbsp;&nbsp;&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">True</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="KEYWORD">return</code>&nbsp;<code class="LITERAL">False</code><br />
+<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Main&nbsp;program</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#</code><code class="GENERAL"><br />
+</code><code class="COMMENT">###############################################</code><br />
+<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;use&nbsp;reflection&nbsp;to&nbsp;get&nbsp;all&nbsp;the&nbsp;tests&nbsp;and&nbsp;all&nbsp;the&nbsp;fingeprints&nbsp;in&nbsp;lists</code><code class="GENERAL"><br />
+</code><code class="GENERAL">locals</code>&nbsp;<code class="GENERAL">=</code>&nbsp;&nbsp;<code class="FUNCTION_IDENTIFIER">locals</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">copy</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">tests</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">sorted</code><code class="GENERAL">(</code>&nbsp;<code class="GENERAL">[</code><code class="GENERAL">t</code>&nbsp;<code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">t</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">locals</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">itervalues</code><code class="GENERAL">(</code><code class="GENERAL">)</code>&nbsp;<code class="KEYWORD">if</code>&nbsp;<code class="FUNCTION_IDENTIFIER">isinstance</code><code class="GENERAL">(</code><code class="GENERAL">t</code><code class="GENERAL">,</code><code class="GENERAL">Test</code><code class="GENERAL">)</code><code class="GENERAL">]</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">key</code><code class="GENERAL">=</code><code class="FUNCTION_IDENTIFIER">attrgetter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">'name'</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">fingerprints</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">[</code><code class="GENERAL">t</code>&nbsp;<code class="KEYWORD">for</code>&nbsp;<code class="GENERAL">t</code>&nbsp;<code class="KEYWORD">in</code>&nbsp;<code class="GENERAL">locals</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">itervalues</code><code class="GENERAL">(</code><code class="GENERAL">)</code>&nbsp;<code class="KEYWORD">if</code>&nbsp;<code class="FUNCTION_IDENTIFIER">isinstance</code><code class="GENERAL">(</code><code class="GENERAL">t</code><code class="GENERAL">,</code><code class="GENERAL">Fingerprint</code><code class="GENERAL">)</code><code class="GENERAL">]</code><br />
+<code class="GENERAL"><br />
+</code><code class="KEYWORD">if</code>&nbsp;<code class="KEYWORD">not</code>&nbsp;<code class="FUNCTION_IDENTIFIER">checkCommandLine</code><code class="GENERAL">(</code><code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">)</code><code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">"usage:"</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">""</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">"fingerping.py&nbsp;path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Matches&nbsp;the&nbsp;images&nbsp;in&nbsp;the&nbsp;path&nbsp;folder&nbsp;with&nbsp;the&nbsp;fingerprint&nbsp;of&nbsp;known&nbsp;PNG&nbsp;libraries"</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">"fingerping.py&nbsp;-gen&nbsp;path&nbsp;&nbsp;&nbsp;#&nbsp;Generates&nbsp;a&nbsp;new&nbsp;library&nbsp;fingerprint&nbsp;from&nbsp;the&nbsp;images&nbsp;in&nbsp;the&nbsp;path&nbsp;folder"</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="CHAR_STRING_LITERAL">"fingerping.py&nbsp;-csv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prints&nbsp;all&nbsp;the&nbsp;known&nbsp;fingerprints&nbsp;as&nbsp;a&nbsp;CSV&nbsp;table"</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">exit</code><code class="GENERAL">(</code><code class="LITERAL">0</code><code class="GENERAL">)</code>&nbsp;<br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;Generate&nbsp;a&nbsp;csv&nbsp;output&nbsp;with&nbsp;all&nbsp;the&nbsp;test&nbsp;results&nbsp;for&nbsp;each&nbsp;library&nbsp;fingerprint&nbsp;known&nbsp;to&nbsp;the&nbsp;tool</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-csv"</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_IDENTIFIER">generateCsv</code><code class="GENERAL">(</code><code class="GENERAL">tests</code><code class="GENERAL">,</code><code class="GENERAL">fingerprints</code><code class="GENERAL">)</code><br />
+&nbsp;<code class="GENERAL">&nbsp;</code><code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">exit</code><code class="GENERAL">(</code><code class="LITERAL">0</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;last&nbsp;command&nbsp;line&nbsp;argument&nbsp;is&nbsp;the&nbsp;directory&nbsp;with&nbsp;all&nbsp;the&nbsp;images&nbsp;to&nbsp;use&nbsp;in&nbsp;a&nbsp;fingerprint&nbsp;test</code><code class="GENERAL"><br />
+</code><code class="GENERAL">directory</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">[</code><code class="FUNCTION_IDENTIFIER">len</code><code class="GENERAL">(</code><code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">)</code><code class="GENERAL">-</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">+</code>&nbsp;<code class="CHAR_STRING_LITERAL">"/"</code><br />
+<code class="GENERAL"><br />
+</code><code class="GENERAL">results</code><code class="GENERAL">,</code>&nbsp;<code class="GENERAL">fingerprintScores</code>&nbsp;<code class="GENERAL">=</code>&nbsp;<code class="FUNCTION_IDENTIFIER">doTests</code><code class="GENERAL">(</code><code class="GENERAL">tests</code><code class="GENERAL">,</code><code class="GENERAL">fingerprints</code><code class="GENERAL">,</code><code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">!=</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-gen"</code><code class="GENERAL">)</code><br />
+<code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;If&nbsp;the&nbsp;-gen&nbsp;parameter&nbsp;is&nbsp;given&nbsp;on&nbsp;the&nbsp;command&nbsp;line,&nbsp;don't&nbsp;give&nbsp;the&nbsp;fingerprinting&nbsp;results</code><code class="GENERAL"><br />
+</code><code class="COMMENT">#&nbsp;but&nbsp;instead&nbsp;generate&nbsp;a&nbsp;new&nbsp;fingerprint</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">if</code>&nbsp;<code class="GENERAL">sys</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">argv</code><code class="GENERAL">[</code><code class="LITERAL">1</code><code class="GENERAL">]</code>&nbsp;<code class="GENERAL">==</code>&nbsp;<code class="CHAR_STRING_LITERAL">"-gen"</code>&nbsp;<code class="GENERAL">:</code><br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">print</code>&nbsp;<code class="GENERAL">results</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">else</code><code class="GENERAL">:</code>		<br />
+<code class="GENERAL">&nbsp;&nbsp;</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_IDENTIFIER">showResults</code><code class="GENERAL">(</code><code class="GENERAL">fingerprintScores</code><code class="GENERAL">,</code><code class="FUNCTION_IDENTIFIER">len</code><code class="GENERAL">(</code><code class="GENERAL">tests</code><code class="GENERAL">)</code><code class="GENERAL">)</code></pre></html>

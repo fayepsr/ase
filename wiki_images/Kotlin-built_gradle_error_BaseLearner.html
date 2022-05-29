@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+        <html>
+        <style>
+        .GENERAL {
+            color: black;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .KEYWORD {
+            color: blue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .LITERAL {
+            color: lightskyblue;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .CHAR_STRING_LITERAL {
+            color: darkgoldenrod;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .COMMENT {
+            color: grey;
+            font-weight: normal;
+            font-style: italic;
+        }
+        .CLASS_DECLARATOR {
+            color: crimson;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_DECLARATOR {
+            color: fuchsia;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .VARIABLE_DECLARATOR {
+            color: purple;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .TYPE_IDENTIFIER {
+            color: darkgreen;
+            font-weight: bold;
+            font-style: normal;
+        }
+        .FUNCTION_IDENTIFIER {
+            color: dodgerblue;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .FIELD_IDENTIFIER {
+            color: coral;
+            font-weight: normal;
+            font-style: normal;
+        }
+        .ANNOTATION_DECLARATOR {
+            color: lightslategray;
+            font-weight: lighter;
+            font-style: italic;
+        }
+        </style><pre><code class="KEYWORD">import</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">org</code><code class="GENERAL">.</code><code class="GENERAL">jetbrains</code><code class="GENERAL">.</code><code class="GENERAL">kotlin</code><code class="GENERAL">.</code><code class="GENERAL">konan</code><code class="GENERAL">.</code><code class="GENERAL">properties</code><code class="GENERAL">.</code><code class="GENERAL">Properties</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">java</code><code class="GENERAL">.</code><code class="GENERAL">io</code><code class="GENERAL">.</code><code class="GENERAL">BufferedReader</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">java</code><code class="GENERAL">.</code><code class="GENERAL">io</code><code class="GENERAL">.</code><code class="GENERAL">FileInputStream</code><code class="GENERAL"><br />
+</code><code class="KEYWORD">import</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">java</code><code class="GENERAL">.</code><code class="TYPE_IDENTIFIER">io</code><code class="GENERAL">.</code><code class="TYPE_IDENTIFIER">IOException</code><code class="GENERAL"><br />
+</code><code class="GENERAL">impot</code><code class="GENERAL">&nbsp;</code><code class="CLASS_DECLARATOR">java</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">io</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">InputStreamReader</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="FUNCTION_IDENTIFIER">plugins</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">id</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.android.application)<br />
+	kotlin(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">android</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+	kotlin(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">kapt</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+	kotlin(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">plugin</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">serialization</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+}<br />
+<br />
+@Throws(IOException::class)<br />
+fun&nbsp;String.execute():&nbsp;Process&nbsp;=&nbsp;Runtime.getRuntime().exec(this<br />
+<br />
+@Throws(IOException::class)<br />
+fun&nbsp;Process.getText():&nbsp;String&nbsp;=<br />
+	org.codehaus.groovy.runtime.IOGroovyMethods.getText(<br />
+		BufferedReader(<br />
+			InputStreamReader(<br />
+				inputStream<br />
+			)<br />
+		)<br />
+	).also&nbsp;{<br />
+		org.codehaus.groovy.runtime.ProcessGroovyMethods.closeStreams(this)<br />
+	}<br />
+<br />
+@Throws(IOException::class)<br />
+fun&nbsp;getCommitCount():&nbsp;String&nbsp;=&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">git</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">rev</code><code class="GENERAL">-</code><code class="GENERAL">list</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">--</code><code class="FIELD_IDENTIFIER">count</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">HEAD</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">.execute().getText().<br />
+<br />
+val&nbsp;acraPropertiesFile&nbsp;=&nbsp;rootProject.file(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">acra</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">properties</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+val&nbsp;acraProperties&nbsp;=&nbsp;Properties()<br />
+<br />
+if&nbsp;(acraPropertiesFile.exists())<br />
+	acraProperties.load(FileInputStream(acraPropertiesFile))<br />
+<br />
+android&nbsp;{<br />
+	compileSdk&nbsp;=&nbsp;31<br />
+	defaultConfig&nbsp;{<br />
+		applicationId&nbsp;=&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">com</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">github</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">doomsdayrs</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">apps</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">shosetsu</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL"><br />
+		minSdk&nbsp;=&nbsp;22<br />
+		targetSdk&nbsp;=&nbsp;31<br />
+		versionCode&nbsp;=&nbsp;26<br />
+		versionName&nbsp;=&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="LITERAL">2.0</code><code class="LITERAL">.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL"><br />
+		testInstrumentationRunner&nbsp;=&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">androidx</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">test</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">runner</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">AndroidJUnitRunner</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL"><br />
+		multiDexEnabled&nbsp;=&nbsp;true<br />
+<br />
+		javaCompileOptions&nbsp;{<br />
+			annotationProcessorOptions&nbsp;{<br />
+				arguments&nbsp;+=&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">room</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">schemaLocation</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">&nbsp;to&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code>$<code class="GENERAL">projectDir</code><code class="GENERAL">/</code><code class="GENERAL">schemas</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL"><br />
+			}<br />
+		}<br />
+<br />
+		buildConfigField(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">String</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">,&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">acraUsername</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">,&nbsp;acraProperties[</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">username</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">]?.toString()&nbsp;?:&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code>\<code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">\"</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">buildConfigField</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">String</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">acraPassword</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">acraProperties</code><code class="GENERAL">[</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">password</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">]</code><code class="GENERAL">?</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">toString</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">?</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">\"</code><code class="CHAR_STRING_LITERAL">\"</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">setProperty</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">archivesBaseName</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">rootProject</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">name</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">buildFeatures</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">viewBinding</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">dataBinding</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">compose</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">composeOptions</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">kotlinCompilerExtensionVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">1.1.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">splits</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">abi</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isEnable</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isUniversalApk</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">buildTypes</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">named</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">release</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isMinifyEnabled</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isShrinkResources</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">proguardFiles</code><code class="GENERAL">(</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">getDefaultProguardFile</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">proguard-android-optimize.txt</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">,</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">proguard-rules.pro</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">versionNameSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">multiDexEnabled</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">named</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">debug</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">versionNameSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">-</code><code class="CHAR_STRING_LITERAL">${</code><code class="FUNCTION_IDENTIFIER">getCommitCount</code><code class="GENERAL">(</code><code class="GENERAL">)</code><code class="GENERAL">}</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">applicationIdSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">.debug</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isDebuggable</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">flavorDimensions</code><code class="GENERAL">.</code><code class="FUNCTION_IDENTIFIER">add</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">default</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">productFlavors</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">create</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">playstore</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;play&nbsp;store&nbsp;will&nbsp;be&nbsp;in&nbsp;this</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">applicationId</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">app.shosetsu.android</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">applicationIdSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">.play</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">versionNameSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">-play</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">create</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">uptodown</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">applicationIdSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">.uptodown</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">versionNameSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">-uptodown</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">create</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fdroid</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">applicationIdSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">.fdroid</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">versionNameSuffix</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">-fdroid</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">create</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">standard</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">isDefault</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">true</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">compileOptions</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">sourceCompatibility</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">JavaVersion</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">VERSION_1_8</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">targetCompatibility</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">JavaVersion</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">VERSION_1_8</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">kotlinOptions</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">jvmTarget</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">1.8</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">buildToolsVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">30.0.3</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">lint</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">abortOnError</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">false</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_DECLARATOR">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//TODO&nbsp;Fix&nbsp;application&nbsp;variant&nbsp;naming</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//android.applicationVariants.forEach&nbsp;{&nbsp;variant&nbsp;-></code><code class="GENERAL"><br />
+</code><code class="COMMENT">//	variant.outputs.all&nbsp;{</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;v:&nbsp;BaseVariantOutput&nbsp;=&nbsp;this</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;appName&nbsp;=&nbsp;"shosetsu"</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;versionName&nbsp;=&nbsp;variant.versionName</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//def&nbsp;versionCode&nbsp;=&nbsp;variant.versionCode</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;flavorName&nbsp;=&nbsp;variant.flavorName</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;buildType&nbsp;=&nbsp;variant.buildType.name</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//def&nbsp;variantName&nbsp;=&nbsp;variant.name</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//val&nbsp;gitCount&nbsp;=&nbsp;getCommitCount()</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//if&nbsp;(buildType&nbsp;==&nbsp;"debug"&nbsp;&&&nbsp;flavorName.toString()&nbsp;==&nbsp;"standard")&nbsp;{</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//outputFileName&nbsp;=&nbsp;"${appName}-${gitCount}.apk"</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//}&nbsp;else&nbsp;{</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//outputFileName&nbsp;=&nbsp;"${appName}-${versionName}.apk"</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//}</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//	}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="FUNCTION_IDENTIFIER">dependencies</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fileTree</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">mapOf</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">dir</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">to</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">libs</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">include</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">to</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_IDENTIFIER">listOf</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">*.jar</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">project</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">mapOf</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">path</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">to</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">:common</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Google&nbsp;view&nbsp;things</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.google.android.material:material:1.5.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Androidx</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.constraintlayout:constraintlayout:2.1.3")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.work:work-runtime:2.7.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.work:work-runtime-ktx:2.7.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.gridlayout:gridlayout:1.0.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.preference:preference-ktx:1.2.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.recyclerview:recyclerview:1.2.1")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.recyclerview:recyclerview-selection:1.1.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.appcompat:appcompat:1.4.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.multidex:multidex:2.0.1")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.biometric:biometric:1.1.0")&nbsp;TODO&nbsp;biometric&nbsp;unlocking</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.annotation:annotation:1.3.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.cardview:cardview:1.0.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.browser:browser:1.4.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.core:core-ktx:1.7.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.room:room-ktx:2.4.2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.collection:collection-ktx:1.2.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.core:core-splashscreen:1.0.0-beta01</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;-&nbsp;Life&nbsp;Cycle</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.lifecycle:lifecycle-runtime-ktx:2.4.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.lifecycle:lifecycle-livedata-ktx:2.4.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.lifecycle:lifecycle-extensions:2.2.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Test&nbsp;classes</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">testImplementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">junit:junit:4.13.2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">testImplementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.test.ext:junit:1.1.3</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">androidTestImplementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.test:runner:1.4.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">androidTestImplementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.test.espresso:espresso-core:3.4.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Annotations</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.jetbrains:annotations:23.0.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Core&nbsp;libraries</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//val&nbsp;shosetsuLibVersion:&nbsp;String&nbsp;by&nbsp;extra</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.luaj:luaj-jse:3.0.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.github.shosetsuorg:kotlin-lib:2e27ebb</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.jsoup:jsoup:1.14.3</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Image&nbsp;loading</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">io.coil-kt:coil-compose:2.0.0-rc01</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//TODO&nbsp;GITHUB&nbsp;sign&nbsp;in&nbsp;to&nbsp;save&nbsp;backup&nbsp;data&nbsp;to&nbsp;cloud</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation&nbsp;"com.github.kohsuke:github-api:github-api-1.95"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Markdown&nbsp;view</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("us.feras.mdv:markdownview:1.1.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Time&nbsp;control</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">joda-time:joda-time:2.10.13</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Cloud&nbsp;flare&nbsp;calculator</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.zhkrb.cloudflare-scrape-android:scrape-webview:0.0.3")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Network</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.squareup.okhttp3:okhttp:4.9.3</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Kotlin&nbsp;libraries</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kotlin</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">stdlib-jdk8</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(kotlin("reflect"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Showcase</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.github.deano2390:MaterialShowcaseView:1.3.4")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;A&nbsp;cuter&nbsp;view</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.github.shosetsuorg:DiscreteScrollView:1.5.1")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Error&nbsp;logging</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">acraVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">5.8.3</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">fun</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_DECLARATOR">acra</code><code class="GENERAL">(</code><code class="GENERAL">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">acraVersion</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">ch.acra:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">acra</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">acra-http</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(acra("acra-mail"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">acra</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">acra-dialog</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Auto&nbsp;service</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//kapt("com.google.auto.service:auto-service:+")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//compileOnly("com.google.auto.service:auto-service-annotations:1.0")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Conductor</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">conductorVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">3.1.4</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">fun</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_DECLARATOR">conductor</code><code class="GENERAL">(</code><code class="GENERAL">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">conductorVersion</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.bluelinelabs:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">conductor</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">conductor</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">conductor</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">conductor-support</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">3.0.0-rc2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">conductor</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">conductor-androidx-transition</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">conductor</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">conductor-archlifecycle</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;FastScroll</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.github.turing-tech:MaterialScrollBar:13.3.4")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Material&nbsp;Intro&nbsp;https://github.com/heinrichreimer/material-intro#standard-slide-simpleslide</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.heinrichreimersoftware:material-intro:2.0.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Color&nbsp;Picker</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.github.skydoves:colorpickerview:2.2.3")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Seek&nbsp;bar</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//	implementation(project(mapOf("path"&nbsp;to&nbsp;":bubbleseekbar")))</code><code class="GENERAL"><br />
+</code><code class="COMMENT">//	implementation("com.github.shosetsuorg:Bubbleseekbar:2dae010baf")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Room</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.room:room-runtime:2.4.2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">kapt</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.room:room-compiler:2.4.2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Fast&nbsp;Adapter</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">latestFastAdapterRelease</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">5.6.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">func</code><code class="GENERAL">&nbsp;</code><code class="CLASS_DECLARATOR">fastadapter</code><code class="GENERAL">(</code><code class="GENERAL">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">latestFastAdapterRelease</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.mikepenz:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fastadapter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fastadapter</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(fastadapter("fastadapter-extensions-expandable"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fastadapter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fastadapter-extensions-binding</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fastadapter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fastadapter-extensions-diff</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(fastadapter("fastadapter-extensions-drag"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(fastadapter("fastadapter-extensions-paged"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fastadapter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fastadapter-extensions-scroll</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(fastadapter("fastadapter-extensions-swipe"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation(fastadapter("fastadapter-extensions-ui"))</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">fastadapter</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">fastadapter-extensions-utils</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Guava&nbsp;cache</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.google.guava:guava:31.0.1-android</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;kode-in</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">kodeinVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">7.6.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">fun</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_DECLARATOR">kodein</code><code class="GENERAL">(</code><code class="GENERAL">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">kodeinVersion</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.kodein.di:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kodein</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">kodein-di</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kodein</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">kodein-di-jvm</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kodein</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">kodein-di-framework-android-core</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kodein</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">kodein-di-framework-android-support</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">kodein</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">kodein-di-framework-android-x</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;KTX</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;KTX&nbsp;-&nbsp;Serialization</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Roomigrant</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">vall</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">enableRoomigrant</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="LITERAL">false</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">roomigrantVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">0.3.4</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.github.MatrixDev.Roomigrant:RoomigrantLib:</code><code class="CHAR_STRING_LITERAL">$roomigrantVersion</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">if</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">(</code><code class="CLASS_DECLARATOR">enableRoomigrant</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">{</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">kapt</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.github.MatrixDev.Roomigrant:RoomigrantCompiler:</code><code class="CHAR_STRING_LITERAL">$roomigrantVersion</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">}</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Banner</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("com.github.shosetsuorg:MaterialBanner:2.0.7")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;Compose</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">androidxCompose</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">1.1.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">fun</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_DECLARATOR">androidxCompose</code><code class="GENERAL">(</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="TYPE_IDENTIFIER">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="TYPE_IDENTIFIER">submodule</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="FUNCTION_IDENTIFIER">module</code><code class="GENERAL">,</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">androidxCompose</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.compose.</code><code class="CHAR_STRING_LITERAL">$submodule</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:</code><code class="CHAR_STRING_LITERAL">$version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="CLASS_DECLARATOR">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">ui</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="TYPE_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">compiler</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//-&nbsp;Tooling&nbsp;support&nbsp;(Previews,&nbsp;etc.)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">ui-tooling</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">ui</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//-&nbsp;Foundation&nbsp;(Border,&nbsp;Background,&nbsp;Box,&nbsp;Image,&nbsp;Scroll,&nbsp;shapes,&nbsp;animations,&nbsp;etc.)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">foundation</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">animation</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">animation-graphics</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">animation</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">androidxCompose</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">animation-core</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">animation</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;-&nbsp;Material</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.compose.material:material:1.1.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.compose.material:material-ripple:1.0.2")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//-&nbsp;Material&nbsp;design&nbsp;icons</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.compose.material:material-icons-core:1.0.2")</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//implementation("androidx.compose.material:material-icons-extended:1.0.2")</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;-&nbsp;accompanist</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">accompanistVersion</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">0.23.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">fun</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">accompanist</code><code class="GENERAL">(</code><code class="GENERAL">module</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">version</code><code class="GENERAL">:</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">String</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="TYPE_IDENTIFIER">accompanistVersion</code><code class="GENERAL">)</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="GENERAL">	</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.google.accompanist:</code><code class="CHAR_STRING_LITERAL">$module</code><code class="CHAR_STRING_LITERAL">:&version</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">accompanist</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">accompanist-appcompat-theme</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">accompanist</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">accompanist-pager</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">accompanist</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">accompanist-swiperefresh</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="FUNCTION_IDENTIFIER">accompanist</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">accompanist-webview</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">,</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">0.24.3-alpha</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//-&nbsp;Integration&nbsp;with&nbsp;observables</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">androidx.compose.runtime:runtime-livedata:1.1.1</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//-&nbsp;UI&nbsp;Tests</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.2")</code><code class="GENERAL"><br />
+</code><code class="TYPE_IDENTIFIER"><br />
+</code><code class="GENERAL">	</code><code class="COMMENT">//&nbsp;MDC&nbsp;Adapter</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="FUNCTION_IDENTIFIER">implementation</code><code class="GENERAL">(</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">com.google.android.material:compose-theme-adapter:1.1.5</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">)</code><code class="GENERAL"><br />
+</code><code class="GENERAL"><br />
+</code><code class="GENERAL">	</code><code class="KEYWORD">val</code><code class="GENERAL">&nbsp;</code><code class="VARIABLE_DECLARATOR">androidxActivity</code><code class="GENERAL">&nbsp;</code><code class="GENERAL">=</code><code class="GENERAL">&nbsp;</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">1.4.0<br />
+	fun&nbsp;androidxActivity(module:&nbsp;String,&nbsp;version:&nbsp;String&nbsp;=&nbsp;androidxActivity)&nbsp;=<br />
+		</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">androidx</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">activity</code><code class="GENERAL">:</code>$<code class="FIELD_IDENTIFIER">module</code><code class="GENERAL">:</code>$<code class="ANNOTATION_DECLARATOR">version</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL"><br />
+	implementation(androidxActivity(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">activity</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">))<br />
+	implementation(androidxActivity(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">activity</code><code class="GENERAL">-</code><code class="GENERAL">ktx</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">))<br />
+	implementation(androidxActivity(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">activity</code><code class="GENERAL">-</code><code class="GENERAL">compose</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">))<br />
+<br />
+	implementation(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">com</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">chargemap</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">compose</code><code class="GENERAL">:</code><code class="FIELD_IDENTIFIER">numberpicker</code><code class="GENERAL">:</code><code class="LITERAL">0.0</code><code class="LITERAL">.11</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+<br />
+	</code><code class="CHAR_STRING_LITERAL">\\</code><code class="CHAR_STRING_LITERAL">&nbsp;QR&nbsp;Code<br />
+	implementation(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">io</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">github</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">g00fy2</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">quickie</code><code class="GENERAL">:</code><code class="FIELD_IDENTIFIER">quickie</code><code class="TYPE_IDENTIFIER">-</code><code class="FIELD_IDENTIFIER">bundled</code><code class="GENERAL">:</code><code class="LITERAL">1.4</code><code class="LITERAL">.0</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+<br />
+	implementation(</code><code class="CHAR_STRING_LITERAL">"</code><code class="GENERAL">com</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">github</code><code class="GENERAL">.</code><code class="FIELD_IDENTIFIER">doomsdayrs</code><code class="GENERAL">:</code><code class="FIELD_IDENTIFIER">qrcode</code><code class="TYPE_IDENTIFIER">-</code><code class="FIELD_IDENTIFIER">kotlin</code><code class="GENERAL">:</code><code class="LITERAL">513</code><code class="TYPE_IDENTIFIER">d290b</code><code class="CHAR_STRING_LITERAL">"</code><code class="CHAR_STRING_LITERAL">)<br />
+}<br />
+</code><code class="GENERAL"></code></pre></html>

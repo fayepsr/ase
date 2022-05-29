@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<style>
+.ANY {
+    color: black;
+    font-weight: normal;
+    font-style: normal;
+}
+.KEYWORD {
+    color: blue;
+    font-weight: bold;
+    font-style: normal;
+}
+.LITERAL {
+    color: lightskyblue;
+    font-weight: bold;
+    font-style: normal;
+}
+.CHAR_STRING_LITERAL {
+    color: darkgoldenrod;
+    font-weight: normal;
+    font-style: normal;
+}
+.COMMENT {
+    color: grey;
+    font-weight: normal;
+    font-style: italic;
+}
+.CLASS_DECLARATOR {
+    color: crimson;
+    font-weight: bold;
+    font-style: normal;
+}
+.FUNCTION_DECLARATOR {
+    color: fuchsia;
+    font-weight: bold;
+    font-style: normal;
+}
+.VARIABLE_DECLARATOR {
+    color: purple;
+    font-weight: bold;
+    font-style: normal;
+}
+.TYPE_IDENTIFIER {
+    color: darkgreen;
+    font-weight: bold;
+    font-style: normal;
+}
+.FUNCTION_IDENTIFIER {
+    color: dodgerblue;
+    font-weight: normal;
+    font-style: normal;
+}
+.FIELD_IDENTIFIER {
+    color: coral;
+    font-weight: normal;
+    font-style: normal;
+}
+.ANNOTATION_DECLARATOR {
+    color: lightslategray;
+    font-weight: lighter;
+    font-style: italic;
+}
+</style>
+<pre>
+<code class="COMMENT">/*
+ * Copyright 2018 The StartupOS Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */</code>
+
+<code class="KEYWORD">package</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">startupos</code><code class="ANY">.</code><code class="ANY">common</code><code class="ANY">;</code>
+
+<code class="KEYWORD">import</code> <code class="KEYWORD">static</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">charset</code><code class="ANY">.</code><code class="ANY">StandardCharsets</code><code class="ANY">.</code><code class="ANY">UTF_8</code><code class="ANY">;</code>
+
+<code class="KEYWORD">import</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">common</code><code class="ANY">.</code><code class="ANY">collect</code><code class="ANY">.</code><code class="ANY">ImmutableList</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">common</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">CharStreams</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">common</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">Resources</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">protobuf</code><code class="ANY">.</code><code class="ANY">Message</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">com</code><code class="ANY">.</code><code class="ANY">google</code><code class="ANY">.</code><code class="ANY">protobuf</code><code class="ANY">.</code><code class="ANY">TextFormat</code><code class="ANY">;</code>
+
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">BufferedReader</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">BufferedWriter</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">File</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">FileWriter</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">IOException</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">InputStream</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">io</code><code class="ANY">.</code><code class="ANY">InputStreamReader</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">net</code><code class="ANY">.</code><code class="ANY">MalformedURLException</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">net</code><code class="ANY">.</code><code class="ANY">URI</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">net</code><code class="ANY">.</code><code class="ANY">URL</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">FileSystem</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">FileSystems</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">FileVisitResult</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">Files</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">Path</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">SimpleFileVisitor</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">StandardCopyOption</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">nio</code><code class="ANY">.</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">attribute</code><code class="ANY">.</code><code class="ANY">BasicFileAttributes</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">HashMap</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">Map</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">regex</code><code class="ANY">.</code><code class="ANY">Pattern</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">stream</code><code class="ANY">.</code><code class="ANY">Collectors</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">stream</code><code class="ANY">.</code><code class="ANY">Stream</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">java</code><code class="ANY">.</code><code class="ANY">util</code><code class="ANY">.</code><code class="ANY">zip</code><code class="ANY">.</code><code class="ANY">ZipFile</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">javax</code><code class="ANY">.</code><code class="ANY">inject</code><code class="ANY">.</code><code class="ANY">Inject</code><code class="ANY">;</code>
+<code class="KEYWORD">import</code> <code class="ANY">javax</code><code class="ANY">.</code><code class="ANY">inject</code><code class="ANY">.</code><code class="ANY">Named</code>
+<code class="KEYWORD">import</code> <code class="ANY">javax</code><code class="ANY">.</code><code class="ANY">inject</code><code class="ANY">.</code><code class="ANY">Singleton</code><code class="ANY">;</code>
+
+<code class="COMMENT">/** File utils. */</code>
+<code class="COMMENT">// TODO Disallow `java.nio.file.Paths` using error_prone, since it bypasses the injected FileSystem.</code>
+<code class="ANNOTATION_DECLARATOR">@</code><code class="ANNOTATION_DECLARATOR">Singleton</code>
+<code class="KEYWORD">public</code> <code class="KEYWORD">class</code> <code class="CLASS_DECLARATOR">FileUtils</code> <code class="ANY">{</code>
+  <code class="KEYWORD">private</code> <code class="KEYWORD">final</code> <code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">userHome</code><code class="ANY">;</code>
+  <code class="KEYWORD">private</code> <code class="KEYWORD">final</code> <code class="TYPE_IDENTIFIER">FileSystem</code> <code class="VARIABLE_DECLARATOR">fileSystem</code><code class="ANY">;</code><code class="ANY">;</code>
+
+  <code class="ANNOTATION_DECLARATOR">@</code><code class="ANNOTATION_DECLARATOR">Inject</code>
+  <code class="FUNCTION_DECLARATOR">FileUtils</code><code class="ANY">(</code><code class="TYPE_IDENTIFIER">FileSystem</code> <code class="VARIABLE_DECLARATOR">fileSystem</code><code class="ANY">,</code><code class="ANY">,</code> <code class="ANNOTATION_DECLARATOR">@</code><code class="ANNOTATION_DECLARATOR">Named</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"Home folder"</code><code class="ANY">)</code> <code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">userHome</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">this</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">fileSystem</code> <code class="ANY">=</code> <code class="ANY">fileSystem</code><code class="ANY">;</code>
+    <code class="KEYWORD">this</code><code class="ANY">.</code><code class="FIELD_IDENTIFIER">userHome</code> <code class="ANY">=</code> <code class="ANY">userHome</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Replace the ~ in e.g ~/path with the home directory. */</code>
+  <code class="KEYWORD">public</code> <code class="TYPE_IDENTIFIER">String</code> <code class="FUNCTION_DECLARATOR">expandHomeDirectory</code><code class="ANY">(</code><code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">path</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">startsWith</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"~"</code> <code class="ANY">+</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">getSeparator</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="ANY">path</code> <code class="ANY">=</code> <code class="ANY">userHome</code> <code class="ANY">+</code> <code class="ANY">path</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">substring</code><code class="ANY">(</code><code class="LITERAL">1</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="KEYWORD">return</code> <code class="ANY">path</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a prototxt file into a proto. */</code>
+  <code class="KEYWORD">public</code> <code class="TYPE_IDENTIFIER">Message</code> <code class="FUNCTION_DECLARATOR">readPrototxt</code><code class="ANY">(</code><code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">path</code><code class="ANY">,</code> <code class="TYPE_IDENTIFIER">Message</code><code class="ANY">.</code><code class="TYPE_IDENTIFIER">Builder</code> <code class="VARIABLE_DECLARATOR">builder</code><code class="ANY">)</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">protoText</code> <code class="ANY">=</code> <code class="FUNCTION_IDENTIFIER">readFile</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">TextFormat</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">merge</code><code class="ANY">(</code><code class="ANY">protoText</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">return</code> <code class="ANY">builder</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">build</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a prototxt from a string into a proto. */</code>
+  <code class="KEYWORD">public</code> <code class="TYPE_IDENTIFIER">Message</code> <code class="FUNCTION_DECLARATOR">readPrototxtFromString</code><code class="ANY">(</code><code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">prototxt</code><code class="ANY">,</code> <code class="TYPE_IDENTIFIER">Message</code><code class="ANY">.</code><code class="TYPE_IDENTIFIER">Builder</code> <code class="VARIABLE_DECLARATOR">builder</code><code class="ANY">)</code>
+      <code class="KEYWORD">throws</code> <code class="TYPE_IDENTIFIER">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">TextFormat</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">merge</code><code class="ANY">(</code><code class="ANY">prototxt</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">return</code> <code class="ANY">builder</code><code class="ANY">.</code><code class="FUNCTION_IDENTIFIER">build</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a prototxt file into a proto, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="TYPE_IDENTIFIER">Message</code> <code class="FUNCTION_DECLARATOR">readPrototxtUnchecked</code><code class="ANY">(</code><code class="TYPE_IDENTIFIER">String</code> <code class="VARIABLE_DECLARATOR">path</code><code class="ANY">,</code> <code class="TYPE_IDENTIFIER">Message</code><code class="ANY">.</code><code class="TYPE_IDENTIFIER">Builder</code> <code class="VARIABLE_DECLARATOR">builder</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="FUNCTION_IDENTIFIER">readPrototxt</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a proto to file. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writePrototxt</code><code class="ANY">(</code><code class="ANY">Message</code> <code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">String</code> <code class="ANY">fileContent</code> <code class="ANY">=</code> <code class="ANY">TextFormat</code><code class="ANY">.</code><code class="ANY">printToUnicodeString</code><code class="ANY">(</code><code class="ANY">proto</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">writeString</code><code class="ANY">(</code><code class="ANY">fileContent</code><code class="ANY">,</code> <code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+  
+
+  <code class="COMMENT">/** Writes a proto to file, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writePrototxtUnchecked</code><code class="ANY">(</code><code class="ANY">Message</code> <code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">writePrototxt</code><code class="ANY">(</code><code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a string to file. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writeString</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">text</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">File</code> <code class="ANY">file</code> <code class="ANY">=</code> <code class="KEYWORD">new</code> <code class="ANY">File</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">getParent</code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">!=</code> <code class="LITERAL">null</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="ANY">mkdirs</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">getParent</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">write</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">,</code> <code class="ANY">text</code><code class="ANY">.</code><code class="ANY">getBytes</code><code class="ANY">(</code><code class="ANY">UTF_8</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a string to file, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writeStringUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">text</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">writeString</code><code class="ANY">(</code><code class="ANY">text</code><code class="ANY">,</code> <code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Checks if file exists. Returns false for folders. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">boolean</code> <code class="ANY">fileExists</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">isRegularFile</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Checks if folder exists. Returns false for files. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">boolean</code> <code class="ANY">folderExists</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">isDirectory</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Checks if folder or folder exists. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">boolean</code> <code class="ANY">fileOrFolderExists</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">isRegularFile</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code>
+        <code class="ANY">||</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">isDirectory</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Checks if folder is empty or doesn't exist. Returns false for files. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">boolean</code> <code class="ANY">folderEmptyOrNotExists</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">fileExists</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="LITERAL">false</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">!</code><code class="ANY">folderExists</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="LITERAL">true</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="KEYWORD">return</code> <code class="ANY">listContents</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">isEmpty</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Creates directories in path if none exist. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">mkdirs</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">createDirectories</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">IOException</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Joins to an absolute paths. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">joinToAbsolutePath</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">first</code><code class="ANY">,</code> <code class="ANY">String</code><code class="ANY">...</code> <code class="ANY">more</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">first</code><code class="ANY">,</code> <code class="ANY">more</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toAbsolutePath</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Joins paths. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">joinPaths</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">first</code><code class="ANY">,</code> <code class="ANY">String</code><code class="ANY">...</code> <code class="ANY">more</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">first</code><code class="ANY">,</code> <code class="ANY">more</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Get the current working directory. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">getCurrentWorkingDirectory</code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">System</code><code class="ANY">.</code><code class="ANY">getenv</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"BUILD_WORKSPACE_DIRECTORY"</code><code class="ANY">)</code> <code class="ANY">!=</code> <code class="LITERAL">null</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">System</code><code class="ANY">.</code><code class="ANY">getenv</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"BUILD_WORKSPACE_DIRECTORY"</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">else</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">""</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toAbsolutePath</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Get the current working directory. */</code><code class="ANY">/</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">getCurrentWorkingDirectoryName</code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code> <code class="ANY">(</code><code class="CHAR_STRING_LITERAL">""</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toAbsolutePath</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">getFileName</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Gets file and folder names in path. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">ImmutableList</code><code class="ANY"><</code><code class="ANY">String</code><code class="ANY">></code> <code class="ANY">listContents</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">(</code><code class="ANY">Stream</code><code class="ANY"><</code><code class="ANY">Path</code><code class="ANY">></code> <code class="ANY">paths</code> <code class="ANY">=</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">.</code><code class="ANY">list</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">ImmutableList</code><code class="ANY">.</code><code class="ANY">sortedCopyOf</code><code class="ANY">(</code>
+          <code class="ANY">paths</code>
+              <code class="ANY">.</code><code class="ANY">map</code><code class="ANY">(</code><code class="ANY">absolutePath</code> <code class="ANY">-></code> <code class="ANY">absolutePath</code><code class="ANY">.</code><code class="ANY">getFileName</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code>
+              <code class="ANY">.</code><code class="ANY">collect</code><code class="ANY">(</code><code class="ANY">Collectors</code><code class="ANY">.</code><code class="ANY">toList</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Gets subfolder names in path. Throws IllegalStateException if path is not a folder. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">ImmutableList</code><code class="ANY"><</code><code class="ANY">String</code><code class="ANY">></code> <code class="ANY">listSubfolders</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">!</code><code class="ANY">folderExists</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">IllegalStateException</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"Folder does not exist"</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="KEYWORD">return</code> <code class="ANY">ImmutableList</code><code class="ANY">.</code><code class="ANY">sortedCopyOf</code><code class="ANY">(</code>
+        <code class="ANY">listContents</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code>
+            <code class="ANY">.</code><code class="ANY">stream</code><code class="ANY">(</code><code class="ANY">)</code>
+            <code class="ANY">.</code><code class="ANY">filter</code><code class="ANY">(</code><code class="ANY">x</code> <code class="ANY">-</code>  <code class="ANY">></code> <code class="ANY">folderExists</code><code class="ANY">(</code><code class="ANY">joinPaths</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">,</code> <code class="ANY">x</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code>
+            <code class="ANY">.</code><code class="ANY">collect</code><code class="ANY">(</code><code class="ANY">Collectors</code><code class="ANY">.</code><code class="ANY">toList</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/**
+   * Gets file and folder absolute paths recursively. Throws NoSuchFileException if directory
+   * doesn't exist.
+   */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">ImmutableList</code><code class="ANY"><</code><code class="ANY">String</code><code class="ANY">></code> <code class="ANY">listContentsRecursively</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">(</code><code class="ANY">Stream</code><code class="ANY"><</code><code class="ANY">Path</code><code class="ANY">></code> <code class="ANY">paths</code> <code class="ANY">=</code>
+        <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">find</code><code class="ANY">(</code>
+            <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">,</code>
+            <code class="LITERAL">100000</code><code class="ANY">,</code> <code class="COMMENT">// Folder depth</code>
+            <code class="ANY">(</code><code class="ANY">unused</code><code class="ANY">,</code> <code class="ANY">unused2</code><code class="ANY">)</code> <code class="ANY">-></code> <code class="LITERAL">true</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">ImmutableList</code><code class="ANY">.</code><code class="ANY">sortedCopyOf</code><code class="ANY">(</code><code class="ANY">paths</code><code class="ANY">.</code><code class="ANY">map</code><code class="ANY">(</code><code class="ANY">Path</code><code class="ANY">::</code><code class="ANY">toString</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">collect</code><code class="ANY">(</code><code class="ANY">Collectors</code><code class="ANY">.</code><code class="ANY">toList</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a text file. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">readFile</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="KEYWORD">new</code> <code class="ANY">String</code><code class="ANY">(</code><code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">readAllBytes</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">,</code> <code class="ANY">UTF_8</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a text file, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">readFileUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">readFile</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a text file, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">readFileFromResourcesUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">Resources</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">Resources</code><code class="ANY">.</code><code class="ANY">getResource</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">,</code> <code class="ANY">UTF_8</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a proto to binary file. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writeProtoBinary</code><code class="ANY">(</code><code class="ANY">Message</code> <code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">File</code> <code class="ANY">file</code> <code class="ANY">=</code> <code class="KEYWORD">new</code> <code class="ANY">File</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">getParent</code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">!=</code> <code class="LITERAL">null</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="ANY">mkdirs</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">.</code><code class="ANY">getParent</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+    <code class="ANY">proto</code><code class="ANY">.</code><code class="ANY">writeTo</code><code class="ANY">(</code><code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">newOutputStream</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a proto to binary file, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writeProtoBinaryUnchecked</code><code class="ANY">(</code><code class="ANY">Message</code> <code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">writeProtoBinary</code><code class="ANY">(</code><code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a proto binary file into a proto. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">Message</code> <code class="ANY">readProtoBinary</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">,</code> <code class="ANY">Message</code><code class="ANY">.</code><code class="ANY">Builder</code> <code class="ANY">builder</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">InputStream</code> <code class="ANY">input</code> <code class="ANY">=</code> <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">newInputStream</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">return</code> <code class="ANY">builder</code><code class="ANY">.</code><code class="ANY">build</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">getParserForType</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">parseFrom</code><code class="ANY">(</code><code class="ANY">input</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a proto binary file into a proto, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">Message</code> <code class="ANY">readProtoBinaryUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">,</code> <code class="ANY">Message</code><code class="ANY">.</code><code class="ANY">Builder</code> <code class="ANY">builder</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">readProtoBinary</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/**
+   * Copies a directory to another directory. Creates target directory if needed and doesn't copy
+   * symlinks.
+   */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">copyDirectoryToDirectory</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">source</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">destination</code><code class="ANY">,</code> <code class="ANY">String</code><code class="ANY">...</code> <code class="ANY">ignored</code><code class="ANY">)</code>
+      <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">final</code> <code class="ANY">Path</code> <code class="ANY">sourcePath</code> <code class="ANY">=</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">source</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">final</code> <code class="ANY">Path</code> <code class="ANY">targetPath</code> <code class="ANY">=</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">destination</code><code class="ANY">)</code><code class="ANY">;</code>
+
+    <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">walkFileTree</code><code class="ANY">(</code>
+        <code class="ANY">sourcePath</code><code class="ANY">,</code>
+        <code class="KEYWORD">new</code> <code class="ANY">SimpleFileVisitor</code><code class="ANY"><</code><code class="ANY">Path</code><code class="ANY">></code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">{</code>
+          <code class="ANY">@</code><code class="ANY">Override</code>
+          <code class="KEYWORD">public</code> <code class="ANY">FileVisitResult</code> <code class="ANY">preVisitDirectory</code><code class="ANY">(</code><code class="KEYWORD">final</code> <code class="ANY">Path</code> <code class="ANY">dir</code><code class="ANY">,</code> <code class="KEYWORD">final</code> <code class="ANY">BasicFileAttributes</code> <code class="ANY">attrs</code><code class="ANY">)</code>
+              <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+            <code class="KEYWORD">final</code> <code class="ANY">String</code> <code class="ANY">dirPath</code> <code class="ANY">=</code> <code class="ANY">dir</code><code class="ANY">.</code><code class="ANY">toAbsolutePath</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+            <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">ignored</code><code class="ANY">.</code><code class="ANY">length</code> <code class="ANY">!=</code> <code class="LITERAL">0</code><code class="ANY">)</code> <code class="ANY">{</code>
+              <code class="KEYWORD">for</code> <code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">item</code> <code class="ANY">:</code> <code class="ANY">ignored</code><code class="ANY">)</code> <code class="ANY">{</code>
+                <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">dirPath</code><code class="ANY">.</code><code class="ANY">contains</code><code class="ANY">(</code><code class="ANY">item</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+                  <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">SKIP_SUBTREE</code><code class="ANY">;</code>
+                <code class="ANY">}</code>
+                <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">Pattern</code><code class="ANY">.</code><code class="ANY">matches</code><code class="ANY">(</code><code class="ANY">item</code><code class="ANY">,</code> <code class="ANY">dir</code><code class="ANY">.</code><code class="ANY">getFileName</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+                  <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">SKIP_SUBTREE</code><code class="ANY">;</code>
+                <code class="ANY">}</code>
+              <code class="ANY">}</code>
+            <code class="ANY">}</code>
+            <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">createDirectories</code><code class="ANY">(</code><code class="ANY">targetPath</code><code class="ANY">.</code><code class="ANY">resolve</code><code class="ANY">(</code><code class="ANY">sourcePath</code><code class="ANY">.</code><code class="ANY">relativize</code><code class="ANY">(</code><code class="ANY">dir</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+            <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+          <code class="ANY">}</code>
+
+          <code class="ANY">@</code><code class="ANY">Override</code>
+          <code class="KEYWORD">public</code> <code class="ANY">FileVisitResult</code> <code class="ANY">visitFile</code><code class="ANY">(</code><code class="KEYWORD">final</code> <code class="ANY">Path</code> <code class="ANY">file</code><code class="ANY">,</code> <code class="KEYWORD">final</code> <code class="ANY">BasicFileAttributes</code> <code class="ANY">attrs</code><code class="ANY">)</code>
+              <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+            <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">ignored</code><code class="ANY">.</code><code class="ANY">length</code> <code class="ANY">!=</code> <code class="LITERAL">0</code><code class="ANY">)</code> <code class="ANY">{</code>
+              <code class="KEYWORD">for</code> <code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">itemForIgnore</code> <code class="ANY">:</code> <code class="ANY">ignored</code><code class="ANY">)</code> <code class="ANY">{</code>
+                <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">Pattern</code><code class="ANY">.</code><code class="ANY">matches</code><code class="ANY">(</code><code class="ANY">itemForIgnore</code><code class="ANY">,</code> <code class="ANY">file</code><code class="ANY">.</code><code class="ANY">getFileName</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+                  <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+                <code class="ANY">}</code>
+              <code class="ANY">}</code>
+            <code class="ANY">}</code>
+            <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">isSymbolicLink</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+              <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+            <code class="ANY">}</code>
+            <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">copy</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">,</code> <code class="ANY">targetPath</code><code class="ANY">.</code><code class="ANY">resolve</code><code class="ANY">(</code><code class="ANY">sourcePath</code><code class="ANY">.</code><code class="ANY">relativize</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+            <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+          <code class="ANY">}</code>
+        <code class="ANY">}</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">copyDirectoryToDirectory</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">source</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">destination</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">copyDirectoryToDirectory</code><code class="ANY">(</code><code class="ANY">source</code><code class="ANY">,</code> <code class="ANY">destination</code><code class="ANY">,</code> <code class="KEYWORD">new</code> <code class="ANY">String</code><code class="ANY">[</code><code class="LITERAL">0</code><code class="ANY">]</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Deletes all files and folders in directory. Target directory is deleted. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">deleteDirectory</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">deleteDirectoryContents</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">,</code> <code class="LITERAL">true</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/**
+   * Deletes all files and folders in directory. Target directory is deleted. Rethrows exceptions as
+   * unchecked.
+   */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">deleteDirectoryUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">deleteDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">IOException</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Deletes file or folder. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">deleteFileOrDirectoryIfExists</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">deleteIfExists</code><code class="ANY">(</code><code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Deletes file or folder, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">deleteFileOrDirectoryIfExistsUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">deleteFileOrDirectoryIfExists</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">IOException</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Deletes all files and folders inside directory. Target directory is not deleted. */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">clearDirectory</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">deleteDirectoryContents</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">,</code> <code class="LITERAL">false</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/**
+   * Deletes all files and folders inside directory. Target directory is not deleted. Rethrows
+   * exceptions as unchecked.
+   */</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">clearDirectoryUnchecked</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="ANY">clearDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">IOException</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="KEYWORD">private</code> <code class="KEYWORD">void</code> <code class="ANY">deleteDirectoryContents</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">,</code> <code class="KEYWORD">boolean</code> <code class="ANY">deleteTargetDirectory</code><code class="ANY">)</code>
+      <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">final</code> <code class="ANY">Path</code> <code class="ANY">targetDirectory</code> <code class="ANY">=</code> <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">walkFileTree</code><code class="ANY">(</code>
+        <code class="ANY">targetDirectory</code><code class="ANY">,</code>
+        <code class="KEYWORD">new</code> <code class="ANY">SimpleFileVisitor</code><code class="ANY"><</code><code class="ANY">Path</code><code class="ANY">></code><code class="ANY">(</code><code class="ANY">)</code> <code class="ANY">{</code>
+          <code class="ANY">@</code><code class="ANY">Override</code>
+          <code class="KEYWORD">public</code> <code class="ANY">FileVisitResult</code> <code class="ANY">visitFile</code><code class="ANY">(</code><code class="ANY">Path</code> <code class="ANY">file</code><code class="ANY">,</code> <code class="ANY">BasicFileAttributes</code> <code class="ANY">attrs</code><code class="ANY">)</code>
+              <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+            <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">delete</code><code class="ANY">(</code><code class="ANY">file</code><code class="ANY">)</code><code class="ANY">;</code>
+            <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+          <code class="ANY">}</code>
+
+          <code class="ANY">@</code><code class="ANY">Override</code>
+          <code class="KEYWORD">public</code> <code class="ANY">FileVisitResult</code> <code class="ANY">postVisitDirectory</code><code class="ANY">(</code><code class="ANY">Path</code> <code class="ANY">dir</code><code class="ANY">,</code> <code class="ANY">IOException</code> <code class="ANY">exception</code><code class="ANY">)</code>
+              <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+            <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">exception</code> <code class="ANY">==</code> <code class="LITERAL">null</code><code class="ANY">)</code> <code class="ANY">{</code>
+              <code class="KEYWORD">if</code> <code class="ANY">(</code><code class="ANY">!</code><code class="ANY">deleteTargetDirectory</code> <code class="ANY">&&</code> <code class="ANY">(</code><code class="ANY">targetDirectory</code> <code class="ANY">==</code> <code class="ANY">dir</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+                <code class="COMMENT">// Do nothing</code>
+              <code class="ANY">}</code> <code class="KEYWORD">else</code> <code class="ANY">{</code>
+                <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">delete</code><code class="ANY">(</code><code class="ANY">dir</code><code class="ANY">)</code><code class="ANY">;</code>
+              <code class="ANY">}</code>
+              <code class="KEYWORD">return</code> <code class="ANY">FileVisitResult</code><code class="ANY">.</code><code class="ANY">CONTINUE</code><code class="ANY">;</code>
+            <code class="ANY">}</code> <code class="KEYWORD">else</code> <code class="ANY">{</code>
+              <code class="KEYWORD">throw</code> <code class="ANY">exception</code><code class="ANY">;</code>
+            <code class="ANY">}</code>
+          <code class="ANY">}</code>
+        <code class="ANY">}</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="KEYWORD">public</code> <code class="KEYWORD">static</code> <code class="ANY">String</code> <code class="ANY">streamToString</code><code class="ANY">(</code><code class="ANY">InputStream</code> <code class="ANY">inputStream</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="ANY">CharStreams</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="KEYWORD">new</code> <code class="ANY">InputStreamReader</code><code class="ANY">(</code><code class="ANY">inputStream</code><code class="ANY">,</code> <code class="ANY">UTF_8</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="KEYWORD">public</code> <code class="ANY">String</code> <code class="ANY">downloadUrl</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">url</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">(</code><code class="ANY">BufferedReader</code> <code class="ANY">in</code> <code class="ANY">=</code> <code class="KEYWORD">new</code> <code class="ANY">BufferedReader</code><code class="ANY">(</code><code class="KEYWORD">new</code> <code class="ANY">InputStreamReader</code><code class="ANY">(</code><code class="KEYWORD">new</code> <code class="ANY">URL</code><code class="ANY">(</code><code class="ANY">url</code><code class="ANY">)</code><code class="ANY">.</code><code class="ANY">openStream</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">CharStreams</code><code class="ANY">.</code><code class="ANY">toString</code><code class="ANY">(</code><code class="ANY">in</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">MalformedURLException</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">IllegalArgumentException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Writes a proto to zip archive. */</code>
+  <code class="COMMENT">// TODO: Think over how to instead of writing the file to disk and then copying, and then</code>
+  <code class="COMMENT">// deleting, write it once, directly to the Zip filesystem</code>
+  <code class="KEYWORD">public</code> <code class="KEYWORD">void</code> <code class="ANY">writePrototxtToZip</code><code class="ANY">(</code><code class="ANY">Message</code> <code class="ANY">proto</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">zipFilePath</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">pathInsideZip</code><code class="ANY">)</code>
+      <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">String</code> <code class="ANY">fileContent</code> <code class="ANY">=</code> <code class="ANY">TextFormat</code><code class="ANY">.</code><code class="ANY">printToUnicodeString</code><code class="ANY">(</code><code class="ANY">proto</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">File</code> <code class="ANY">tempPrototxt</code> <code class="ANY">=</code> <code class="ANY">File</code><code class="ANY">.</code><code class="ANY">createTempFile</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"temp_prototxt"</code><code class="ANY">,</code> <code class="CHAR_STRING_LITERAL">".prototxt"</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">BufferedWriter</code> <code class="ANY">writer</code> <code class="ANY">=</code> <code class="KEYWORD">new</code> <code class="ANY">BufferedWriter</code><code class="ANY">(</code><code class="KEYWORD">new</code> <code class="ANY">FileWriter</code><code class="ANY">(</code><code class="ANY">tempPrototxt</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">writer</code><code class="ANY">.</code><code class="ANY">write</code><code class="ANY">(</code><code class="ANY">fileContent</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">writer</code><code class="ANY">.</code><code class="ANY">close</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+
+    <code class="ANY">Map</code><code class="ANY"><</code><code class="ANY">String</code><code class="ANY">,</code> <code class="ANY">String</code><code class="ANY">></code> <code class="ANY">env</code> <code class="ANY">=</code> <code class="KEYWORD">new</code> <code class="ANY">HashMap</code><code class="ANY"><</code><code class="ANY">></code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">env</code><code class="ANY">.</code><code class="ANY">put</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"create"</code><code class="ANY">,</code> <code class="CHAR_STRING_LITERAL">"true"</code><code class="ANY">)</code><code class="ANY">;</code>
+
+    <code class="ANY">URI</code> <code class="ANY">uri</code> <code class="ANY">=</code> <code class="ANY">URI</code><code class="ANY">.</code><code class="ANY">create</code><code class="ANY">(</code><code class="ANY">String</code><code class="ANY">.</code><code class="ANY">format</code><code class="ANY">(</code><code class="CHAR_STRING_LITERAL">"jar:file:%s"</code><code class="ANY">,</code> <code class="ANY">joinPaths</code><code class="ANY">(</code><code class="ANY">zipFilePath</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">try</code> <code class="ANY">(</code><code class="ANY">FileSystem</code> <code class="ANY">zipfs</code> <code class="ANY">=</code> <code class="ANY">FileSystems</code><code class="ANY">.</code><code class="ANY">newFileSystem</code><code class="ANY">(</code><code class="ANY">uri</code><code class="ANY">,</code> <code class="ANY">env</code><code class="ANY">)</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="ANY">Files</code><code class="ANY">.</code><code class="ANY">copy</code><code class="ANY">(</code>
+          <code class="ANY">fileSystem</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">tempPrototxt</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">,</code>
+          <code class="ANY">zipfs</code><code class="ANY">.</code><code class="ANY">getPath</code><code class="ANY">(</code><code class="ANY">pathInsideZip</code><code class="ANY">)</code><code class="ANY">,</code>
+          <code class="ANY">StandardCopyOption</code><code class="ANY">.</code><code class="ANY">REPLACE_EXISTING</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">finally</code> <code class="ANY">{</code>
+      <code class="ANY">tempPrototxt</code><code class="ANY">.</code><code class="ANY">deleteOnExit</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a prototxt file into a proto from zip archive. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">Message</code> <code class="ANY">readPrototxtFromZip</code><code class="ANY">(</code>
+      <code class="ANY">String</code> <code class="ANY">zipFilePath</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">pathInsideZip</code><code class="ANY">,</code> <code class="ANY">Message</code><code class="ANY">.</code><code class="ANY">Builder</code> <code class="ANY">builder</code><code class="ANY">)</code> <code class="KEYWORD">throws</code> <code class="ANY">IOException</code> <code class="ANY">{</code>
+    <code class="ANY">ZipFile</code> <code class="ANY">zipFile</code> <code class="ANY">=</code>
+        <code class="KEYWORD">new</code> <code class="ANY">ZipFile</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">joinPaths</code><code class="ANY">(</code><code class="ANY">getCurrentWorkingDirectory</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">,</code> <code class="ANY">zipFilePath</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">String</code> <code class="ANY">content</code> <code class="ANY">=</code> <code class="ANY">streamToString</code><code class="ANY">(</code><code class="ANY">zipFile</code><code class="ANY">.</code><code class="ANY">getInputStream</code><code class="ANY">(</code><code class="ANY">zipFile</code><code class="ANY">.</code><code class="ANY">getEntry</code><code class="ANY">(</code><code class="ANY">pathInsideZip</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">TextFormat</code><code class="ANY">.</code><code class="ANY">merge</code><code class="ANY">(</code><code class="ANY">content</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="KEYWORD">return</code> <code class="ANY">builder</code><code class="ANY">.</code><code class="ANY">build</code><code class="ANY">(</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+
+  <code class="COMMENT">/** Reads a prototxt file into a proto from zip archive, rethrows exceptions as unchecked. */</code>
+  <code class="KEYWORD">public</code> <code class="ANY">Message</code> <code class="ANY">readPrototxtFromZipUnchecked</code><code class="ANY">(</code>
+      <code class="ANY">String</code> <code class="ANY">zipFilePath</code><code class="ANY">,</code> <code class="ANY">String</code> <code class="ANY">pathInsideZip</code><code class="ANY">,</code> <code class="ANY">Message</code><code class="ANY">.</code><code class="ANY">Builder</code> <code class="ANY">builder</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">try</code> <code class="ANY">{</code>
+      <code class="KEYWORD">return</code> <code class="ANY">readPrototxtFromZip</code><code class="ANY">(</code><code class="ANY">zipFilePath</code><code class="ANY">,</code> <code class="ANY">pathInsideZip</code><code class="ANY">,</code> <code class="ANY">builder</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code> <code class="KEYWORD">catch</code> <code class="ANY">(</code><code class="ANY">Exception</code> <code class="ANY">e</code><code class="ANY">)</code> <code class="ANY">{</code>
+      <code class="KEYWORD">throw</code> <code class="KEYWORD">new</code> <code class="ANY">RuntimeException</code><code class="ANY">(</code><code class="ANY">e</code><code class="ANY">)</code><code class="ANY">;</code>
+    <code class="ANY">}</code>
+  <code class="ANY">}</code>
+
+  <code class="KEYWORD">public</code> <code class="ANY">File</code> <code class="ANY">getFile</code><code class="ANY">(</code><code class="ANY">String</code> <code class="ANY">path</code><code class="ANY">)</code> <code class="ANY">{</code>
+    <code class="KEYWORD">return</code> <code class="KEYWORD">new</code> <code class="ANY">File</code><code class="ANY">(</code><code class="ANY">expandHomeDirectory</code><code class="ANY">(</code><code class="ANY">path</code><code class="ANY">)</code><code class="ANY">)</code><code class="ANY">;</code>
+  <code class="ANY">}</code>
+<code class="ANY">}</code>
+
+
+</pre>
+</html>
+
