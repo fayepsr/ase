@@ -48,7 +48,7 @@ to interact with java code via the jpype library. (Why did we use this library?)
 We also used the boto3 software-development kit for the persistence of the model weights (the .pt files), as this is the
 official SDK provided by AWS for the interaction with its cloud services such as the stoarge service s3.
 For testing, we used the unittest library of the Python since we were familiar with it and it is easy to use. 
-For logging TODO
+For logging we implemented the error logging functionality for PHP code and for the python code. Whenever an error in the input is detected, an error log file is created which with some information about the error such as time, error message received, etc. This would help the users detect why the program might not have worked with a certain input.
 
 ## Core Functionalities
 
