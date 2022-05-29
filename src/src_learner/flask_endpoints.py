@@ -5,7 +5,6 @@ from datetime import datetime
 import pytz
 
 import highlight
-import accuracy_check
 import persist_model
 
 app = flask.Flask(__name__)
